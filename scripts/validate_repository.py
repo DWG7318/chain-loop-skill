@@ -16,6 +16,11 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 IGNORED_PARTS = {".git", ".codex", ".worktrees", ".pytest_cache", "__pycache__"}
+BINARY_SUFFIXES = {
+    ".7z", ".avi", ".bin", ".bmp", ".docx", ".gif", ".gz", ".ico", ".jpeg",
+    ".jpg", ".mov", ".mp3", ".mp4", ".pdf", ".png", ".pptx", ".tar", ".webp",
+    ".xlsx", ".zip",
+}
 REQUIRED_FILES = {
     ".gitattributes",
     ".github/workflows/validate.yml",
@@ -59,11 +64,10 @@ def require(condition: bool, message: str) -> None:
 
 
 def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
+    payload = path.read_bytes()
+    if path.suffix.lower() not in BINARY_SUFFIXES and b"\x00" not in payload:
+        payload = payload.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def is_ignored(path: Path, root: Path) -> bool:

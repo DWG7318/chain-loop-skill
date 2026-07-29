@@ -77,6 +77,15 @@ def test_hash_mismatch_is_rejected(tmp_path: Path) -> None:
         module.validate_hash_manifest(tmp_path, require_complete=False)
 
 
+def test_text_hashes_are_stable_across_lf_and_crlf(tmp_path: Path) -> None:
+    module = load_validator()
+    lf = tmp_path / "lf.txt"
+    crlf = tmp_path / "crlf.txt"
+    lf.write_bytes(b"first\nsecond\n")
+    crlf.write_bytes(b"first\r\nsecond\r\n")
+    assert module.sha256(lf) == module.sha256(crlf)
+
+
 def test_malformed_yaml_is_rejected(tmp_path: Path) -> None:
     module = load_validator()
     (tmp_path / "broken.yaml").write_text("items: [unterminated\n", encoding="utf-8")

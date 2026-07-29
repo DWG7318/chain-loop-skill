@@ -28,7 +28,7 @@ python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-re
 PASS: CLK Receipt chain
 
 python -m pytest -q
-71 passed, 180 subtests passed
+72 passed, 180 subtests passed
 ```
 
 ## Negative evidence
@@ -56,8 +56,10 @@ The candidate rejects all dedicated invalid fixtures and mutations:
 ## Integrity
 
 `FILE_HASHES.json` is generated from every release file except itself. Repository
-validation requires exact coverage and verifies every SHA-256 digest. The hash map
-is an integrity record for the candidate; repository identity and the signed Git
+validation requires exact coverage and verifies every SHA-256 digest. Text content
+is normalized to canonical LF before hashing so Windows and Linux checkouts produce
+the same digest; binary content is hashed byte-for-byte. The hash map is an
+integrity record for the candidate; repository identity and the signed Git
 history/tag provide provenance.
 
 ## CI boundary
