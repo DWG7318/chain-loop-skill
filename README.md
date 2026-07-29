@@ -39,6 +39,12 @@ All members of an opened Level are launch-ready together. Multiple GOs may be
 ACTIVE across different Chains, but each Chain has at most one ACTIVE GO. The next
 Level stays closed until the complete current-Level Barrier passes.
 
+The roster uses the `最大有效 Chain 数量`: after Run and GO granularity is frozen,
+select the largest valid Chain partition that preserves ownership, cohesion,
+same-Level launch and acceptance independence, write isolation, local order, and
+full-Run Level barriers. Runtime resources may reduce ACTIVE concurrency, but do
+not change that frozen roster.
+
 Use SLK for one strict execution line. Use GLK for conditional branches, partial
 unlock, cycles, dynamic Chains, or arbitrary GO-to-GO routing.
 

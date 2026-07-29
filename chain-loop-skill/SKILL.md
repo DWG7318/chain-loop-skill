@@ -157,6 +157,12 @@ Schedule, cost, or Owner urgency cannot waive these rules.
 Supervisor selects CLK only when the project can be represented as two or more
 fixed Chains progressing through ordered synchronization Levels.
 
+Before freezing the roster, derive the `最大有效 Chain 数量`: after Run/GO
+granularity is frozen, choose the highest-cardinality partition that preserves
+stable ownership, Chain cohesion, same-Level launch/acceptance independence,
+mutable-write isolation, strict local order, full-Run Level barriers, and no
+artificial splitting. Resource limits reduce ACTIVE concurrency, not the roster.
+
 For every GO in `LEVEL-01`, prove:
 
 1. **Acceptance independence:** it can be verified without another Level-01 GO's

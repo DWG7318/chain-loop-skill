@@ -33,6 +33,13 @@ Use CLK only when all are true:
 6. no free branch, partial unlock, cycle, dynamic Chain, or arbitrary GO edge is
    required.
 
+The Chain roster uses the `最大有效 Chain 数量`. Freeze the Run and GO granularity
+first, then choose the highest-cardinality valid partition that preserves stable
+ownership, Chain cohesion, Level-01 launch independence, same-Level acceptance
+independence, mutable-write isolation, strict local order, and valid full-Run Level
+barriers without artificial splitting. Resource limits may reduce ACTIVE
+concurrency, but they do not shrink or merge the frozen roster.
+
 Use SLK for one strict line and GLK for a free execution graph.
 
 ## 4. Canonical objects

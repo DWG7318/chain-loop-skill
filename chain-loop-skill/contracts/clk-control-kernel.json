@@ -43,6 +43,21 @@
     "grapher": false,
     "method_boundary_for_dynamic_graph": "GLK"
   },
+  "chain_count_policy": {
+    "selection_criterion": "MAXIMUM_VALID_CHAIN_COUNT",
+    "run_and_go_granularity_frozen_before_derivation": true,
+    "validity_constraints": [
+      "STABLE_OWNERSHIP",
+      "CHAIN_COHESION",
+      "LEVEL_01_LAUNCH_INDEPENDENCE",
+      "SAME_LEVEL_ACCEPTANCE_INDEPENDENCE",
+      "MUTABLE_WRITE_ISOLATION",
+      "STRICT_LOCAL_ORDER",
+      "FULL_RUN_LEVEL_BARRIER_VALIDITY",
+      "NO_ARTIFICIAL_SPLIT"
+    ],
+    "resource_limits_reduce_activation_not_roster": true
+  },
   "verification_policy": {
     "binding_frozen_before_level": true,
     "fresh_attempt_created_before_first_cell": true,

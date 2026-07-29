@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Clarified that CLK derives the `最大有效 Chain 数量` after Run/GO granularity
+  freezes; resource limits affect ACTIVE concurrency, not the fixed roster.
+
 ## 2.3.1
 
 - Preserved `Chain Loop Skill` and `Level` as the canonical product identity and

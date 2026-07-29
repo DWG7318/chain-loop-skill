@@ -23,7 +23,7 @@
     },
     {
       "id": "Q06",
-      "prompt": "什么时候可以选择CLK，什么时候应记录METHOD_BOUNDARY_EXCEEDED并使用GLK？"
+      "prompt": "CLK怎样确定CHAIN数量？什么时候应记录METHOD_BOUNDARY_EXCEEDED并使用GLK？"
     },
     {
       "id": "Q07",

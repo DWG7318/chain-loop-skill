@@ -6,7 +6,7 @@
     "Q03": "Supervisor从权威Owner意图和项目证据建立，并在Worker分解、LEVEL/CHAIN规划、Verification Contract、角色启动、模拟或CELL执行前冻结。",
     "Q04": "LEVEL是同时可开工的同步层；CHAIN是固定Checker/Worker责任链；GO-01-A是LEVEL-01中CHAIN-A的真实GO。",
     "Q05": "同一开放LEVEL可让不同CHAIN的GO并发；每条CHAIN最多一个ACTIVE GO；资源、写集或回滚风险可安全串行化但不能改变冻结拓扑。",
-    "Q06": "至少两个固定CHAIN能按有序LEVEL同时启动并完整屏障推进时用CLK；需要条件分支、部分解锁、循环、动态CHAIN或任意路由时记录METHOD_BOUNDARY_EXCEEDED并另用GLK。",
+    "Q06": "先冻结Run和GO粒度，再在稳定所有权、CHAIN内聚、同LEVEL启动与验收独立、写域隔离、严格本地顺序、全Run完整屏障且无人工拆分均成立的合法分解中选择最大有效CHAIN数量；资源只降低ACTIVE并发，不改变roster。需要条件分支、部分解锁、循环、动态CHAIN或任意路由时记录METHOD_BOUNDARY_EXCEEDED并另用GLK。",
     "Q07": "Supervisor、Checker、Worker、Verification。",
     "Q08": "Supervisor、每条CHAIN的Checker和Worker持久；每个GO在计划时预绑定Verification，并在其LEVEL开工前创建全新attempt。",
     "Q09": "Checker冻结中立GO候选并直接发送GO_READY_FOR_VERIFICATION给预设Verification；Supervisor不做中转、改写或总结。",

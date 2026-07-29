@@ -47,6 +47,30 @@ def test_roles_calabash_and_chain_model() -> None:
     assert model["grapher"] is False
 
 
+def test_chain_roster_uses_the_maximum_valid_chain_count() -> None:
+    c = contract()
+    policy = c["chain_count_policy"]
+    assert policy["selection_criterion"] == "MAXIMUM_VALID_CHAIN_COUNT"
+    assert policy["run_and_go_granularity_frozen_before_derivation"] is True
+    assert policy["resource_limits_reduce_activation_not_roster"] is True
+    assert set(policy["validity_constraints"]) == {
+        "STABLE_OWNERSHIP",
+        "CHAIN_COHESION",
+        "LEVEL_01_LAUNCH_INDEPENDENCE",
+        "SAME_LEVEL_ACCEPTANCE_INDEPENDENCE",
+        "MUTABLE_WRITE_ISOLATION",
+        "STRICT_LOCAL_ORDER",
+        "FULL_RUN_LEVEL_BARRIER_VALIDITY",
+        "NO_ARTIFICIAL_SPLIT",
+    }
+    for path in (ROOT / "README.md", ROOT / "SPEC.md", SKILL / "SKILL.md"):
+        assert "最大有效 Chain 数量" in path.read_text(encoding="utf-8"), path
+    answers = json.loads(
+        (SKILL / "evals" / "clk-readiness-answer-key.json").read_text(encoding="utf-8")
+    )
+    assert "最大有效CHAIN数量" in "\n".join(answers["answers"].values())
+
+
 def test_authority_verification_and_autonomy() -> None:
     c = contract()
     assert c["product_write_authority"] == ["WORKER"]
