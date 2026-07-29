@@ -90,3 +90,9 @@ def test_required_go_amendment_and_ci_assets_are_present() -> None:
     assert (ROOT / "chain-loop-skill" / "templates" / "go-amendment.yaml").is_file()
     assert (ROOT / ".github" / "workflows" / "validate.yml").is_file()
     assert (ROOT / "requirements-dev.txt").is_file()
+
+
+def test_ci_pip_cache_uses_the_declared_dependency_file() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "validate.yml").read_text(encoding="utf-8")
+    assert "cache: pip" in workflow
+    assert "cache-dependency-path: requirements-dev.txt" in workflow

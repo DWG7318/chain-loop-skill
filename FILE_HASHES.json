@@ -1,6 +1,6 @@
 {
   ".gitattributes": "f8d9be9af5b484416e80f49adda430d8bb312266063a49e0e85291504c670300",
-  ".github/workflows/validate.yml": "aa5343db21d86ad604ab55e5b7fdf9d857b53fc9c0cc843e8d985de72caa620f",
+  ".github/workflows/validate.yml": "7b8eb1ebcaa6d26ae0c3ec09408a7035e5200c46454154ac87aa116976c2976c",
   ".gitignore": "aa845832eb37b7ef2a331535da485fd03c9c6bb307a52c6c1f4a839f284441b8",
   "CHANGELOG.md": "d3e6cf74a6f412a4d22dd67818dec4822a71f449028c6efc299dfceb10b1d9d8",
   "LICENSE": "9d2662ccd9472dd6aa6873fb9aa05aa375a48d26d67ab860abb77c45923e0421",
@@ -11,7 +11,7 @@
   "README.md": "02c34d6ffcf0e994d297d6cf9af22be9c0cb1022b6a54872aacdc664656b2f41",
   "SKILL.md": "883f670556cf837a59ac2159a924669d93e606f14d6e01b116042238d1f70686",
   "SPEC.md": "48cbd6c0a6a3989f8ed0155c3174d85444307393913bffe06e54cc2c71ffa84c",
-  "VALIDATION-REPORT.md": "1fcbf214cc1a6daedd364af99b1e20c9d148aa5108007f48adf0e5b92ce9740f",
+  "VALIDATION-REPORT.md": "74a327803ded51efa7615a586f4c4c216a229b231e4fd3a4278f1bacb0f78288",
   "VERSION": "ad8650bc9057d9dfd809961b69dbad640c288d809fa44437d44d83d3b118c821",
   "agents/openai.yaml": "b472e07929c33ed888618823dbc342cfdf91bf1f3f32f820011f8fcfa20a2f8c",
   "chain-loop-skill/SKILL.md": "1d5baef88f4affa48391b4b2b76f3b35b2d8e4b28118105e6c754ecb328ad959",
@@ -82,6 +82,6 @@
   "tests/test_contract.py": "bbd7f14688ff4e723c51de52ccfd879e44f07411f9cedb38f87794cde529f23a",
   "tests/test_control_kernel.py": "7b91227aa6a66295c00a56b180245d4a006c48a6b5938b5a3ef5dfa4bf5871d0",
   "tests/test_readiness_eval.py": "f9b5d204407718a540a98274613ab28fb89e782b8fa706d95efadec4cfd242da",
-  "tests/test_repository_validation.py": "266691f43c3b558e45bf1b8a7866f8dd35f2eac4c0848a25ee12cd8fd5e7bc3b",
+  "tests/test_repository_validation.py": "e66eef646a1cdddb1cb92a7e0784e06707712eebcf6a1fe20aeb8319c2ca3bb1",
   "tests/test_runtime_state.py": "72e6267634d408de5bf3af8e5b409e1337f1fdaec363bcaf4556f6bb95d7cd29"
 }

@@ -28,7 +28,7 @@ python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-re
 PASS: CLK Receipt chain
 
 python -m pytest -q
-70 passed, 180 subtests passed
+71 passed, 180 subtests passed
 ```
 
 ## Negative evidence
@@ -51,6 +51,7 @@ The candidate rejects all dedicated invalid fixtures and mutations:
 - repository version drift;
 - release-file hash mismatch;
 - malformed YAML.
+- pip cache configured without the declared dependency-file path.
 
 ## Integrity
 
