@@ -1,0 +1,30 @@
+receipt_id: RECEIPT-D2-01-A
+receipt_type: D2
+run_id: RUN-001
+feature_slice_id: FS-001
+baseline_id: CLK-BASELINE-001
+baseline_version: 1
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+contract_id: GO-CONTRACT-01-A
+contract_version: 1
+contract_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+attempt_id: ATTEMPT-D2-01-A
+candidate_digest: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+actor_id: VERIFICATION-D2-01-A
+responsibility: VERIFICATION
+verification_context_ref: CONTEXT-D2-01-A
+environment_fingerprint: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+workspace_id: WORKSPACE-D2-01-A
+evidence_path: coordination/verification-evidence/d2-01-a/
+evidence_hash: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+issued_at: "2026-07-29T12:10:00Z"
+consumed_receipts:
+  - {receipt_id: RECEIPT-D1-01-A-01, receipt_hash: 6b8dec93ed70dd4c7a37d24c047ca4bc18b46a191136f87a7a368aa407423e99}
+invalidates: []
+supersedes: []
+result: PASS
+failure_reason: null
+details:
+  go_id: GO-01-A
+  composition_checks: [accepted CELLs compose the frozen GO claim]
+  repeated_checks: []

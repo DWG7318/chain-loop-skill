@@ -1,0 +1,21 @@
+run_id: RUN-001
+baseline_id: CLK-BASELINE-001
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+snapshot_id: SNAPSHOT-001
+state: RUNNING
+open_level_id: LEVEL-01
+chains:
+  - {chain_id: CHAIN-A, current_go_id: GO-01-A, active_go_ids: [GO-01-A]}
+  - {chain_id: CHAIN-B, current_go_id: GO-01-B, active_go_ids: [GO-01-B]}
+levels:
+  - {level_id: LEVEL-01, ordinal: 1, state: LEVEL_ACTIVE}
+  - {level_id: LEVEL-02, ordinal: 2, state: LEVEL_PLANNED}
+gos:
+  - {go_id: GO-01-A, chain_id: CHAIN-A, level_id: LEVEL-01, required: true, state: ACTIVE}
+  - {go_id: GO-01-B, chain_id: CHAIN-B, level_id: LEVEL-01, required: true, state: ACTIVE}
+verification_attempts:
+  - {layer: D2, scope_id: GO-01-A, attempt_id: ATTEMPT-D2-A, context_ref: CTX-D2-A, workspace_id: WS-D2-A, evidence_path: evidence/d2-a/}
+  - {layer: LEVEL, scope_id: LEVEL-01, attempt_id: ATTEMPT-LEVEL-01, context_ref: CTX-LEVEL-01, workspace_id: WS-LEVEL-01, evidence_path: evidence/level-01/}
+  - {layer: D3, scope_id: RUN-001, attempt_id: ATTEMPT-D3-001, context_ref: CTX-D3-001, workspace_id: WS-D3-001, evidence_path: evidence/d3-001/}
+barrier_evaluation: null
+last_event_id: EVENT-001

@@ -1,0 +1,20 @@
+amendment_id: AMENDMENT-LEVEL-02-01
+amendment_type: LEVEL_AMENDMENT
+version: 1
+state: APPROVED
+run_id: RUN-001
+target_id: LEVEL-02
+authority_id: SUPERVISOR-001
+issued_at: "2026-07-29T11:05:00Z"
+reason: Barrier claim requires a versioned correction before activation.
+evidence_refs: [coordination/evidence/amendment-level-02-01.md]
+baseline_before_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+baseline_after_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+before: {barrier_claim: Independent outputs exist.}
+after: {barrier_claim: API and UI compose the frozen Run Feature.}
+affected_attempts: [ATTEMPT-LEVEL-02]
+affected_receipts: []
+invalidates: [ATTEMPT-LEVEL-02]
+reverification_requirements: [NEW_LEVEL_VERIFICATION_ATTEMPT]
+supersedes: null
+superseded_by: null

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.3.1
+
+- Preserved `Chain Loop Skill` and `Level` as the canonical product identity and
+  synchronization unit.
+- Made true cross-Chain concurrency explicit while retaining one ACTIVE GO per
+  Chain and a full Level barrier.
+- Added D0, D1, D2, conditional Level composition Verification, and D3 with
+  receipt-consumption de-duplication.
+- Closed the formal-resolution and unresolved-Optional Barrier bypasses.
+- Added strong Receipt and Amendment envelopes, runtime state, immutable candidate
+  binding, schemas, templates, and fresh verification context/workspace evidence.
+- Added negative topology/state tests, repository/hash validation, explicit CI
+  dependencies, complete MIT licensing, and 2.0.0-to-2.3.1 migration guidance.
+- Defined `LOOP_OWNER_ACCEPTED` as immediate Run-product acceptance while project
+  security closure and Delivery remain LCCoding responsibilities.
+
 ## 2.0.0
 
 - Renamed Multi Small Loop Skill (MSLK) to Chain Loop Skill (CLK).

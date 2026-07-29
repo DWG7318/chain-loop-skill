@@ -17,7 +17,7 @@ not canonical identities for new runs.
 - GitHub repository ID: `1298120736`.
 - Default branch: `main`.
 - Version source: repository `VERSION` file and matching `v*` tag.
-- Current specification version: `2.0.0`.
+- Current specification version: `2.3.1`.
 
 Before publishing, verify owner/name, repository ID, default branch, remote HEAD,
 tested installation, version file, and release tag. Never publish CLK content to
@@ -63,6 +63,11 @@ Chain. `GO-01-A` is a real GO; `GO-01` alone is not.
 All GOs in one Level are launch-ready together and independently verified. The next
 Level opens only after every required current-Level GO is `GO_VERIFIED`.
 
+Multiple GOs may be ACTIVE across different Chains in the one open Level, but each
+Chain has at most one ACTIVE GO. Concurrency is allowed only with isolated mutable
+workspaces or an explicit conflict-safe write plan; safe serialization does not
+change the frozen topology.
+
 CLK has fixed Chains, ordered Levels, and full barriers. It has no conditional
 branching, partial unlock, cycles, arbitrary runtime routing, or dynamic Chain
 creation; those belong to Graph Loop Skill (GLK).
@@ -103,7 +108,8 @@ before planning.
 4. Use `GO-<LEVEL>-<CHAIN>` identifiers; the numeric part means “same start Level,”
    not a traditional sequential GO number.
 5. Every GO in an opened Level must be independently acceptable and launch-ready;
-   the next Level remains closed until the current Level is fully verified.
+   different Chains may run concurrently, each Chain has at most one ACTIVE GO,
+   and the next Level remains closed until the current Level is fully verified.
 6. Use one persistent Checker/Worker pair per Chain. Do not add or replace Chains
    during the active run.
 7. Keep every role as a visible Codex conversation under the same project; hidden
@@ -644,6 +650,27 @@ Profile changes require versioned revision and delta simulation. Device limits m
 serialize commands, reduce CELL size, or lower concurrency—not acceptance quality.
 See
 [`references/checker-detection-catalog.md`](references/checker-detection-catalog.md).
+## Run Verification Layers
+
+Read
+[`references/run-lifecycle-and-verification.md`](references/run-lifecycle-and-verification.md)
+and
+[`references/receipt-and-state-contracts.md`](references/receipt-and-state-contracts.md)
+before formal Run execution.
+
+CLK uses `D0 -> D1 -> D2 -> conditional LEVEL -> D3`:
+
+- D0 is Worker implementation evidence, never acceptance.
+- D1 is Checker acceptance of one immutable CELL candidate.
+- D2 is fresh Verification of one GO composition.
+- LEVEL is fresh Verification only for a new cross-Chain claim not proved by D2.
+- D3 is fresh Verification of the final frozen Run Feature.
+
+Higher layers consume signed lower Receipts and never blindly repeat them. D2,
+LEVEL, and D3 each require a distinct fresh attempt, context, visible conversation,
+clean workspace, evidence directory, and candidate binding. A Required GO still in
+the Baseline requires D2 PASS. An Optional GO must reach D2 PASS or a declared
+non-active terminal state before the full Level barrier can pass.
 ## GO Evidence Acceptance
 
 Every GO freezes its Calabash trace and `GO_VERIFICATION_CONTRACT` before Level
@@ -783,6 +810,17 @@ LEVEL-01 GO验证：3/4
 The current Level remains active until every required member is `GO_VERIFIED`.
 Display `全部完成` only when every required CELL, GO, and Level is complete, final
 composition/safety/evidence pass, and configured `PROJECT_GOAL` is satisfied.
+## Run Owner Acceptance and LCCoding Boundary
+
+After fresh D3 PASS, Supervisor immediately facilitates one bounded Run-product
+Owner Acceptance. Allowed verdicts are `LOOP_OWNER_ACCEPTED`,
+`LOOP_PRODUCT_REWORK`, `PRODUCT_DEFINITION_CHANGE`, and `NEW_FEATURE_REQUEST`.
+
+`LOOP_OWNER_ACCEPTED` means `RUN_PRODUCT_ONLY`; it must record
+`project_security_closed: false` and `delivery_authorized: false`. CLK returns the
+candidate and evidence to LCCoding. Centralized project vulnerability audit,
+Post-Security Owner Acceptance, and Delivery remain outside CLK. Read
+[`references/lccoding-interface.md`](references/lccoding-interface.md).
 ## Optional Project Goal Gate
 
 Use `PROJECT_GOAL`, never the ambiguous bare term `Goal`.
@@ -934,14 +972,15 @@ fresh isolated Verification, neutral direct package, and no downstream Level wor
 from provisional output.
 ## Migration
 
-Version `2.0.0` is a breaking identity and topology release. Active 1.8.3 MSLK
-runs remain bound to their historical specification. Preserve old receipts and read
-[`../MIGRATION-MSLK-TO-CLK.md`](../MIGRATION-MSLK-TO-CLK.md) before migrating or
-renaming the repository. If unfinished work cannot be represented as fixed Chains,
-ordered Levels, and full barriers, record `METHOD_BOUNDARY_EXCEEDED` and use GLK.
+Active 1.8.3 MSLK and 2.0.0 CLK runs remain bound to their historical
+specifications. Preserve old receipts and read
+[`../MIGRATION-MSLK-TO-CLK.md`](../MIGRATION-MSLK-TO-CLK.md) plus
+[`../MIGRATION-2.0-TO-2.3.1.md`](../MIGRATION-2.0-TO-2.3.1.md) before migration.
+If unfinished work cannot retain fixed Chains, ordered Levels, and full barriers,
+record `METHOD_BOUNDARY_EXCEEDED` and use a separate GLK run.
 ## Version Note
 
-CLK 2.0.0 establishes mandatory Calabash, Chain/Level semantics, direct fresh GO
-Verification, Owner-free routine autonomy, Worker-owned rework, GO-boundary
-independence, tiered detection, and strict isolation. Dynamic graph behavior remains
-GLK-only.
+CLK 2.3.1 preserves mandatory Calabash and Chain/Level semantics while adding
+explicit cross-Chain concurrency, strong D0-D3 Receipt binding, conditional Level
+composition Verification, executable runtime/Barrier validation, and immediate
+Run-product Owner Acceptance. Dynamic graph behavior remains GLK-only.

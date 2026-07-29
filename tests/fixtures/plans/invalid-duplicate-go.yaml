@@ -1,0 +1,20 @@
+run_id: RUN-BAD-DUPLICATE
+baseline_id: CLK-BASELINE-BAD-DUPLICATE
+baseline_version: 1
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+state: FROZEN
+chains:
+  - chain_id: CHAIN-A
+    intent: A
+    go_order: [GO-X]
+  - chain_id: CHAIN-B
+    intent: B
+    go_order: [GO-X]
+levels:
+  - level_id: LEVEL-01
+    ordinal: 1
+    assignments:
+      - {chain_id: CHAIN-A, go_id: GO-X, required: true}
+    barrier_claim: Duplicate ownership is invalid.
+    level_verification_required: false
+    verification_reason: No composition claim.

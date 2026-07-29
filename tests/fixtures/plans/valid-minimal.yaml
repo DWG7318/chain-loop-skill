@@ -1,0 +1,29 @@
+run_id: RUN-DEMO
+baseline_id: CLK-BASELINE-DEMO
+baseline_version: 1
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+state: FROZEN
+chains:
+  - chain_id: CHAIN-A
+    intent: API capability
+    go_order: [GO-01-A, GO-02-A]
+  - chain_id: CHAIN-B
+    intent: UI capability
+    go_order: [GO-01-B, GO-02-B]
+levels:
+  - level_id: LEVEL-01
+    ordinal: 1
+    assignments:
+      - {chain_id: CHAIN-A, go_id: GO-01-A, required: true}
+      - {chain_id: CHAIN-B, go_id: GO-01-B, required: true}
+    barrier_claim: Both independent contracts are verified and frozen.
+    level_verification_required: false
+    verification_reason: Individual D2 receipts fully prove the barrier claim.
+  - level_id: LEVEL-02
+    ordinal: 2
+    assignments:
+      - {chain_id: CHAIN-A, go_id: GO-02-A, required: true}
+      - {chain_id: CHAIN-B, go_id: GO-02-B, required: true}
+    barrier_claim: API and UI compose the frozen Run Feature.
+    level_verification_required: true
+    verification_reason: Cross-Chain composition creates a new technical claim.
