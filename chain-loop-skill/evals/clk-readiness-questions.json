@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.3.1",
   "questions": [
     {
       "id": "Q01",
@@ -19,7 +19,7 @@
     },
     {
       "id": "Q05",
-      "prompt": "GO-01-A/B/C/D中的01表示传统GO顺序还是同时开工层？"
+      "prompt": "同一LEVEL允许怎样的跨CHAIN并发？每条CHAIN的ACTIVE GO上限是什么？"
     },
     {
       "id": "Q06",
@@ -71,11 +71,11 @@
     },
     {
       "id": "Q18",
-      "prompt": "一个GO何时完成？"
+      "prompt": "CLK 2.3.1的D0、D1、D2、LEVEL和D3分别证明什么？"
     },
     {
       "id": "Q19",
-      "prompt": "一个LEVEL何时完成，是否允许部分开启下一LEVEL？"
+      "prompt": "Required GO和Optional GO分别满足什么条件后LEVEL Barrier才可通过？"
     },
     {
       "id": "Q20",
@@ -91,7 +91,7 @@
     },
     {
       "id": "Q23",
-      "prompt": "Checker与Verification使用相同高模型时怎样保持独立？"
+      "prompt": "D2、条件式LEVEL和D3由同一Verification身份承担时怎样保持独立？"
     },
     {
       "id": "Q24",
@@ -99,7 +99,7 @@
     },
     {
       "id": "Q25",
-      "prompt": "项目何时可以宣布全部完成？"
+      "prompt": "Run何时完成，LOOP_OWNER_ACCEPTED是否表示项目安全关闭或允许Delivery？"
     }
   ]
 }

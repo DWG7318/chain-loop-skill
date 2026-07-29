@@ -1,7 +1,8 @@
 {
-  "schema_version": "2.0.0",
+  "schema_version": "2.3.1",
   "method": "CLK",
-  "method_shape": "staged_barrier_synchronized_multi_chain",
+  "method_shape": "level_barrier_synchronized_multi_chain",
+  "synchronization_unit": "LEVEL",
   "calabash_gate": {
     "required": true,
     "minimum_layers": [
@@ -33,6 +34,8 @@
     "chain_gap_and_reentry": false,
     "same_level_peer_dependency": false,
     "all_level_members_launch_ready_together": true,
+    "multiple_active_gos_across_chains": true,
+    "max_active_gos_per_chain": 1,
     "full_level_barrier": true,
     "partial_unlock": false,
     "conditional_routing": false,
@@ -113,6 +116,51 @@
   "go_verdict_authority": [
     "VERIFICATION"
   ],
+  "run_verification_layers": [
+    "D0",
+    "D1",
+    "D2",
+    "LEVEL",
+    "D3"
+  ],
+  "verification_economy": {
+    "consume_lower_receipts": true,
+    "blind_repetition": false,
+    "repeat_only_for_changed_candidate_environment_stale_evidence_composition_or_new_risk": true
+  },
+  "level_verification": {
+    "conditional_on_new_claim": true,
+    "required_triggers": [
+      "CROSS_CHAIN_DATA_DEPENDENCY",
+      "SHARED_STATE_WRITE",
+      "COMBINED_LEVEL_CLAIM",
+      "SHARED_EXTERNAL_RESOURCE_RISK",
+      "D2_RECEIPTS_INSUFFICIENT"
+    ]
+  },
+  "barrier_policy": {
+    "formal_resolution_substitutes_required_d2": false,
+    "required_resolution": "D2_PASS",
+    "optional_terminal_states": [
+      "D2_PASS",
+      "CANCELLED",
+      "DEFERRED_BY_AMENDMENT",
+      "SUPERSEDED"
+    ],
+    "active_or_pending_optional_blocks_barrier": true
+  },
+  "owner_acceptance": {
+    "timing": "IMMEDIATELY_AFTER_D3_PASS",
+    "scope": "RUN_PRODUCT_ONLY",
+    "project_security_closed": false,
+    "delivery_authorized": false,
+    "verdicts": [
+      "LOOP_OWNER_ACCEPTED",
+      "LOOP_PRODUCT_REWORK",
+      "PRODUCT_DEFINITION_CHANGE",
+      "NEW_FEATURE_REQUEST"
+    ]
+  },
   "level_barrier_authority": [
     "SUPERVISOR"
   ],
@@ -129,7 +177,7 @@
     "frozen_outputs_required": true
   },
   "product_name": "Chain Loop Skill",
-  "version": "2.0.0",
+  "version": "2.3.1",
   "legacy_identity": {
     "product_name": "Multi Small Loop Skill",
     "abbreviation": "MSLK",

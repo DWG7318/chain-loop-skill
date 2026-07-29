@@ -1,0 +1,17 @@
+run_id: RUN-001
+go_id: GO-01-A
+cell_id: CELL-01-A.01
+round_id: R01
+contract_id: CELL-CONTRACT-01-A-01
+contract_version: 1
+contract_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+objective: Implement the smallest inspectable package for the GO.
+authoritative_inputs: [GO-CONTRACT-01-A]
+allowed_write_scope: [src/api/]
+forbidden_write_scope: [src/ui/]
+outputs: [src/api/result.py]
+implementation_checks: [python -m pytest tests/api -q]
+checker_detection_refs: [GO-DETECTION-PROFILE-01-A]
+candidate_binding_policy: immutable-sha256
+completion_criteria: [D0 emitted, immutable candidate delivered]
+state: FROZEN

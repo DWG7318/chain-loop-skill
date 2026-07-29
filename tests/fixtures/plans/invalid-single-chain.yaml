@@ -1,0 +1,17 @@
+run_id: RUN-BAD-SINGLE
+baseline_id: CLK-BASELINE-BAD-SINGLE
+baseline_version: 1
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+state: FROZEN
+chains:
+  - chain_id: CHAIN-A
+    intent: Only one line
+    go_order: [GO-01-A]
+levels:
+  - level_id: LEVEL-01
+    ordinal: 1
+    assignments:
+      - {chain_id: CHAIN-A, go_id: GO-01-A, required: true}
+    barrier_claim: One line is enough.
+    level_verification_required: false
+    verification_reason: No composition claim.

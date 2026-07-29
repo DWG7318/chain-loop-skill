@@ -1,0 +1,20 @@
+amendment_id: AMENDMENT-GO-02-C-01
+amendment_type: GO_AMENDMENT
+version: 1
+state: APPLIED
+run_id: RUN-001
+target_id: GO-02-C
+authority_id: SUPERVISOR-001
+issued_at: "2026-07-29T11:10:00Z"
+reason: Owner-authorized scope change removes the GO from the Required set.
+evidence_refs: [coordination/evidence/amendment-go-02-c-01.md]
+baseline_before_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+baseline_after_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+before: {required: true, state: PLANNED}
+after: {required: false, state: DEFERRED_BY_AMENDMENT}
+affected_attempts: []
+affected_receipts: []
+invalidates: []
+reverification_requirements: [BARRIER_RECALCULATION]
+supersedes: null
+superseded_by: null

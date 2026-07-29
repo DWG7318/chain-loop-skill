@@ -1,0 +1,18 @@
+run_id: RUN-001
+baseline_id: CLK-BASELINE-001
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+snapshot_id: SNAPSHOT-BAD-CONTEXT
+state: RUNNING
+open_level_id: LEVEL-01
+chains:
+  - {chain_id: CHAIN-A, current_go_id: GO-01-A, active_go_ids: []}
+  - {chain_id: CHAIN-B, current_go_id: GO-01-B, active_go_ids: []}
+levels:
+  - {level_id: LEVEL-01, ordinal: 1, state: LEVEL_ACTIVE}
+gos: []
+verification_attempts:
+  - {layer: D2, scope_id: GO-01-A, attempt_id: ATTEMPT-SHARED, context_ref: CTX-SHARED, workspace_id: WS-SHARED, evidence_path: evidence/shared/}
+  - {layer: LEVEL, scope_id: LEVEL-01, attempt_id: ATTEMPT-SHARED, context_ref: CTX-SHARED, workspace_id: WS-SHARED, evidence_path: evidence/shared/}
+  - {layer: D3, scope_id: RUN-001, attempt_id: ATTEMPT-SHARED, context_ref: CTX-SHARED, workspace_id: WS-SHARED, evidence_path: evidence/shared/}
+barrier_evaluation: null
+last_event_id: EVENT-BAD-CONTEXT

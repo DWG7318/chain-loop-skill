@@ -1,0 +1,17 @@
+run_id: RUN-001
+feature_slice_id: FS-001
+contract_id: RUN-CONTRACT-001
+contract_version: 1
+contract_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+project_calabash_baseline_ref: PROJECT-CALABASH-001
+project_calabash_baseline_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+run_feature: Bounded product outcome for this Run.
+run_scope: [src/]
+forbidden_scope: [deployment/]
+ui_lock_ref: null
+acceptance_claims: [The frozen Run Feature is observable on the final candidate.]
+evidence_required: [D0, D1, D2, LEVEL_WHEN_REQUIRED, D3]
+autonomy_envelope_ref: PROJECT-AUTONOMY-001
+candidate_binding_policy: immutable-sha256
+security_boundary: PROJECT_WIDE_AUDIT_REMAINS_WITH_LCCODING
+state: FROZEN

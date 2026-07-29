@@ -1,0 +1,16 @@
+decision_id: LEVEL-VERIFICATION-DECISION-02
+run_id: RUN-001
+baseline_id: CLK-BASELINE-001
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+level_id: LEVEL-02
+barrier_claim: API and UI compose the frozen Run Feature.
+required: true
+triggers:
+  cross_chain_data_dependency: true
+  shared_state_write: false
+  combined_level_claim: true
+  shared_external_resource_risk: false
+  d2_receipts_alone_prove_claim: false
+reason: Multiple GO outputs jointly form the Level claim.
+decided_by: SUPERVISOR-001
+issued_at: "2026-07-29T12:15:00Z"

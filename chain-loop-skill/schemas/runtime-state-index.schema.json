@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DWG7318/chain-loop-skill/schemas/runtime-state-index.schema.json",
+  "title": "CLK Runtime State Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "baseline_id", "baseline_hash", "snapshot_id", "state", "open_level_id", "chains", "levels", "gos", "verification_attempts", "last_event_id"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "baseline_id": {"type": "string", "minLength": 1},
+    "baseline_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "state": {"enum": ["PLANNED", "RUNNING", "BLOCKED", "WAITING_OWNER_ACCEPTANCE", "LOOP_OWNER_ACCEPTED"]},
+    "open_level_id": {"type": ["string", "null"]},
+    "chains": {"type": "array", "items": {"type": "object"}},
+    "levels": {"type": "array", "items": {"type": "object"}},
+    "gos": {"type": "array", "items": {"type": "object"}},
+    "verification_attempts": {"type": "array", "items": {"type": "object"}},
+    "barrier_evaluation": {"type": ["object", "null"]},
+    "last_event_id": {"type": "string", "minLength": 1}
+  }
+}
