@@ -37,10 +37,10 @@ python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-re
 PASS: CLK Receipt chain
 
 python -m pytest -q
-103 passed, 177 subtests passed
+106 passed, 177 subtests passed
 
 python -O -m pytest tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions -q
-8 passed; the expected pytest assertion-rewrite warning was emitted under -O
+11 passed; the expected pytest assertion-rewrite warning was emitted under -O
 ```
 
 ## Negative evidence
@@ -59,6 +59,10 @@ The candidate rejects all dedicated invalid fixtures and mutations:
 - reused Verification attempt/context/workspace/evidence identity;
 - topology fault class outside the three-value CLK enum;
 - more than one active hypothesis in one fault series;
+- duplicate Candidate bindings for one affected Chain;
+- Candidate GO identity inconsistent with its fixed Level and Chain;
+- unbound issuer identity or issuer responsibility/scope outside the existing
+  Checker/Supervisor authority matrix;
 - empty Receipt catalog or incomplete invalidated/preserved partition;
 - unproven healthy-Chain comparability, D2 substitution/dependency, or catalog
   ID/hash/layer/scope mismatch;

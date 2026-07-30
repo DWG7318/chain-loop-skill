@@ -12,6 +12,8 @@
   Barrier-only recalculation semantics.
 - Hardened cross-field binding for nonempty Receipt partitions, hashed hypothesis
   evidence, source attempt scope, healthy-control D2 identity, state, and route.
+- Anchored one immutable Candidate per affected Chain to canonical Level/Chain GO
+  identity and bound issuers to existing Checker/Supervisor responsibility scopes.
 - Added explicit `PLAN_DEFECT`, `CALABASH_REVIEW_REQUIRED`, and
   `METHOD_BOUNDARY_EXCEEDED` escalation boundaries plus runtime Barrier blocking.
 

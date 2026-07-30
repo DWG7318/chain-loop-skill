@@ -38,5 +38,6 @@ closure:
   barrier_recalculation_only: false
 route: LEVEL_REVERIFICATION
 escalation_trigger: null
+issuer_authority: {actor_id: SUPERVISOR-001, responsibility: SUPERVISOR, scope_id: LEVEL-01}
 issued_by: SUPERVISOR-001
 issued_at: "2026-07-30T10:05:00Z"

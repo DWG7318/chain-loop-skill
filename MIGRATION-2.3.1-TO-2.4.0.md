@@ -21,6 +21,10 @@ Receipts, verdicts, or runtime history to look like 2.4.0 evidence.
   reciprocal supersession;
 - bind hypothesis evidence by content hash and the source attempt to its actual
   D0/D1 CELL, D2 GO, LEVEL/BARRIER Level, or D3 Run scope;
+- bind exactly one immutable canonical `GO-<LEVEL>-<CHAIN>` Candidate per affected
+  Chain;
+- bind the concrete issuer identity to explicit responsibility and scope: Checker
+  for `CHAIN_LOCAL`, Supervisor for cross-Chain composition and Level Barrier;
 - prove comparability before using a healthy same-Level Chain as a control and
   match its preserved catalog D2 ID, hash, and same-Level GO scope;
 - require a nonempty Receipt catalog, exact invalidated/preserved partition, and

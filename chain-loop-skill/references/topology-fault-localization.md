@@ -15,17 +15,25 @@ D3, and Barrier Receipts retain their existing authorities.
 Before product rework, freeze one append-only `TOPOLOGY_FAULT_RECORD` binding:
 
 - Run, Baseline, Level, and affected Chain identities;
-- immutable candidate and attempt references plus Receipt and evidence hashes;
+- exactly one immutable Candidate per affected Chain, whose GO identity is the
+  canonical `GO-<LEVEL>-<CHAIN>` derived from this record's Level and Chain;
+- immutable attempt references plus Receipt and evidence hashes;
 - exactly one fault class and one hypothesis;
 - any comparable healthy-Chain control;
 - a nonempty Receipt catalog, consumption edges, identity changes, exact invalidation set,
   preserved Receipts, and reverification scopes;
-- route, escalation trigger, issuer, and time.
+- route, escalation trigger, issuer authority binding, and time.
 
 Every hypothesis evidence path is a subset of the record's content-hashed evidence
 paths. Its source attempt has the actual fault scope: D0/D1 use the affected GO's
 CELL scope, D2 uses the affected GO, LEVEL/BARRIER use the Level, and D3 uses the
 Run.
+
+`issued_by` remains the concrete actor identity and must equal the authority
+binding's `actor_id`; role responsibility is never inferred from that string.
+`CHAIN_LOCAL` binds `CHECKER` responsibility to its affected Chain.
+`CROSS_CHAIN_COMPOSITION` and `LEVEL_BARRIER` bind `SUPERVISOR` responsibility to
+the Level. No Debugger or other role is introduced.
 
 The mutable runtime index contains only references to unresolved records. History
 remains append-only.

@@ -636,11 +636,11 @@ recorded before validation restarts in a clean environment.
 Verification never repairs anything.
 ## Topology Fault Localization
 
-Before rework, bind one `TOPOLOGY_FAULT_RECORD` and classify it exactly as
-`CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. Keep one state-valid
-hypothesis per series; bind its evidence and source attempt to the hashed fault
-scope, partition each Receipt as invalidated/preserved, and match healthy control D2 ID/hash/scope. Use only a
-class-native route or declared escalation; derive exact consumption closure. Read
+Before rework, classify one `TOPOLOGY_FAULT_RECORD` as `CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. Bind each affected
+Chain to one canonical `GO-<LEVEL>-<CHAIN>` candidate and bind `issued_by` to the
+explicit class owner/scope: Checker for local, Supervisor for cross-Chain/Barrier.
+Keep one valid hypothesis; content-bind scope, evidence, Receipts, controls, exact
+partition/closure, and use only a class-valid route. Read
 [`references/topology-fault-localization.md`](references/topology-fault-localization.md).
 ## Detection System
 

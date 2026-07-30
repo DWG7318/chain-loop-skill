@@ -16,6 +16,14 @@
     "CROSS_CHAIN_COMPOSITION",
     "LEVEL_BARRIER"
   ],
+  "topology_fault_identity": {
+    "candidate_binding": "ONE_CANONICAL_GO_PER_AFFECTED_CHAIN",
+    "issuer_authority": {
+      "CHAIN_LOCAL": {"responsibility": "CHECKER", "scope": "AFFECTED_CHAIN"},
+      "CROSS_CHAIN_COMPOSITION": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
+      "LEVEL_BARRIER": {"responsibility": "SUPERVISOR", "scope": "LEVEL"}
+    }
+  },
   "lccoding_interface": {
     "input": "RUN_CONTRACT",
     "output": "LOOP_OWNER_ACCEPTED",

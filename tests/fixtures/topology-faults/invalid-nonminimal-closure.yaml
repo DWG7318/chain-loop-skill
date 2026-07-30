@@ -44,5 +44,6 @@ closure:
   barrier_recalculation_only: false
 route: CELL_REWORK
 escalation_trigger: null
+issuer_authority: {actor_id: CHECKER-A, responsibility: CHECKER, scope_id: CHAIN-A}
 issued_by: CHECKER-A
 issued_at: "2026-07-30T10:15:00Z"

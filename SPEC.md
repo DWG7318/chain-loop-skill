@@ -140,6 +140,13 @@ append-only `TOPOLOGY_FAULT_RECORD` bound to the Run, Baseline, Level, affected
 Chains, candidate digests, attempts, and Receipt/evidence hashes. `fault_class` is
 exactly one of `CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`.
 
+Every affected Chain binds exactly one immutable Candidate, and its GO ID equals
+the canonical `GO-<LEVEL>-<CHAIN>` derived from the record's Level and Chain.
+`issued_by` binds to an explicit actor/responsibility/scope tuple rather than an
+identity-name guess: `CHAIN_LOCAL` belongs to its paired Checker and affected
+Chain; cross-Chain composition and Level Barrier records belong to Supervisor at
+the Level. No Debugger role exists.
+
 One fault series has at most one active hypothesis. Each record contains one
 statement, predicted observation, falsifier, and evidence set. A falsified record
 is sealed; a new record links it through reciprocal supersession. Guessing does not

@@ -32,6 +32,11 @@ ESCALATION_ROUTES = {
     "CALABASH_REVIEW_REQUIRED",
     "METHOD_BOUNDARY_EXCEEDED",
 }
+ISSUER_AUTHORITY = {
+    "CHAIN_LOCAL": {"responsibility": "CHECKER", "scope": "AFFECTED_CHAIN"},
+    "CROSS_CHAIN_COMPOSITION": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
+    "LEVEL_BARRIER": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
+}
 
 
 class TopologyFaultValidationError(ValueError):
@@ -88,9 +93,41 @@ def canonical_go_id(level_id: str, chain_id: str) -> str | None:
 def validate_record(record: dict[str, Any]) -> None:
     validate_schema(record)
     affected = set(record["affected_chain_ids"])
-    candidate_chains = {item["chain_id"] for item in record["candidate_refs"]}
+    candidate_chain_list = [item["chain_id"] for item in record["candidate_refs"]]
+    candidate_chains = set(candidate_chain_list)
     candidate_go_ids = {item["go_id"] for item in record["candidate_refs"]}
+    require(
+        len(candidate_chain_list) == len(candidate_chains) == len(affected),
+        "each affected Chain must bind exactly one immutable candidate",
+    )
     require(candidate_chains == affected, "candidate_refs must cover exactly the affected Chains")
+    require(
+        all(
+            candidate["go_id"]
+            == canonical_go_id(record["level_id"], candidate["chain_id"])
+            for candidate in record["candidate_refs"]
+        ),
+        "candidate_ref go_id must match the canonical GO identity for Level and Chain",
+    )
+    issuer = record["issuer_authority"]
+    require(
+        record["issued_by"] == issuer["actor_id"],
+        "issued_by must match issuer authority actor_id",
+    )
+    expected_authority = ISSUER_AUTHORITY[record["fault_class"]]
+    require(
+        issuer["responsibility"] == expected_authority["responsibility"],
+        "issuer responsibility is invalid for fault_class",
+    )
+    expected_issuer_scope = (
+        next(iter(affected))
+        if expected_authority["scope"] == "AFFECTED_CHAIN"
+        else record["level_id"]
+    )
+    require(
+        issuer["scope_id"] == expected_issuer_scope,
+        "issuer authority scope is invalid for fault_class",
+    )
     expected_status = STATE_HYPOTHESIS_STATUS[record["record_state"]]
     require(
         record["hypothesis"]["status"] == expected_status,

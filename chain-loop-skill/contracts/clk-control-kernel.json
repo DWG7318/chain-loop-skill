@@ -74,6 +74,13 @@
     "hypothesis_evidence_must_be_content_hash_bound": true,
     "source_attempt_scope_bound_to_fault": true,
     "healthy_control_must_match_preserved_catalog_d2": true,
+    "one_candidate_per_affected_chain": true,
+    "canonical_candidate_go_identity": "GO-<LEVEL>-<CHAIN>",
+    "issuer_authority": {
+      "CHAIN_LOCAL": {"responsibility": "CHECKER", "scope": "AFFECTED_CHAIN"},
+      "CROSS_CHAIN_COMPOSITION": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
+      "LEVEL_BARRIER": {"responsibility": "SUPERVISOR", "scope": "LEVEL"}
+    },
     "state_hypothesis_status": {
       "OPEN": "ACTIVE",
       "FALSIFIED": "FALSIFIED",

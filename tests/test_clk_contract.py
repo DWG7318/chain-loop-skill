@@ -117,6 +117,13 @@ def test_topology_fault_localization_is_clk_native_and_bounded() -> None:
     assert policy["hypothesis_evidence_must_be_content_hash_bound"] is True
     assert policy["source_attempt_scope_bound_to_fault"] is True
     assert policy["healthy_control_must_match_preserved_catalog_d2"] is True
+    assert policy["one_candidate_per_affected_chain"] is True
+    assert policy["canonical_candidate_go_identity"] == "GO-<LEVEL>-<CHAIN>"
+    assert policy["issuer_authority"] == {
+        "CHAIN_LOCAL": {"responsibility": "CHECKER", "scope": "AFFECTED_CHAIN"},
+        "CROSS_CHAIN_COMPOSITION": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
+        "LEVEL_BARRIER": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
+    }
     assert policy["state_hypothesis_status"] == {
         "OPEN": "ACTIVE",
         "FALSIFIED": "FALSIFIED",
@@ -139,6 +146,10 @@ def test_topology_fault_localization_is_clk_native_and_bounded() -> None:
     assert c["run_verification_layers"] == ["D0", "D1", "D2", "LEVEL", "D3"]
     manifest = json.loads((ROOT / "MANIFEST.json").read_text(encoding="utf-8"))
     assert manifest["topology_fault_classes"] == policy["fault_classes"]
+    assert manifest["topology_fault_identity"] == {
+        "candidate_binding": "ONE_CANONICAL_GO_PER_AFFECTED_CHAIN",
+        "issuer_authority": policy["issuer_authority"],
+    }
     answers = json.loads(
         (SKILL / "evals" / "clk-readiness-answer-key.json").read_text(encoding="utf-8")
     )

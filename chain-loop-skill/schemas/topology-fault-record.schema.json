@@ -9,7 +9,7 @@
     "baseline_hash", "level_id", "affected_chain_ids", "source_layer", "fault_class",
     "candidate_refs", "attempt_refs", "evidence_refs", "hypothesis", "supersedes",
     "superseded_by", "healthy_chain_controls", "closure", "route", "escalation_trigger",
-    "issued_by", "issued_at"
+    "issuer_authority", "issued_by", "issued_at"
   ],
   "properties": {
     "fault_record_id": {"type": "string", "minLength": 1},
@@ -169,6 +169,15 @@
     "escalation_trigger": {
       "type": ["string", "null"],
       "enum": [null, "PLAN_DEFECT", "CALABASH_REVIEW_REQUIRED", "METHOD_BOUNDARY_EXCEEDED"]
+    },
+    "issuer_authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "responsibility", "scope_id"],
+      "properties": {
+        "actor_id": {"type": "string", "minLength": 1},
+        "responsibility": {"enum": ["CHECKER", "SUPERVISOR"]},
+        "scope_id": {"type": "string", "minLength": 1}
+      }
     },
     "issued_by": {"type": "string", "minLength": 1},
     "issued_at": {"type": "string", "format": "date-time"}

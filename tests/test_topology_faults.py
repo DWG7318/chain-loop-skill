@@ -85,6 +85,25 @@ def invalid_cross_field_record(case: str) -> dict:
         fault["closure"]["invalidated_receipt_ids"] = ["RECEIPT-D2-01-A"]
         fault["closure"]["preserved_receipt_ids"] = ["RECEIPT-D2-01-B"]
         fault["closure"]["reverification"] = [{"layer": "D2", "scope_id": "GO-01-A"}]
+    elif case == "duplicate_candidate_chain":
+        duplicate = deepcopy(fault["candidate_refs"][0])
+        duplicate["candidate_digest"] = "9" * 64
+        fault["candidate_refs"].append(duplicate)
+    elif case == "noncanonical_candidate_identity":
+        fault["candidate_refs"][0]["go_id"] = "GO-99-Z"
+        fault["attempt_refs"][0]["scope_id"] = "GO-99-Z"
+        for receipt in fault["closure"]["receipt_catalog"]:
+            if receipt["scope_id"] == "CELL-01-A.01":
+                receipt["scope_id"] = "CELL-99-Z.01"
+            elif receipt["scope_id"] == "GO-01-A":
+                receipt["scope_id"] = "GO-99-Z"
+        for scope in fault["closure"]["reverification"]:
+            if scope["scope_id"] == "CELL-01-A.01":
+                scope["scope_id"] = "CELL-99-Z.01"
+            elif scope["scope_id"] == "GO-01-A":
+                scope["scope_id"] = "GO-99-Z"
+    elif case == "unbound_issuer_identity":
+        fault["issued_by"] = "DEBUGGER"
     else:  # pragma: no cover - guarded by the parametrization below
         raise AssertionError(case)
     return fault
@@ -204,6 +223,9 @@ def test_fault_record_strongly_binds_receipt_and_evidence_content() -> None:
         ("superseded_active_without_links", "hypothesis.status"),
         ("chain_local_wrong_route", "route is invalid for fault_class"),
         ("level_barrier_product_invalidation", "LEVEL_BARRIER must preserve all technical Receipts"),
+        ("duplicate_candidate_chain", "exactly one immutable candidate"),
+        ("noncanonical_candidate_identity", "canonical GO identity"),
+        ("unbound_issuer_identity", "issued_by must match issuer authority"),
     ],
 )
 def test_cross_field_invalid_records_fail_with_and_without_assertions(
@@ -216,8 +238,10 @@ def test_cross_field_invalid_records_fail_with_and_without_assertions(
     )
     for optimized in (False, True):
         result = run_record_paths([path], optimized=optimized)
-        assert result.returncode == 2, (optimized, result.stdout, result.stderr)
-        assert message in result.stderr, (optimized, result.stderr)
+        if result.returncode != 2:
+            pytest.fail(f"optimized={optimized}: {result.stdout=} {result.stderr=}")
+        if message not in result.stderr:
+            pytest.fail(f"optimized={optimized}: expected {message!r} in {result.stderr!r}")
 
 
 @pytest.mark.parametrize(
