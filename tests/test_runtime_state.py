@@ -37,6 +37,7 @@ def test_valid_runtime_state_passes() -> None:
         ("invalid-required-formal-resolution.yaml", "Required GO requires D2_PASS"),
         ("invalid-missing-required-assignment.yaml", "Barrier assignment coverage mismatch"),
         ("invalid-reused-verification-context.yaml", "verification attempt IDs must be unique"),
+        ("invalid-unresolved-topology-fault-at-barrier.yaml", "unresolved topology fault blocks Barrier PASS"),
     ],
 )
 def test_invalid_runtime_state_is_rejected(fixture: str, message: str) -> None:

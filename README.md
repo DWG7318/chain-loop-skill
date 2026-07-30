@@ -9,7 +9,7 @@ Canonical repository: `DWG7318/chain-loop-skill`
 
 GitHub repository ID: `1298120736`
 
-Current version: **2.3.1**
+Current version: **2.4.0**
 
 ## Definition and input
 
@@ -83,6 +83,16 @@ D2, LEVEL, and D3 require distinct attempt, context, workspace, candidate bindin
 and evidence identities even when one independent Verification identity performs
 all three layers.
 
+## Topology fault localization
+
+Before rework, CLK classifies one evidence-bound `TOPOLOGY_FAULT_RECORD` as
+`CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. One fault series has
+one active hypothesis; a falsified hypothesis is sealed and superseded. Comparable
+same-Level healthy Chains may provide differential evidence, but never acceptance
+substitution or peer dependency. Receipt-consumption edges determine the exact
+invalidation and reverification closure; Barrier-only correction recalculates only
+the Barrier. An unresolved fault for the current Level blocks Barrier PASS.
+
 ## Owner acceptance and outer boundary
 
 After D3 PASS, CLK immediately facilitates the current Run's small Owner
@@ -98,6 +108,7 @@ Post-Security Owner Acceptance, and Delivery after all required Runs are accepte
 python scripts/validate_repository.py
 python scripts/validate_chain_level_plan.py tests/fixtures/plans/valid-minimal.yaml
 python scripts/validate_runtime_state.py tests/fixtures/runtime/valid-level-active.yaml
+python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-chain-local.yaml
 python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-receipt.yaml chain-loop-skill/templates/d1-checker-receipt.yaml chain-loop-skill/templates/d2-go-verification-receipt.yaml
 python -m pytest -q
 ```

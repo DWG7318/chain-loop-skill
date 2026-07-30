@@ -1,0 +1,48 @@
+fault_record_id: TOPOLOGY-FAULT-BAD-CLOSURE
+fault_series_id: TOPOLOGY-FAULT-SERIES-BAD-CLOSURE
+record_state: OPEN
+run_id: RUN-001
+baseline_id: CLK-BASELINE-001
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+level_id: LEVEL-01
+affected_chain_ids: [CHAIN-A]
+source_layer: D2
+fault_class: CHAIN_LOCAL
+candidate_refs:
+  - {chain_id: CHAIN-A, go_id: GO-01-A, candidate_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+attempt_refs:
+  - {layer: D2, scope_id: GO-01-A, attempt_id: ATTEMPT-D2-01-A}
+evidence_refs:
+  - {evidence_path: coordination/checker-evidence/bad-closure.md, evidence_hash: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc}
+hypothesis:
+  hypothesis_id: HYPOTHESIS-BAD-CLOSURE
+  status: ACTIVE
+  statement: CHAIN-A is local.
+  predicted_observation: Only CHAIN-A receipts are downstream.
+  falsifier: CHAIN-B is downstream.
+  evidence_refs: [coordination/checker-evidence/bad-closure.md]
+supersedes: null
+superseded_by: null
+healthy_chain_controls: []
+closure:
+  receipt_catalog:
+    - {receipt_id: RECEIPT-D0-01-A, receipt_hash: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, layer: D0, scope_id: CELL-01-A.01}
+    - {receipt_id: RECEIPT-D1-01-A, receipt_hash: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd, layer: D1, scope_id: CELL-01-A.01}
+    - {receipt_id: RECEIPT-D2-01-A, receipt_hash: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, layer: D2, scope_id: GO-01-A}
+    - {receipt_id: RECEIPT-D2-01-B, receipt_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, layer: D2, scope_id: GO-01-B}
+  consumption_edges:
+    - {consumer_receipt_id: RECEIPT-D1-01-A, consumed_receipt_ids: [RECEIPT-D0-01-A]}
+    - {consumer_receipt_id: RECEIPT-D2-01-A, consumed_receipt_ids: [RECEIPT-D1-01-A]}
+  changed_receipt_ids: [RECEIPT-D0-01-A]
+  invalidated_receipt_ids: [RECEIPT-D0-01-A, RECEIPT-D1-01-A, RECEIPT-D2-01-A, RECEIPT-D2-01-B]
+  preserved_receipt_ids: []
+  reverification:
+    - {layer: D0, scope_id: CELL-01-A.01}
+    - {layer: D1, scope_id: CELL-01-A.01}
+    - {layer: D2, scope_id: GO-01-A}
+    - {layer: D2, scope_id: GO-01-B}
+  barrier_recalculation_only: false
+route: CELL_REWORK
+escalation_trigger: null
+issued_by: CHECKER-A
+issued_at: "2026-07-30T10:15:00Z"

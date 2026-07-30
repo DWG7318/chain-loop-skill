@@ -1,0 +1,42 @@
+fault_record_id: TOPOLOGY-FAULT-LEVEL-01-001
+fault_series_id: TOPOLOGY-FAULT-SERIES-LEVEL-01
+record_state: OPEN
+run_id: RUN-001
+baseline_id: CLK-BASELINE-001
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+level_id: LEVEL-01
+affected_chain_ids: [CHAIN-A, CHAIN-B]
+source_layer: LEVEL
+fault_class: CROSS_CHAIN_COMPOSITION
+candidate_refs:
+  - {chain_id: CHAIN-A, go_id: GO-01-A, candidate_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+  - {chain_id: CHAIN-B, go_id: GO-01-B, candidate_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb}
+attempt_refs:
+  - {layer: LEVEL, scope_id: LEVEL-01, attempt_id: ATTEMPT-LEVEL-01}
+evidence_refs:
+  - {evidence_path: coordination/verification-evidence/level-01/composition-failure.md, evidence_hash: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc}
+hypothesis:
+  hypothesis_id: HYPOTHESIS-LEVEL-01-001
+  status: ACTIVE
+  statement: Individually verified GO outputs fail only when composed at LEVEL-01.
+  predicted_observation: A fresh LEVEL probe fails while both frozen D2 receipts remain reproducible.
+  falsifier: Either individual GO candidate fails its unchanged D2 contract.
+  evidence_refs: [coordination/verification-evidence/level-01/composition-failure.md]
+supersedes: null
+superseded_by: null
+healthy_chain_controls: []
+closure:
+  receipt_catalog:
+    - {receipt_id: RECEIPT-D2-01-A, receipt_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, layer: D2, scope_id: GO-01-A}
+    - {receipt_id: RECEIPT-D2-01-B, receipt_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, layer: D2, scope_id: GO-01-B}
+  consumption_edges: []
+  changed_receipt_ids: []
+  invalidated_receipt_ids: []
+  preserved_receipt_ids: [RECEIPT-D2-01-A, RECEIPT-D2-01-B]
+  reverification:
+    - {layer: LEVEL, scope_id: LEVEL-01}
+  barrier_recalculation_only: false
+route: LEVEL_REVERIFICATION
+escalation_trigger: null
+issued_by: SUPERVISOR-001
+issued_at: "2026-07-30T10:05:00Z"

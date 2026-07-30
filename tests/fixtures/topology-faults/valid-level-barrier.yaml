@@ -1,0 +1,42 @@
+fault_record_id: TOPOLOGY-FAULT-BARRIER-01-001
+fault_series_id: TOPOLOGY-FAULT-SERIES-BARRIER-01
+record_state: OPEN
+run_id: RUN-001
+baseline_id: CLK-BASELINE-001
+baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+level_id: LEVEL-01
+affected_chain_ids: [CHAIN-A, CHAIN-B]
+source_layer: BARRIER
+fault_class: LEVEL_BARRIER
+candidate_refs:
+  - {chain_id: CHAIN-A, go_id: GO-01-A, candidate_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+  - {chain_id: CHAIN-B, go_id: GO-01-B, candidate_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb}
+attempt_refs:
+  - {layer: BARRIER, scope_id: LEVEL-01, attempt_id: ATTEMPT-BARRIER-01}
+evidence_refs:
+  - {evidence_path: coordination/checker-evidence/barrier-01-state-mismatch.md, evidence_hash: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc}
+hypothesis:
+  hypothesis_id: HYPOTHESIS-BARRIER-01-001
+  status: ACTIVE
+  statement: The failure is confined to Barrier state and Receipt mapping.
+  predicted_observation: Recalculation from unchanged D2 receipts repairs the Barrier proof.
+  falsifier: Any frozen GO candidate or D2 Receipt is stale or invalid.
+  evidence_refs: [coordination/checker-evidence/barrier-01-state-mismatch.md]
+supersedes: null
+superseded_by: null
+healthy_chain_controls: []
+closure:
+  receipt_catalog:
+    - {receipt_id: RECEIPT-D2-01-A, receipt_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, layer: D2, scope_id: GO-01-A}
+    - {receipt_id: RECEIPT-D2-01-B, receipt_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, layer: D2, scope_id: GO-01-B}
+  consumption_edges: []
+  changed_receipt_ids: []
+  invalidated_receipt_ids: []
+  preserved_receipt_ids: [RECEIPT-D2-01-A, RECEIPT-D2-01-B]
+  reverification:
+    - {layer: BARRIER, scope_id: LEVEL-01}
+  barrier_recalculation_only: true
+route: BARRIER_RECALCULATION
+escalation_trigger: null
+issued_by: SUPERVISOR-001
+issued_at: "2026-07-30T10:10:00Z"

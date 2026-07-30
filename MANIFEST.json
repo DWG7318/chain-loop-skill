@@ -1,7 +1,7 @@
 {
   "name": "Chain Loop Skill",
   "abbreviation": "CLK",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "repository": "DWG7318/chain-loop-skill",
   "repository_id": 1298120736,
   "default_branch": "main",
@@ -25,6 +25,7 @@
     "LICENSE",
     "MANIFEST.json",
     "MIGRATION-2.0-TO-2.3.1.md",
+    "MIGRATION-2.3.1-TO-2.4.0.md",
     "MIGRATION-MSLK-TO-CLK.md",
     "README.md",
     "SPEC.md",
@@ -36,6 +37,7 @@
     "scripts/validate_receipt_chain.py",
     "scripts/validate_repository.py",
     "scripts/validate_runtime_state.py",
+    "scripts/validate_topology_fault.py",
     "chain-loop-skill/SKILL.md",
     "chain-loop-skill/agents/openai.yaml",
     "chain-loop-skill/contracts/clk-control-kernel.json",
@@ -43,8 +45,11 @@
     "chain-loop-skill/schemas/chain-level-plan.schema.json",
     "chain-loop-skill/schemas/receipt-envelope.schema.json",
     "chain-loop-skill/schemas/runtime-state-index.schema.json",
+    "chain-loop-skill/schemas/topology-fault-record.schema.json",
+    "chain-loop-skill/references/topology-fault-localization.md",
     "chain-loop-skill/templates/go-amendment.yaml",
     "chain-loop-skill/templates/level-barrier-receipt.yaml",
-    "chain-loop-skill/templates/owner-acceptance.yaml"
+    "chain-loop-skill/templates/owner-acceptance.yaml",
+    "chain-loop-skill/templates/topology-fault-record.yaml"
   ]
 }

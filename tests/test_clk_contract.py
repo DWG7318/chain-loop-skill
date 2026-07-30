@@ -13,7 +13,7 @@ def contract() -> dict:
 
 def test_version_and_identity() -> None:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version == "2.3.1"
+    assert version == "2.4.0"
     assert f"Current version: **{version}**" in (ROOT / "README.md").read_text(encoding="utf-8")
     text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
     assert "# Chain Loop Skill (CLK)" in text
@@ -26,7 +26,7 @@ def test_contract_and_legacy() -> None:
     c = contract()
     assert c["method"] == "CLK"
     assert c["product_name"] == "Chain Loop Skill"
-    assert c["version"] == "2.3.1"
+    assert c["version"] == "2.4.0"
     assert c["synchronization_unit"] == "LEVEL"
     assert c["legacy_identity"]["abbreviation"] == "MSLK"
     assert c["legacy_identity"]["formal_new_runs_allowed"] is False
@@ -97,6 +97,35 @@ def test_layered_verification_barrier_and_owner_contract() -> None:
     assert c["owner_acceptance"]["scope"] == "RUN_PRODUCT_ONLY"
     assert c["owner_acceptance"]["project_security_closed"] is False
     assert c["owner_acceptance"]["delivery_authorized"] is False
+
+
+def test_topology_fault_localization_is_clk_native_and_bounded() -> None:
+    c = contract()
+    policy = c["topology_fault_localization"]
+    assert policy["fault_classes"] == [
+        "CHAIN_LOCAL",
+        "CROSS_CHAIN_COMPOSITION",
+        "LEVEL_BARRIER",
+    ]
+    assert policy["one_active_hypothesis_per_fault_series"] is True
+    assert policy["healthy_chain_requires_comparability_proof"] is True
+    assert policy["healthy_chain_d2_substitution_allowed"] is False
+    assert policy["healthy_chain_same_level_dependency_allowed"] is False
+    assert policy["minimal_closure_uses_receipt_consumption"] is True
+    assert policy["barrier_only_reverification_layers"] == ["BARRIER"]
+    assert set(policy["escalation_routes"]) == {
+        "PLAN_DEFECT",
+        "CALABASH_REVIEW_REQUIRED",
+        "METHOD_BOUNDARY_EXCEEDED",
+    }
+    assert c["role_types"] == ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"]
+    assert c["run_verification_layers"] == ["D0", "D1", "D2", "LEVEL", "D3"]
+    answers = json.loads(
+        (SKILL / "evals" / "clk-readiness-answer-key.json").read_text(encoding="utf-8")
+    )
+    assert "CHAIN_LOCAL、CROSS_CHAIN_COMPOSITION、LEVEL_BARRIER" in "\n".join(
+        answers["answers"].values()
+    )
 
 
 def test_canonical_agent_and_new_references_are_packaged() -> None:

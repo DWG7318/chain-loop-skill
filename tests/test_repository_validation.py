@@ -31,7 +31,7 @@ def test_complete_repository_passes_release_validator() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "PASS: CLK repository 2.3.1" in result.stdout
+    assert "PASS: CLK repository 2.4.0" in result.stdout
 
 
 def test_missing_skill_frontmatter_is_rejected(tmp_path: Path) -> None:
@@ -46,20 +46,20 @@ def test_version_drift_is_rejected(tmp_path: Path) -> None:
     module = load_validator()
     (tmp_path / "chain-loop-skill" / "contracts").mkdir(parents=True)
     (tmp_path / "chain-loop-skill" / "templates").mkdir(parents=True)
-    (tmp_path / "VERSION").write_text("2.3.1\n", encoding="utf-8")
+    (tmp_path / "VERSION").write_text("2.4.0\n", encoding="utf-8")
     (tmp_path / "README.md").write_text("Current version: **2.3.0**\n", encoding="utf-8")
-    (tmp_path / "SPEC.md").write_text("# Specification 2.3.1\n", encoding="utf-8")
-    (tmp_path / "CHANGELOG.md").write_text("## 2.3.1\n", encoding="utf-8")
-    (tmp_path / "MANIFEST.json").write_text('{"version":"2.3.1"}', encoding="utf-8")
+    (tmp_path / "SPEC.md").write_text("# Specification 2.4.0\n", encoding="utf-8")
+    (tmp_path / "CHANGELOG.md").write_text("## 2.4.0\n", encoding="utf-8")
+    (tmp_path / "MANIFEST.json").write_text('{"version":"2.4.0"}', encoding="utf-8")
     (tmp_path / "chain-loop-skill" / "SKILL.md").write_text(
-        "---\nname: chain-loop-skill\ndescription: test\n---\nCurrent specification version: `2.3.1`.\n",
+        "---\nname: chain-loop-skill\ndescription: test\n---\nCurrent specification version: `2.4.0`.\n",
         encoding="utf-8",
     )
     (tmp_path / "chain-loop-skill" / "contracts" / "clk-control-kernel.json").write_text(
-        '{"version":"2.3.1","schema_version":"2.3.1"}', encoding="utf-8"
+        '{"version":"2.4.0","schema_version":"2.4.0"}', encoding="utf-8"
     )
     (tmp_path / "chain-loop-skill" / "templates" / "clk-run-receipt.yaml").write_text(
-        "version: 2.3.1\n", encoding="utf-8"
+        "version: 2.4.0\n", encoding="utf-8"
     )
     with pytest.raises(module.RepositoryValidationError, match="README"):
         module.validate_version_consistency(tmp_path)
@@ -99,9 +99,19 @@ def test_required_go_amendment_and_ci_assets_are_present() -> None:
     assert (ROOT / "chain-loop-skill" / "templates" / "go-amendment.yaml").is_file()
     assert (ROOT / ".github" / "workflows" / "validate.yml").is_file()
     assert (ROOT / "requirements-dev.txt").is_file()
+    for relative in (
+        "MIGRATION-2.3.1-TO-2.4.0.md",
+        "scripts/validate_topology_fault.py",
+        "chain-loop-skill/schemas/topology-fault-record.schema.json",
+        "chain-loop-skill/templates/topology-fault-record.yaml",
+        "chain-loop-skill/references/topology-fault-localization.md",
+    ):
+        assert relative in module.REQUIRED_FILES
+        assert (ROOT / relative).is_file()
 
 
 def test_ci_pip_cache_uses_the_declared_dependency_file() -> None:
     workflow = (ROOT / ".github" / "workflows" / "validate.yml").read_text(encoding="utf-8")
     assert "cache: pip" in workflow
     assert "cache-dependency-path: requirements-dev.txt" in workflow
+    assert "scripts/validate_topology_fault.py" in workflow

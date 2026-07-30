@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.3.1",
+  "schema_version": "2.4.0",
   "method": "CLK",
   "method_shape": "level_barrier_synchronized_multi_chain",
   "synchronization_unit": "LEVEL",
@@ -57,6 +57,27 @@
       "NO_ARTIFICIAL_SPLIT"
     ],
     "resource_limits_reduce_activation_not_roster": true
+  },
+  "topology_fault_localization": {
+    "fault_classes": [
+      "CHAIN_LOCAL",
+      "CROSS_CHAIN_COMPOSITION",
+      "LEVEL_BARRIER"
+    ],
+    "one_active_hypothesis_per_fault_series": true,
+    "healthy_chain_requires_comparability_proof": true,
+    "healthy_chain_d2_substitution_allowed": false,
+    "healthy_chain_same_level_dependency_allowed": false,
+    "minimal_closure_uses_receipt_consumption": true,
+    "barrier_only_reverification_layers": [
+      "BARRIER"
+    ],
+    "escalation_routes": [
+      "PLAN_DEFECT",
+      "CALABASH_REVIEW_REQUIRED",
+      "METHOD_BOUNDARY_EXCEEDED"
+    ],
+    "adds_role_or_verification_layer": false
   },
   "verification_policy": {
     "binding_frozen_before_level": true,
@@ -192,7 +213,7 @@
     "frozen_outputs_required": true
   },
   "product_name": "Chain Loop Skill",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "legacy_identity": {
     "product_name": "Multi Small Loop Skill",
     "abbreviation": "MSLK",

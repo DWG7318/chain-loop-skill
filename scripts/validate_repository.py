@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the complete CLK 2.3.1 repository contract."""
+"""Validate the complete CLK 2.4.0 repository contract."""
 
 from __future__ import annotations
 
@@ -30,6 +30,7 @@ REQUIRED_FILES = {
     "LICENSE",
     "MANIFEST.json",
     "MIGRATION-2.0-TO-2.3.1.md",
+    "MIGRATION-2.3.1-TO-2.4.0.md",
     "MIGRATION-MSLK-TO-CLK.md",
     "README.md",
     "SPEC.md",
@@ -41,6 +42,7 @@ REQUIRED_FILES = {
     "scripts/validate_receipt_chain.py",
     "scripts/validate_repository.py",
     "scripts/validate_runtime_state.py",
+    "scripts/validate_topology_fault.py",
     "chain-loop-skill/SKILL.md",
     "chain-loop-skill/agents/openai.yaml",
     "chain-loop-skill/contracts/clk-control-kernel.json",
@@ -48,9 +50,12 @@ REQUIRED_FILES = {
     "chain-loop-skill/schemas/chain-level-plan.schema.json",
     "chain-loop-skill/schemas/receipt-envelope.schema.json",
     "chain-loop-skill/schemas/runtime-state-index.schema.json",
+    "chain-loop-skill/schemas/topology-fault-record.schema.json",
+    "chain-loop-skill/references/topology-fault-localization.md",
     "chain-loop-skill/templates/go-amendment.yaml",
     "chain-loop-skill/templates/level-barrier-receipt.yaml",
     "chain-loop-skill/templates/owner-acceptance.yaml",
+    "chain-loop-skill/templates/topology-fault-record.yaml",
 }
 
 
@@ -108,7 +113,7 @@ def validate_skill_frontmatter(path: Path) -> None:
 
 def validate_version_consistency(root: Path) -> None:
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
-    require(version == "2.3.1", f"VERSION must be 2.3.1, got {version}")
+    require(version == "2.4.0", f"VERSION must be 2.4.0, got {version}")
     manifest = json.loads((root / "MANIFEST.json").read_text(encoding="utf-8"))
     require(manifest.get("version") == version, "MANIFEST version differs from VERSION")
     readme = (root / "README.md").read_text(encoding="utf-8")
@@ -190,6 +195,7 @@ def validate_templates(root: Path) -> None:
     pairs = [
         ("chain-level-plan.schema.json", "chain-level-plan.yaml"),
         ("runtime-state-index.schema.json", "runtime-state-index.yaml"),
+        ("topology-fault-record.schema.json", "topology-fault-record.yaml"),
     ]
     receipt_names = [
         "d0-worker-receipt.yaml",
@@ -239,7 +245,7 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError, RepositoryValidationError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 2
-    print("PASS: CLK repository 2.3.1")
+    print("PASS: CLK repository 2.4.0")
     return 0
 
 

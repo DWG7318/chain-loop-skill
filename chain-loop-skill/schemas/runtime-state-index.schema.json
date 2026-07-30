@@ -4,7 +4,7 @@
   "title": "CLK Runtime State Index",
   "type": "object",
   "additionalProperties": false,
-  "required": ["run_id", "baseline_id", "baseline_hash", "snapshot_id", "state", "open_level_id", "chains", "levels", "gos", "verification_attempts", "last_event_id"],
+  "required": ["run_id", "baseline_id", "baseline_hash", "snapshot_id", "state", "open_level_id", "chains", "levels", "gos", "verification_attempts", "open_topology_fault_refs", "last_event_id"],
   "properties": {
     "run_id": {"type": "string", "minLength": 1},
     "baseline_id": {"type": "string", "minLength": 1},
@@ -16,6 +16,19 @@
     "levels": {"type": "array", "items": {"type": "object"}},
     "gos": {"type": "array", "items": {"type": "object"}},
     "verification_attempts": {"type": "array", "items": {"type": "object"}},
+    "open_topology_fault_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["fault_record_id", "level_id", "record_state"],
+        "properties": {
+          "fault_record_id": {"type": "string", "minLength": 1},
+          "level_id": {"type": "string", "minLength": 1},
+          "record_state": {"enum": ["OPEN", "ROUTED"]}
+        }
+      }
+    },
     "barrier_evaluation": {"type": ["object", "null"]},
     "last_event_id": {"type": "string", "minLength": 1}
   }

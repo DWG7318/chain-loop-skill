@@ -33,8 +33,8 @@ def test_canonical_answers_pass() -> None:
     passed, results = module.grade(bank, key, submitted, [q["id"] for q in order])
     assert passed
     assert all(item["passed"] for item in results)
-    assert bank["version"] == "2.3.1"
-    assert key["version"] == "2.3.1"
+    assert bank["version"] == "2.4.0"
+    assert key["version"] == "2.4.0"
     joined = "\n".join(key["answers"].values())
     for marker in (
         "每条CHAIN最多一个ACTIVE GO",
@@ -42,6 +42,7 @@ def test_canonical_answers_pass() -> None:
         "formal resolution不能替代",
         "Optional GO",
         "LOOP_OWNER_ACCEPTED",
+        "CHAIN_LOCAL、CROSS_CHAIN_COMPOSITION、LEVEL_BARRIER",
     ):
         assert marker in joined
 

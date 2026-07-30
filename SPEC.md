@@ -1,4 +1,4 @@
-# Chain Loop Skill Standard Specification 2.3.1
+# Chain Loop Skill Standard Specification 2.4.0
 
 ## 1. Identity and boundary
 
@@ -133,7 +133,36 @@ Prior formal receipts may be consumed. Prior hidden reasoning, mutable state, or
 subjective conclusions may not be inherited. Candidate or Contract changes
 invalidate the attempt and require a new one.
 
-## 9. Level Barrier
+## 9. Topology fault localization
+
+Before changing a product candidate in response to a failure, CLK records one
+append-only `TOPOLOGY_FAULT_RECORD` bound to the Run, Baseline, Level, affected
+Chains, candidate digests, attempts, and Receipt/evidence hashes. `fault_class` is
+exactly one of `CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`.
+
+One fault series has at most one active hypothesis. Each record contains one
+statement, predicted observation, falsifier, and evidence set. A falsified record
+is sealed; a new record links it through reciprocal supersession. Guessing does not
+authorize a product change.
+
+A healthy same-Level Chain is a differential control only when a frozen interface,
+input, or environment basis proves comparability. Its D2 Receipt remains its own:
+it cannot accept the failed Chain or create a same-Level dependency.
+
+Changed Receipt identities propagate only along declared consumption edges. The
+resulting transitive set is the exact invalidation and reverification closure;
+unrelated Receipt identities remain valid. With unchanged D2 candidates, a
+cross-Chain composition probe is LEVEL-only. A pure `LEVEL_BARRIER` correction
+preserves all technical Receipts and recalculates only the Barrier.
+
+Local patching stops when evidence requires a changed outcome, scope, acceptance,
+ownership, dependency, Chain/Level plan, or topology. Route such evidence as
+`PLAN_DEFECT`; route a product-definition contradiction as
+`CALABASH_REVIEW_REQUIRED`; route partial unlock, cycles, dynamic Chains, or
+runtime path choice as `METHOD_BOUNDARY_EXCEEDED`. These are handoff boundaries,
+not new CLK roles or verification layers.
+
+## 10. Level Barrier
 
 Barrier PASS requires:
 
@@ -145,22 +174,24 @@ Barrier PASS requires:
 - the LEVEL Receipt is PASS when required;
 - the candidate set and evidence are synchronized;
 - no blocker invalidates the claim;
+- no unresolved topology fault references the current Level;
 - one atomic transition closes the current Level before the next opens.
 
 `formal resolution` never substitutes for D2 PASS while a GO remains Required in
 the Baseline. Governance may use an approved amendment to cancel, remove, defer, or
 supersede the GO; only the amended Baseline participates in Barrier calculation.
 
-## 10. Runtime state
+## 11. Runtime state
 
 The mutable runtime index records the current Run, open Level, per-Chain current and
 ACTIVE GO, GO/Level state, verification attempts, workspace/write scopes, latest
-Barrier evaluation, snapshot ID, and last append-only event ID. It is a pointer to
-history, not a replacement for immutable receipts or amendments.
+Barrier evaluation, open topology-fault references, snapshot ID, and last
+append-only event ID. It is a pointer to history, not a replacement for immutable
+Receipts, topology-fault records, or amendments.
 
 Level close, Barrier PASS, and next-Level open are recorded as an atomic transition.
 
-## 11. Receipt envelope
+## 12. Receipt envelope
 
 Every technical Receipt binds receipt type and ID, Run/Feature Slice, Baseline and
 Contract versions/hashes, attempt, immutable candidate digest, actor and sole
@@ -171,7 +202,7 @@ failure reason.
 Verification context detail is stored once in a frozen referenced artifact rather
 than duplicated in every Receipt.
 
-## 12. Amendments
+## 13. Amendments
 
 Frozen structure changes only through `CHAIN_AMENDMENT`, `LEVEL_AMENDMENT`, or
 `GO_AMENDMENT`. Every amendment binds identity, version, state, authority, time,
@@ -181,7 +212,7 @@ supersession links. Historical records are never rewritten.
 
 Product-definition changes return to LCCoding/Calabash governance.
 
-## 13. Owner Acceptance and security boundary
+## 14. Owner Acceptance and security boundary
 
 After D3 PASS, Supervisor immediately presents the current bounded Run candidate,
 entry point, concise steps, visible outcomes, limitations, and D3-covered invisible
@@ -200,7 +231,7 @@ one independent project security audit after all required Runs are accepted,
 coordinates engineering repair and auditor reverification, then performs
 Post-Security Owner Acceptance and Delivery governance.
 
-## 14. Completion
+## 15. Completion
 
 A CLK Run completes only when every Required GO and Level is verified, all required
 Barriers pass, D3 binds the final candidate and passes, evidence is synchronized,

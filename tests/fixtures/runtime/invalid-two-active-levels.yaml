@@ -15,4 +15,5 @@ gos:
   - {go_id: GO-02-B, chain_id: CHAIN-B, level_id: LEVEL-02, required: true, state: ACTIVE}
 verification_attempts: []
 barrier_evaluation: null
+open_topology_fault_refs: []
 last_event_id: EVENT-BAD-LEVELS

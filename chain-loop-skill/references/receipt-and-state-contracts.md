@@ -28,7 +28,15 @@ activation. It references append-only history through `snapshot_id` and
 
 It enforces one open Level, at most one ACTIVE GO per Chain, ACTIVE membership in
 the open Level, distinct verification attempt/context/workspace/evidence identities,
-and complete Barrier terminal states.
+complete Barrier terminal states, and no unresolved current-Level topology fault at
+Barrier PASS.
+
+## Topology fault records
+
+Topology fault records are append-only evidence and routing artifacts. The runtime
+index stores only unresolved record references. One fault series has at most one
+active hypothesis; falsified records are sealed and linked to successors. Receipt
+consumption edges determine the exact invalidated and preserved identities.
 
 ## Amendments
 

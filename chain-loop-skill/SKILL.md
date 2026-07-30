@@ -17,7 +17,7 @@ not canonical identities for new runs.
 - GitHub repository ID: `1298120736`.
 - Default branch: `main`.
 - Version source: repository `VERSION` file and matching `v*` tag.
-- Current specification version: `2.3.1`.
+- Current specification version: `2.4.0`.
 
 Before publishing, verify owner/name, repository ID, default branch, remote HEAD,
 tested installation, version file, and release tag. Never publish CLK content to
@@ -634,6 +634,14 @@ metadata. Such a repair must not alter the product candidate and must be fully
 recorded before validation restarts in a clean environment.
 
 Verification never repairs anything.
+## Topology Fault Localization
+
+Before rework, bind one `TOPOLOGY_FAULT_RECORD` and classify it exactly as
+`CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. Keep one active
+hypothesis per series; require comparability before using a healthy same-Level
+Chain, never substitute its D2 or create peer dependency, and derive the minimum
+reverification closure from Receipt consumption. Read
+[`references/topology-fault-localization.md`](references/topology-fault-localization.md).
 ## Detection System
 
 Each Checker maintains a `DETECTION_CAPABILITY_MANIFEST`; every GO owns a
@@ -978,15 +986,15 @@ fresh isolated Verification, neutral direct package, and no downstream Level wor
 from provisional output.
 ## Migration
 
-Active 1.8.3 MSLK and 2.0.0 CLK runs remain bound to their historical
-specifications. Preserve old receipts and read
-[`../MIGRATION-MSLK-TO-CLK.md`](../MIGRATION-MSLK-TO-CLK.md) plus
-[`../MIGRATION-2.0-TO-2.3.1.md`](../MIGRATION-2.0-TO-2.3.1.md) before migration.
+Active 1.8.3 MSLK, 2.0.0 CLK, and 2.3.1 CLK runs remain bound to their historical
+specifications. Preserve old receipts and read the matching migration guide:
+[`../MIGRATION-MSLK-TO-CLK.md`](../MIGRATION-MSLK-TO-CLK.md),
+[`../MIGRATION-2.0-TO-2.3.1.md`](../MIGRATION-2.0-TO-2.3.1.md), or
+[`../MIGRATION-2.3.1-TO-2.4.0.md`](../MIGRATION-2.3.1-TO-2.4.0.md).
 If unfinished work cannot retain fixed Chains, ordered Levels, and full barriers,
 record `METHOD_BOUNDARY_EXCEEDED` and use a separate GLK run.
 ## Version Note
 
-CLK 2.3.1 preserves mandatory Calabash and Chain/Level semantics while adding
-explicit cross-Chain concurrency, strong D0-D3 Receipt binding, conditional Level
-composition Verification, executable runtime/Barrier validation, and immediate
-Run-product Owner Acceptance. Dynamic graph behavior remains GLK-only.
+CLK 2.4.0 preserves all 2.3.1 semantics while adding bounded Chain/Level/Barrier
+fault localization, one-hypothesis supersession, comparable healthy-Chain controls,
+and Receipt-derived minimal reverification. Dynamic graph behavior remains GLK-only.

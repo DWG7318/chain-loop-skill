@@ -1,9 +1,17 @@
 # Changelog
 
-## Unreleased
+## 2.4.0
 
 - Clarified that CLK derives the `最大有效 Chain 数量` after Run/GO granularity
   freezes; resource limits affect ACTIVE concurrency, not the fixed roster.
+- Added append-only topology fault localization for `CHAIN_LOCAL`,
+  `CROSS_CHAIN_COMPOSITION`, and `LEVEL_BARRIER` without adding a role or D layer.
+- Enforced one active hypothesis per fault series, proven comparability for healthy
+  same-Level Chain controls, and no D2 substitution or peer dependency.
+- Added Receipt-consumption-derived minimal invalidation/reverification closure and
+  Barrier-only recalculation semantics.
+- Added explicit `PLAN_DEFECT`, `CALABASH_REVIEW_REQUIRED`, and
+  `METHOD_BOUNDARY_EXCEEDED` escalation boundaries plus runtime Barrier blocking.
 
 ## 2.3.1
 

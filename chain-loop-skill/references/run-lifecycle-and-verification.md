@@ -33,6 +33,10 @@ or conflicts, composition can change behavior, regression scope expanded, or a
 specific new risk requires it. Record the source layer, reason, scope difference,
 and result.
 
+For topology faults, the Receipt-consumption graph defines the exact invalidation
+and reverification closure. Unrelated healthy-Chain Receipts remain valid. A
+Barrier-only correction performs no D0-D3 repetition.
+
 ## Fresh attempts
 
 D2, LEVEL, and D3 each use a fresh visible attempt, context, workspace, evidence
@@ -52,3 +56,5 @@ following is true:
 
 When none applies, the Supervisor may pass the Barrier mechanically from complete
 D2 and terminal Optional evidence. The decision remains auditable.
+
+An unresolved `TOPOLOGY_FAULT_RECORD` for the current Level blocks that pass.

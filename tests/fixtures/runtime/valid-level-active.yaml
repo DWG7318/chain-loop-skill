@@ -18,4 +18,5 @@ verification_attempts:
   - {layer: LEVEL, scope_id: LEVEL-01, attempt_id: ATTEMPT-LEVEL-01, context_ref: CTX-LEVEL-01, workspace_id: WS-LEVEL-01, evidence_path: evidence/level-01/}
   - {layer: D3, scope_id: RUN-001, attempt_id: ATTEMPT-D3-001, context_ref: CTX-D3-001, workspace_id: WS-D3-001, evidence_path: evidence/d3-001/}
 barrier_evaluation: null
+open_topology_fault_refs: []
 last_event_id: EVENT-001

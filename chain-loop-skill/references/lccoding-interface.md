@@ -15,6 +15,11 @@ evidence index.
 `LOOP_OWNER_ACCEPTED` means only that the bounded Run product was accepted. CLK sets
 `project_security_closed: false` and `delivery_authorized: false`.
 
+When CLK cannot preserve its frozen topology or product definition, it may return a
+frozen fault handoff containing classification, evidence, invalidation closure, and
+one route. LCCoding owns the surrounding lifecycle; Calabash owns product-definition
+review. The handoff does not authorize CLK to perform either function.
+
 ## Outer gates
 
 After all required Runs are accepted, LCCoding invokes an independent centralized

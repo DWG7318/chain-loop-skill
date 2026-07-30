@@ -24,4 +24,5 @@ barrier_evaluation:
   level_verification_receipt_ref: null
   candidate_set_hash: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   atomic_transition_id: TRANSITION-BAD-REQUIRED
+open_topology_fault_refs: []
 last_event_id: EVENT-BAD-REQUIRED

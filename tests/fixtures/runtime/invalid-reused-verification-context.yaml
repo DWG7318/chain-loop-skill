@@ -15,4 +15,5 @@ verification_attempts:
   - {layer: LEVEL, scope_id: LEVEL-01, attempt_id: ATTEMPT-SHARED, context_ref: CTX-SHARED, workspace_id: WS-SHARED, evidence_path: evidence/shared/}
   - {layer: D3, scope_id: RUN-001, attempt_id: ATTEMPT-SHARED, context_ref: CTX-SHARED, workspace_id: WS-SHARED, evidence_path: evidence/shared/}
 barrier_evaluation: null
+open_topology_fault_refs: []
 last_event_id: EVENT-BAD-CONTEXT

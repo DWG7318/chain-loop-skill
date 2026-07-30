@@ -94,10 +94,21 @@ def validate_runtime(data: Any) -> None:
             require(isinstance(attempt.get(field), str) and bool(attempt[field]),
                     f"verification attempt {field} must be non-empty")
 
+    fault_refs = data["open_topology_fault_refs"]
+    unique([fault.get("fault_record_id") for fault in fault_refs],
+           "open topology fault record IDs must be unique")
+    for fault in fault_refs:
+        require(fault.get("level_id") in level_ids,
+                "open topology fault must reference a known Level")
+
     barrier = data.get("barrier_evaluation")
     if barrier and barrier.get("result") == "LEVEL_BARRIER_PASSED":
         require(barrier.get("level_id") == data["open_level_id"],
                 "Barrier must close the currently open Level")
+        require(
+            not any(fault.get("level_id") == barrier.get("level_id") for fault in fault_refs),
+            "unresolved topology fault blocks Barrier PASS",
+        )
         required_assignments = barrier.get("required_assignments", [])
         optional_assignments = barrier.get("optional_assignments", [])
         expected_required = {
