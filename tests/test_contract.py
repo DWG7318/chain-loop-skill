@@ -5,6 +5,13 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+IGNORED_REPOSITORY_PARTS = {
+    ".git",
+    ".codex",
+    ".worktrees",
+    ".pytest_cache",
+    "__pycache__",
+}
 SKILL = (ROOT / "SKILL.md").read_text(encoding="utf-8")
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 PROMPT = (ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8")
@@ -21,6 +28,17 @@ VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 ALL_TEXT = "\n".join((SKILL, README, PROMPT, DETECTION_REFERENCE))
 NORMALIZED_SKILL = " ".join(SKILL.split())
 NORMALIZED_DETECTION = " ".join((SKILL + "\n" + DETECTION_REFERENCE).split())
+
+
+def governed_markdown_paths():
+    return (
+        path
+        for path in ROOT.rglob("*.md")
+        if not any(
+            part in IGNORED_REPOSITORY_PARTS
+            for part in path.relative_to(ROOT).parts
+        )
+    )
 
 
 class MultiSmallLoopContractTest(unittest.TestCase):
@@ -64,7 +82,7 @@ class MultiSmallLoopContractTest(unittest.TestCase):
 
         reference_files = set((ROOT / "references").glob("*.md"))
         self.assertTrue(reference_files.issubset(visited | set(queue)))
-        for path in ROOT.rglob("*.md"):
+        for path in governed_markdown_paths():
             self.assertLessEqual(
                 len(path.read_text(encoding="utf-8").splitlines()), 1000, path
             )
@@ -366,7 +384,7 @@ class MultiSmallLoopContractTest(unittest.TestCase):
             with self.subTest(rule=rule):
                 self.assertIn(rule, NORMALIZED_SKILL)
         self.assertNotIn("999 lines", SKILL)
-        for path in ROOT.rglob("*.md"):
+        for path in governed_markdown_paths():
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assertLessEqual(len(path.read_text(encoding="utf-8").splitlines()), 1000)
 

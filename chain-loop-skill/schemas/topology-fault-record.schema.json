@@ -107,7 +107,7 @@
       ],
       "properties": {
         "receipt_catalog": {
-          "type": "array",
+          "type": "array", "minItems": 1,
           "items": {
             "type": "object", "additionalProperties": false,
             "required": ["receipt_id", "receipt_hash", "layer", "scope_id"],
@@ -184,7 +184,12 @@
     },
     {
       "if": {"properties": {"record_state": {"const": "OPEN"}}},
-      "then": {"properties": {"hypothesis": {"properties": {"status": {"const": "ACTIVE"}}}}}
+      "then": {
+        "properties": {
+          "hypothesis": {"properties": {"status": {"const": "ACTIVE"}}},
+          "superseded_by": {"type": "null"}
+        }
+      }
     },
     {
       "if": {"properties": {"record_state": {"const": "FALSIFIED"}}},
@@ -192,6 +197,24 @@
         "properties": {
           "hypothesis": {"properties": {"status": {"const": "FALSIFIED"}}},
           "superseded_by": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"record_state": {"const": "SUPERSEDED"}}},
+      "then": {
+        "properties": {
+          "hypothesis": {"properties": {"status": {"const": "FALSIFIED"}}},
+          "superseded_by": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"record_state": {"enum": ["ROUTED", "RESOLVED"]}}},
+      "then": {
+        "properties": {
+          "hypothesis": {"properties": {"status": {"const": "CONFIRMED"}}},
+          "superseded_by": {"type": "null"}
         }
       }
     }

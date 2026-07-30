@@ -11,6 +11,11 @@
     "chain-loop-skill/SKILL.md"
   ],
   "verification_layers": ["D0", "D1", "D2", "LEVEL", "D3"],
+  "topology_fault_classes": [
+    "CHAIN_LOCAL",
+    "CROSS_CHAIN_COMPOSITION",
+    "LEVEL_BARRIER"
+  ],
   "lccoding_interface": {
     "input": "RUN_CONTRACT",
     "output": "LOOP_OWNER_ACCEPTED",

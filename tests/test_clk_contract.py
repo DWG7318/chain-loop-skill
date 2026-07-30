@@ -112,6 +112,23 @@ def test_topology_fault_localization_is_clk_native_and_bounded() -> None:
     assert policy["healthy_chain_d2_substitution_allowed"] is False
     assert policy["healthy_chain_same_level_dependency_allowed"] is False
     assert policy["minimal_closure_uses_receipt_consumption"] is True
+    assert policy["receipt_catalog_required"] is True
+    assert policy["receipt_partition"] == "CATALOG_EQUALS_INVALIDATED_UNION_PRESERVED"
+    assert policy["hypothesis_evidence_must_be_content_hash_bound"] is True
+    assert policy["source_attempt_scope_bound_to_fault"] is True
+    assert policy["healthy_control_must_match_preserved_catalog_d2"] is True
+    assert policy["state_hypothesis_status"] == {
+        "OPEN": "ACTIVE",
+        "FALSIFIED": "FALSIFIED",
+        "SUPERSEDED": "FALSIFIED",
+        "ROUTED": "CONFIRMED",
+        "RESOLVED": "CONFIRMED",
+    }
+    assert policy["native_routes"] == {
+        "CHAIN_LOCAL": ["CELL_REWORK", "GO_REWORK_REQUIRED"],
+        "CROSS_CHAIN_COMPOSITION": ["LEVEL_REVERIFICATION"],
+        "LEVEL_BARRIER": ["BARRIER_RECALCULATION"],
+    }
     assert policy["barrier_only_reverification_layers"] == ["BARRIER"]
     assert set(policy["escalation_routes"]) == {
         "PLAN_DEFECT",
@@ -120,6 +137,8 @@ def test_topology_fault_localization_is_clk_native_and_bounded() -> None:
     }
     assert c["role_types"] == ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"]
     assert c["run_verification_layers"] == ["D0", "D1", "D2", "LEVEL", "D3"]
+    manifest = json.loads((ROOT / "MANIFEST.json").read_text(encoding="utf-8"))
+    assert manifest["topology_fault_classes"] == policy["fault_classes"]
     answers = json.loads(
         (SKILL / "evals" / "clk-readiness-answer-key.json").read_text(encoding="utf-8")
     )

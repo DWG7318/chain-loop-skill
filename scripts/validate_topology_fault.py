@@ -15,6 +15,23 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "chain-loop-skill" / "schemas" / "topology-fault-record.schema.json"
+STATE_HYPOTHESIS_STATUS = {
+    "OPEN": "ACTIVE",
+    "FALSIFIED": "FALSIFIED",
+    "SUPERSEDED": "FALSIFIED",
+    "ROUTED": "CONFIRMED",
+    "RESOLVED": "CONFIRMED",
+}
+NATIVE_ROUTES = {
+    "CHAIN_LOCAL": {"CELL_REWORK", "GO_REWORK_REQUIRED"},
+    "CROSS_CHAIN_COMPOSITION": {"LEVEL_REVERIFICATION"},
+    "LEVEL_BARRIER": {"BARRIER_RECALCULATION"},
+}
+ESCALATION_ROUTES = {
+    "PLAN_DEFECT",
+    "CALABASH_REVIEW_REQUIRED",
+    "METHOD_BOUNDARY_EXCEEDED",
+}
 
 
 class TopologyFaultValidationError(ValueError):
@@ -46,18 +63,60 @@ def downstream_closure(changed: set[str], edges: list[dict[str, Any]]) -> set[st
             return closure
 
 
+def cell_scope_matches_go(scope_id: str, go_id: str) -> bool:
+    return go_id.startswith("GO-") and scope_id.startswith(f"CELL-{go_id[3:]}.")
+
+
+def source_scope_matches(record: dict[str, Any], scope_id: str) -> bool:
+    layer = record["source_layer"]
+    go_ids = {candidate["go_id"] for candidate in record["candidate_refs"]}
+    if layer in {"D0", "D1"}:
+        return any(cell_scope_matches_go(scope_id, go_id) for go_id in go_ids)
+    if layer == "D2":
+        return scope_id in go_ids
+    if layer in {"LEVEL", "BARRIER"}:
+        return scope_id == record["level_id"]
+    return layer == "D3" and scope_id == record["run_id"]
+
+
+def canonical_go_id(level_id: str, chain_id: str) -> str | None:
+    if not level_id.startswith("LEVEL-") or not chain_id.startswith("CHAIN-"):
+        return None
+    return f"GO-{level_id[6:]}-{chain_id[6:]}"
+
+
 def validate_record(record: dict[str, Any]) -> None:
     validate_schema(record)
     affected = set(record["affected_chain_ids"])
     candidate_chains = {item["chain_id"] for item in record["candidate_refs"]}
+    candidate_go_ids = {item["go_id"] for item in record["candidate_refs"]}
     require(candidate_chains == affected, "candidate_refs must cover exactly the affected Chains")
+    expected_status = STATE_HYPOTHESIS_STATUS[record["record_state"]]
     require(
-        any(attempt["layer"] == record["source_layer"] for attempt in record["attempt_refs"]),
+        record["hypothesis"]["status"] == expected_status,
+        f"record_state {record['record_state']} requires hypothesis.status {expected_status}",
+    )
+    source_attempts = [
+        attempt for attempt in record["attempt_refs"]
+        if attempt["layer"] == record["source_layer"]
+    ]
+    require(
+        bool(source_attempts),
         "attempt_refs must bind the source_layer",
+    )
+    require(
+        all(source_scope_matches(record, attempt["scope_id"]) for attempt in source_attempts),
+        "source attempt scope must match the affected CELL/GO, Level, or Run",
+    )
+    content_hashed_evidence = {item["evidence_path"] for item in record["evidence_refs"]}
+    require(
+        set(record["hypothesis"]["evidence_refs"]) <= content_hashed_evidence,
+        "hypothesis evidence must be content-hash bound by top-level evidence_refs",
     )
 
     closure = record["closure"]
     catalog_items = closure["receipt_catalog"]
+    require(bool(catalog_items), "receipt_catalog must be non-empty for every fault_class")
     catalog_ids = [item["receipt_id"] for item in catalog_items]
     require(len(catalog_ids) == len(set(catalog_ids)), "receipt_catalog IDs must be unique")
     catalog = {item["receipt_id"]: item for item in catalog_items}
@@ -79,6 +138,41 @@ def validate_record(record: dict[str, Any]) -> None:
     require(invalidated <= set(catalog), "invalidated receipts must exist in receipt_catalog")
     require(preserved <= set(catalog), "preserved receipts must exist in receipt_catalog")
     require(not invalidated & preserved, "a Receipt cannot be both invalidated and preserved")
+    require(
+        preserved == set(catalog) - invalidated,
+        "preserved receipts must equal catalog minus invalidated receipts",
+    )
+
+    if record["fault_class"] == "CHAIN_LOCAL":
+        require(bool(changed), "CHAIN_LOCAL requires at least one changed Receipt")
+        require(bool(invalidated), "CHAIN_LOCAL requires a non-empty invalidation closure")
+        require(
+            all(
+                catalog[receipt_id]["scope_id"] in candidate_go_ids
+                or any(
+                    cell_scope_matches_go(catalog[receipt_id]["scope_id"], go_id)
+                    for go_id in candidate_go_ids
+                )
+                for receipt_id in changed
+            ),
+            "CHAIN_LOCAL changed Receipts must belong to an affected candidate scope",
+        )
+    elif record["fault_class"] == "CROSS_CHAIN_COMPOSITION":
+        d2_scopes = {
+            item["scope_id"] for item in catalog_items if item["layer"] == "D2"
+        }
+        require(
+            candidate_go_ids <= d2_scopes,
+            "CROSS_CHAIN_COMPOSITION requires a D2 Receipt for every affected GO",
+        )
+    elif record["fault_class"] == "LEVEL_BARRIER":
+        require(
+            closure["barrier_recalculation_only"] is True
+            and not changed
+            and not invalidated
+            and preserved == set(catalog),
+            "LEVEL_BARRIER must preserve all technical Receipts and recalculate only BARRIER",
+        )
 
     actual_reverification = {
         (item["layer"], item["scope_id"]) for item in closure["reverification"]
@@ -109,17 +203,44 @@ def validate_record(record: dict[str, Any]) -> None:
         require(not changed and not invalidated, "Barrier-only correction cannot invalidate product Receipts")
         require(preserved == set(catalog), "Barrier-only correction must preserve every catalogued Receipt")
 
-    for control in record["healthy_chain_controls"]:
+    controls = record["healthy_chain_controls"]
+    require(
+        len({control["chain_id"] for control in controls}) == len(controls),
+        "healthy control Chain IDs must be unique",
+    )
+    require(
+        len({control["d2_receipt_id"] for control in controls}) == len(controls),
+        "healthy control D2 Receipt IDs must be unique",
+    )
+    for control in controls:
         require(control["level_id"] == record["level_id"], "healthy control must be in the same Level")
         require(control["chain_id"] not in affected, "affected Chain cannot be its own healthy control")
+        receipt_id = control["d2_receipt_id"]
         require(
-            control["d2_receipt_id"] in preserved,
+            receipt_id in catalog and receipt_id in preserved,
             "healthy control D2 must be preserved, never substituted or invalidated",
+        )
+        catalog_receipt = catalog[receipt_id]
+        require(catalog_receipt["layer"] == "D2", "healthy control Receipt must have layer D2")
+        require(
+            control["d2_receipt_hash"] == catalog_receipt["receipt_hash"],
+            "healthy control D2 hash must match receipt_catalog",
+        )
+        expected_scope = canonical_go_id(control["level_id"], control["chain_id"])
+        require(
+            expected_scope is not None and catalog_receipt["scope_id"] == expected_scope,
+            "healthy control D2 scope must match its same-Level Chain GO",
         )
 
     trigger = record["escalation_trigger"]
-    if trigger is not None:
-        require(record["route"] == trigger, "escalation trigger and route must match")
+    route = record["route"]
+    if route in ESCALATION_ROUTES or trigger is not None:
+        require(trigger == route, "escalation trigger and route must match")
+    else:
+        require(
+            route in NATIVE_ROUTES[record["fault_class"]],
+            "route is invalid for fault_class",
+        )
 
 
 def validate_records(records: list[dict[str, Any]]) -> None:
@@ -138,13 +259,20 @@ def validate_records(records: list[dict[str, Any]]) -> None:
         next_id = record["superseded_by"]
         require(previous_id != record["fault_record_id"], "record cannot supersede itself")
         require(next_id != record["fault_record_id"], "record cannot be superseded by itself")
-        if previous_id in by_id:
+        if previous_id is not None:
+            require(previous_id in by_id, "supersedes must reference a supplied record")
             previous = by_id[previous_id]
             require(previous["fault_series_id"] == record["fault_series_id"], "supersession must stay in one fault series")
             require(previous["record_state"] in {"FALSIFIED", "SUPERSEDED"}, "superseded hypothesis must be sealed")
             require(previous["superseded_by"] == record["fault_record_id"], "supersession links must be reciprocal")
-        if next_id in by_id:
-            require(by_id[next_id]["supersedes"] == record["fault_record_id"], "supersession links must be reciprocal")
+        if record["record_state"] in {"FALSIFIED", "SUPERSEDED"}:
+            require(next_id in by_id, "sealed record superseded_by must reference a supplied successor")
+        else:
+            require(next_id is None, "only a sealed record may declare superseded_by")
+        if next_id is not None:
+            successor = by_id[next_id]
+            require(successor["fault_series_id"] == record["fault_series_id"], "supersession must stay in one fault series")
+            require(successor["supersedes"] == record["fault_record_id"], "supersession links must be reciprocal")
     require(
         all(count <= 1 for count in active_by_series.values()),
         "at most one active hypothesis is allowed per fault series",

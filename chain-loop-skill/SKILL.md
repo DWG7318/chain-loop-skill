@@ -637,10 +637,10 @@ Verification never repairs anything.
 ## Topology Fault Localization
 
 Before rework, bind one `TOPOLOGY_FAULT_RECORD` and classify it exactly as
-`CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. Keep one active
-hypothesis per series; require comparability before using a healthy same-Level
-Chain, never substitute its D2 or create peer dependency, and derive the minimum
-reverification closure from Receipt consumption. Read
+`CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. Keep one state-valid
+hypothesis per series; bind its evidence and source attempt to the hashed fault
+scope, partition each Receipt as invalidated/preserved, and match healthy control D2 ID/hash/scope. Use only a
+class-native route or declared escalation; derive exact consumption closure. Read
 [`references/topology-fault-localization.md`](references/topology-fault-localization.md).
 ## Detection System
 

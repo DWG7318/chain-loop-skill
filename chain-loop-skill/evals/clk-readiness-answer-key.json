@@ -17,7 +17,7 @@
     "Q14": "Worker；Checker和Verification不得修改产品候选后验收自己的修改。",
     "Q15": "对应CHAIN的Checker。",
     "Q16": "该GO的全新独立Verification attempt。",
-    "Q17": "修改前先用TOPOLOGY_FAULT_RECORD把故障唯一分类为CHAIN_LOCAL、CROSS_CHAIN_COMPOSITION、LEVEL_BARRIER；每个fault series只允许一个ACTIVE hypothesis，证伪后封存并由新记录supersedes；健康同LEVEL CHAIN只有证明可比时才能作定位对照，其D2不能替代验收或形成依赖；按Receipt消费边计算最小失效与重验闭包，Barrier-only只重算Barrier；需要改变计划时PLAN_DEFECT，推翻产品定义时CALABASH_REVIEW_REQUIRED，需要动态路由时METHOD_BOUNDARY_EXCEEDED。",
+    "Q17": "修改前先用TOPOLOGY_FAULT_RECORD把故障唯一分类为CHAIN_LOCAL、CROSS_CHAIN_COMPOSITION、LEVEL_BARRIER；每个fault series只允许一个状态合法的ACTIVE hypothesis，证伪后封存并由新记录reciprocal supersedes；hypothesis evidence必须有顶层content hash，source attempt必须绑定实际D0/D1 CELL、D2 GO、LEVEL/BARRIER Level或D3 Run；Receipt catalog非空且完整分割为invalidated/preserved并按消费边计算最小闭包；健康同LEVEL CHAIN须证明可比且D2 ID/hash/scope与preserved catalog一致，不能替代验收或形成依赖；native route必须匹配fault class，PLAN_DEFECT、CALABASH_REVIEW_REQUIRED、METHOD_BOUNDARY_EXCEEDED仅作停止局部补丁出口。",
     "Q18": "D0、D1、D2、条件式LEVEL、D3依次证明Worker本地行为、CELL合同、GO组合、新增跨CHAIN LEVEL主张和最终Run组合；高层消费低层Receipt，不盲目重跑。",
     "Q19": "仍在Baseline中的Required GO必须D2 PASS，formal resolution不能替代；Optional GO必须D2 PASS或进入CANCELLED、DEFERRED_BY_AMENDMENT、SUPERSEDED等非ACTIVE终态；所有条件满足后才可完整通过Barrier，禁止部分开启下一LEVEL。",
     "Q20": "不允许；跨GO CELL依赖是GO_BOUNDARY_VIOLATION。",

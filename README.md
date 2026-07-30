@@ -89,9 +89,12 @@ Before rework, CLK classifies one evidence-bound `TOPOLOGY_FAULT_RECORD` as
 `CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. One fault series has
 one active hypothesis; a falsified hypothesis is sealed and superseded. Comparable
 same-Level healthy Chains may provide differential evidence, but never acceptance
-substitution or peer dependency. Receipt-consumption edges determine the exact
-invalidation and reverification closure; Barrier-only correction recalculates only
-the Barrier. An unresolved fault for the current Level blocks Barrier PASS.
+substitution or peer dependency, and their preserved D2 ID/hash/scope must match.
+The nonempty Receipt catalog partitions exactly into invalidated and preserved
+sets; hashed hypothesis evidence, source attempt scope, record state, and native
+route must agree. Receipt-consumption edges determine the exact reverification
+closure; Barrier-only correction preserves all technical Receipts. An unresolved
+fault for the current Level blocks Barrier PASS.
 
 ## Owner acceptance and outer boundary
 

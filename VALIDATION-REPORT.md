@@ -27,11 +27,20 @@ PASS: CLK runtime state
 python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-chain-local.yaml
 PASS: CLK topology fault record
 
+python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-cross-chain.yaml
+PASS: CLK topology fault record
+
+python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-level-barrier.yaml
+PASS: CLK topology fault record
+
 python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-receipt.yaml chain-loop-skill/templates/d1-checker-receipt.yaml chain-loop-skill/templates/d2-go-verification-receipt.yaml
 PASS: CLK Receipt chain
 
 python -m pytest -q
-88 passed, 208 subtests passed
+103 passed, 177 subtests passed
+
+python -O -m pytest tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions -q
+8 passed; the expected pytest assertion-rewrite warning was emitted under -O
 ```
 
 ## Negative evidence
@@ -50,9 +59,16 @@ The candidate rejects all dedicated invalid fixtures and mutations:
 - reused Verification attempt/context/workspace/evidence identity;
 - topology fault class outside the three-value CLK enum;
 - more than one active hypothesis in one fault series;
-- unproven healthy-Chain comparability or D2 substitution/dependency;
-- non-minimal Receipt-consumption invalidation/reverification closure;
-- product Receipt invalidation during a Barrier-only correction;
+- empty Receipt catalog or incomplete invalidated/preserved partition;
+- unproven healthy-Chain comparability, D2 substitution/dependency, or catalog
+  ID/hash/layer/scope mismatch;
+- hypothesis evidence without a top-level content hash;
+- source attempts outside the actual D0/D1 CELL, D2 GO, LEVEL/BARRIER Level, or
+  D3 Run fault scope;
+- illegal record-state/hypothesis-status or missing reciprocal successor links;
+- fault-class/native-route contradiction;
+- non-minimal Receipt-consumption invalidation/reverification closure, including
+  product Receipt invalidation during a Barrier-only correction;
 - unresolved current-Level topology fault at Barrier PASS;
 - consumed Receipt hash mismatch;
 - immutable candidate mismatch between consumed Receipts;

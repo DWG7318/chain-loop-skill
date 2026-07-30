@@ -18,9 +18,14 @@ Before product rework, freeze one append-only `TOPOLOGY_FAULT_RECORD` binding:
 - immutable candidate and attempt references plus Receipt and evidence hashes;
 - exactly one fault class and one hypothesis;
 - any comparable healthy-Chain control;
-- Receipt catalog, consumption edges, identity changes, exact invalidation set,
+- a nonempty Receipt catalog, consumption edges, identity changes, exact invalidation set,
   preserved Receipts, and reverification scopes;
 - route, escalation trigger, issuer, and time.
+
+Every hypothesis evidence path is a subset of the record's content-hashed evidence
+paths. Its source attempt has the actual fault scope: D0/D1 use the affected GO's
+CELL scope, D2 uses the affected GO, LEVEL/BARRIER use the Level, and D3 uses the
+Run.
 
 The mutable runtime index contains only references to unresolved records. History
 remains append-only.
@@ -29,14 +34,17 @@ remains append-only.
 
 | Class | Evidence boundary | Native route |
 |---|---|---|
-| `CHAIN_LOCAL` | One Chain candidate or its D0/D1/D2 contract | Existing Checker/Worker rework |
-| `CROSS_CHAIN_COMPOSITION` | Frozen GO outputs pass individually but a new LEVEL claim fails | Fresh LEVEL evidence or `PLAN_DEFECT` |
-| `LEVEL_BARRIER` | Candidate set, terminal-state map, amendment binding, or atomic transition is inconsistent | Barrier recalculation or `PLAN_DEFECT` |
+| `CHAIN_LOCAL` | One Chain candidate or its D0/D1/D2 contract | `CELL_REWORK` or `GO_REWORK_REQUIRED` |
+| `CROSS_CHAIN_COMPOSITION` | Frozen GO outputs pass individually but a new LEVEL claim fails | `LEVEL_REVERIFICATION` |
+| `LEVEL_BARRIER` | Candidate set, terminal-state map, amendment binding, or atomic transition is inconsistent | `BARRIER_RECALCULATION` |
 
 Do not classify by convenience. If evidence changes the product definition, route
 `CALABASH_REVIEW_REQUIRED`. If a solution needs partial unlock, a new Chain, a
 cycle, conditional routing, or runtime path choice, route
 `METHOD_BOUNDARY_EXCEEDED` to GLK.
+
+The native route must match the fault class. Only the three declared escalation
+routes may replace a native route, and their trigger must equal that route.
 
 ## One-hypothesis rule
 
@@ -45,6 +53,11 @@ observation and a falsifier before mutation. A falsified hypothesis becomes an
 immutable `FALSIFIED` record. Its successor uses a new record and reciprocal
 `supersedes` / `superseded_by` links.
 
+State/status pairs are fixed: `OPEN/ACTIVE`, `FALSIFIED/FALSIFIED`,
+`SUPERSEDED/FALSIFIED`, and `ROUTED/CONFIRMED` or `RESOLVED/CONFIRMED`.
+`FALSIFIED` and `SUPERSEDED` require a valid reciprocal successor link; all other
+states have no `superseded_by` link.
+
 Never stack another speculative patch on the same active hypothesis. A diagnostic
 probe may add evidence but cannot issue a product verdict.
 
@@ -52,6 +65,9 @@ probe may add evidence but cannot issue a product verdict.
 
 A healthy Chain is a control only when a frozen input, interface, or environment
 basis proves comparability. Record that basis and its D2 Receipt identity.
+
+That Receipt ID must exist in the preserved catalog as D2, with exactly the same
+hash and the canonical same-Level GO scope for the control Chain.
 
 The control remains read-only evidence. Its D2 cannot substitute for the affected
 Chain, cannot be invalidated merely for comparison, and cannot become a same-Level
@@ -63,11 +79,16 @@ Compute closure from declared Receipt consumption edges:
 
 1. Seed the set with Receipts invalidated by changed identities.
 2. Add only Receipts that directly or transitively consume an invalidated Receipt.
-3. Preserve every catalogued Receipt outside that transitive set.
+3. Preserve every catalogued Receipt outside that transitive set; the preserved
+   set is exactly the catalog minus the invalidated set.
 4. Reverify exactly the layer and scope of each invalidated Receipt.
 
+`CHAIN_LOCAL` has a nonempty changed identity and invalidation seed bound to an
+affected GO/CELL. `CROSS_CHAIN_COMPOSITION` catalogs the affected GOs' D2 Receipts.
+An empty catalog or empty product closure cannot bypass these rules.
+
 When D2 candidates are unchanged and the fault is cross-Chain composition, gather
-only fresh LEVEL evidence. For a pure `LEVEL_BARRIER` correction, change no product
+only fresh LEVEL evidence. Every `LEVEL_BARRIER` correction changes no product
 identity, invalidate no technical Receipt, preserve the full catalog, and
 recalculate only the Barrier.
 

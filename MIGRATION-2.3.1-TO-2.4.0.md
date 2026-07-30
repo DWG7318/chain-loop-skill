@@ -19,8 +19,13 @@ Receipts, verdicts, or runtime history to look like 2.4.0 evidence.
   `LEVEL_BARRIER` before rework;
 - keep one active hypothesis per fault series and seal falsified records through
   reciprocal supersession;
-- prove comparability before using a healthy same-Level Chain as a control;
-- compute exact invalidation and reverification from Receipt consumption;
+- bind hypothesis evidence by content hash and the source attempt to its actual
+  D0/D1 CELL, D2 GO, LEVEL/BARRIER Level, or D3 Run scope;
+- prove comparability before using a healthy same-Level Chain as a control and
+  match its preserved catalog D2 ID, hash, and same-Level GO scope;
+- require a nonempty Receipt catalog, exact invalidated/preserved partition, and
+  exact invalidation and reverification from Receipt consumption;
+- enforce legal record-state/hypothesis-status pairs and class-native routes;
 - block Barrier PASS while an unresolved current-Level fault exists;
 - stop local patching at `PLAN_DEFECT`, `CALABASH_REVIEW_REQUIRED`, or
   `METHOD_BOUNDARY_EXCEEDED` boundaries.

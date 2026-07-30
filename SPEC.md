@@ -145,15 +145,26 @@ statement, predicted observation, falsifier, and evidence set. A falsified recor
 is sealed; a new record links it through reciprocal supersession. Guessing does not
 authorize a product change.
 
+The Receipt catalog is nonempty and partitions exactly into invalidated and
+preserved sets. Hypothesis evidence is a subset of the record's content-hashed
+evidence, and each source attempt is bound to the actual D0/D1 CELL, D2 GO,
+LEVEL/BARRIER Level, or D3 Run scope. Record state and hypothesis status use only
+the declared legal pairs; sealed records require valid reciprocal successor links.
+
 A healthy same-Level Chain is a differential control only when a frozen interface,
 input, or environment basis proves comparability. Its D2 Receipt remains its own:
-it cannot accept the failed Chain or create a same-Level dependency.
+its preserved catalog ID, hash, D2 layer, and same-Level GO scope must match, and it
+cannot accept the failed Chain or create a same-Level dependency.
 
 Changed Receipt identities propagate only along declared consumption edges. The
 resulting transitive set is the exact invalidation and reverification closure;
 unrelated Receipt identities remain valid. With unchanged D2 candidates, a
 cross-Chain composition probe is LEVEL-only. A pure `LEVEL_BARRIER` correction
 preserves all technical Receipts and recalculates only the Barrier.
+
+Native routes are class-bound: `CHAIN_LOCAL` uses `CELL_REWORK` or
+`GO_REWORK_REQUIRED`, `CROSS_CHAIN_COMPOSITION` uses `LEVEL_REVERIFICATION`, and
+`LEVEL_BARRIER` uses `BARRIER_RECALCULATION`.
 
 Local patching stops when evidence requires a changed outcome, scope, acceptance,
 ownership, dependency, Chain/Level plan, or topology. Route such evidence as

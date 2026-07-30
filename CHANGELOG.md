@@ -10,6 +10,8 @@
   same-Level Chain controls, and no D2 substitution or peer dependency.
 - Added Receipt-consumption-derived minimal invalidation/reverification closure and
   Barrier-only recalculation semantics.
+- Hardened cross-field binding for nonempty Receipt partitions, hashed hypothesis
+  evidence, source attempt scope, healthy-control D2 identity, state, and route.
 - Added explicit `PLAN_DEFECT`, `CALABASH_REVIEW_REQUIRED`, and
   `METHOD_BOUNDARY_EXCEEDED` escalation boundaries plus runtime Barrier blocking.
 

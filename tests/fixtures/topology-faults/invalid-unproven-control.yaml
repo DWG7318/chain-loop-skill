@@ -33,11 +33,13 @@ healthy_chain_controls:
     acceptance_substitute: false
     creates_same_level_dependency: false
 closure:
-  receipt_catalog: []
+  receipt_catalog:
+    - {receipt_id: RECEIPT-D2-01-A, receipt_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, layer: D2, scope_id: GO-01-A}
+    - {receipt_id: RECEIPT-D2-01-B, receipt_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, layer: D2, scope_id: GO-01-B}
   consumption_edges: []
-  changed_receipt_ids: []
-  invalidated_receipt_ids: []
-  preserved_receipt_ids: []
+  changed_receipt_ids: [RECEIPT-D2-01-A]
+  invalidated_receipt_ids: [RECEIPT-D2-01-A]
+  preserved_receipt_ids: [RECEIPT-D2-01-B]
   reverification:
     - {layer: D2, scope_id: GO-01-A}
   barrier_recalculation_only: false

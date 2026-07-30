@@ -69,6 +69,30 @@
     "healthy_chain_d2_substitution_allowed": false,
     "healthy_chain_same_level_dependency_allowed": false,
     "minimal_closure_uses_receipt_consumption": true,
+    "receipt_catalog_required": true,
+    "receipt_partition": "CATALOG_EQUALS_INVALIDATED_UNION_PRESERVED",
+    "hypothesis_evidence_must_be_content_hash_bound": true,
+    "source_attempt_scope_bound_to_fault": true,
+    "healthy_control_must_match_preserved_catalog_d2": true,
+    "state_hypothesis_status": {
+      "OPEN": "ACTIVE",
+      "FALSIFIED": "FALSIFIED",
+      "SUPERSEDED": "FALSIFIED",
+      "ROUTED": "CONFIRMED",
+      "RESOLVED": "CONFIRMED"
+    },
+    "native_routes": {
+      "CHAIN_LOCAL": [
+        "CELL_REWORK",
+        "GO_REWORK_REQUIRED"
+      ],
+      "CROSS_CHAIN_COMPOSITION": [
+        "LEVEL_REVERIFICATION"
+      ],
+      "LEVEL_BARRIER": [
+        "BARRIER_RECALCULATION"
+      ]
+    },
     "barrier_only_reverification_layers": [
       "BARRIER"
     ],
