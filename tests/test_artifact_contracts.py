@@ -43,6 +43,7 @@ def test_contract_templates_validate_against_schemas() -> None:
     validate("chain-level-plan.schema.json", load_yaml("chain-level-plan.yaml"))
     validate("runtime-state-index.schema.json", load_yaml("runtime-state-index.yaml"))
     validate("topology-fault-record.schema.json", load_yaml("topology-fault-record.yaml"))
+    validate("run-control-trace.schema.json", load_yaml("run-control-trace.yaml"))
 
 
 def test_receipts_use_one_strong_envelope() -> None:

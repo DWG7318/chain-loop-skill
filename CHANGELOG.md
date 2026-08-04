@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.5.0
+
+- Added the Worker-only T+0/T+2/T+4/T+6 wake ladder for its frozen Checker,
+  scoped delivery messages, `WAKE_ACK`, temporary heartbeat, and `PENDING_WAKE`.
+- Prohibited Supervisor `wait_threads` waiting and added exactly one mechanical
+  Luna+xhigh Run patrol with deterministic terminal cleanup.
+- Distinguished GO/CELL/Round subtasks, visible peer tasks, and forbidden spawned,
+  delegated, hidden, or background subagents.
+- Added receipt-derived layered progress: Worker delivery, Checker D1 acceptance,
+  and Supervisor D2/Level/Run milestones with versioned Required denominators.
+- Added versioned device-capacity/cumulative-load facts and a fail-closed
+  pre-dispatch CELL capacity gate, including severe post-dispatch split feedback.
+- Denied task-Pin capability to every method role and added Owner/Agent/unknown
+  provenance handling without automatic unpin.
+- Added a closed run-control schema/template, semantic validator, readiness and
+  optimized-mode negative tests, CI gate, migration guide, and release evidence.
+
 ## 2.4.0
 
 - Clarified that CLK derives the `最大有效 Chain 数量` after Run/GO granularity

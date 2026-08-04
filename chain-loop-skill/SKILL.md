@@ -17,7 +17,7 @@ not canonical identities for new runs.
 - GitHub repository ID: `1298120736`.
 - Default branch: `main`.
 - Version source: repository `VERSION` file and matching `v*` tag.
-- Current specification version: `2.4.0`.
+- Current specification version: `2.5.0`.
 
 Before publishing, verify owner/name, repository ID, default branch, remote HEAD,
 tested installation, version file, and release tag. Never publish CLK content to
@@ -112,8 +112,9 @@ before planning.
    and the next Level remains closed until the current Level is fully verified.
 6. Use one persistent Checker/Worker pair per Chain. Do not add or replace Chains
    during the active run.
-7. Keep every role as a visible Codex conversation under the same project; hidden
-   agents, subagents, background roles, and `delegate_task` are forbidden.
+7. Keep every role as a visible same-project Codex conversation. A `GO`, `CELL`,
+   Round, or plan step is a subtask; only `spawn_agent`, `delegate_task`, hidden,
+   or background Agents are subagents, and they are forbidden.
 8. Bind every role to separate context, capability, model, evidence, lifecycle,
    and authorized workspace identities; a different title alone is not isolation.
 9. Before a GO's first CELL is dispatched, its Verification Contract, direct route,
@@ -208,6 +209,9 @@ Every role is a visible conversation under the same Codex project.
 - Archive persistent roles while they have no authorized work; unarchive the same
   role for the next Level rather than creating duplicates.
 - No archived conversation performs hidden or background work.
+- Each Run has exactly one visible `RUN_PATROL_CONVERSATION` and one heartbeat, bound to `gpt-5.6-luna+xhigh` at a frozen 10/15/30-minute interval.
+- No method role, including patrol, may Pin a task; only explicit Owner provenance
+  is valid, and lifecycle remains independent from Pin state.
 ## Role and Environment Isolation
 
 Read
@@ -353,7 +357,9 @@ Supervisor:
 - freezes `PROJECT_AUTONOMY_ENVELOPE`;
 - proves CLK method selection and freezes the persistent roster;
 - provisions conversations, model bindings, isolated workspaces, Verification
-  templates/attempts, skills, tools, permissions, and device-safe budgets;
+  templates/attempts, skills, tools, permissions, and versioned device/load facts;
+- freezes `DEVICE_CAPACITY_PROFILE`, `CUMULATIVE_ENGINEERING_LOAD`, and Required
+  sets; dispatch requires `CELL_CAPACITY_GATE=PASS`;
 - freezes every GO's Calabash trace, Verification Contract, and direct route before
   its Level opens;
 - records `LEVEL_START_GATE_PASS`, opens all Level members together, and records
@@ -361,8 +367,9 @@ Supervisor:
 - maintains the Supervisor board and project-wide progress;
 - resolves cross-Chain conflicts, shared prerequisites, safety conditions, plan
   defects, and genuine blockers;
-- manages safe pause/resume, safeguard patrol, `PROJECT_GOAL`, and final composition
-  audit.
+- manages safe pause/resume, patrol alerts, `PROJECT_GOAL`, and final composition
+  audit; it ends its turn after control actions and never waits on members with
+  `wait_threads`.
 
 Supervisor must not relay normal Checker/Verification messages, plan ordinary CELL
 details, execute Worker work, validate a CELL, issue a GO verdict, ask Owner for
@@ -583,10 +590,11 @@ Formal task: GO-01-A/CELL-01-A.01/R01
 After delivery, the Worker sends:
 
 ```text
-完成，请检验
+GO-01-A CELL 1/3 已交付，请检查
 ```
 
-This means only “ready for Checker validation.”
+This is a versioned Required-CELL delivery position, not accepted progress.
+`BLOCKED` and `EXECUTION_FAILURE` carry the same GO/CELL/Round and `n/N` identity.
 
 Checker routes:
 
@@ -765,34 +773,20 @@ proven Owner-exclusive item. Checker revalidates before resume.
 
 Other independent GOs in the active Level may continue when the block cannot
 invalidate them, but the next Level remains closed until the full barrier passes.
-## Dispatch-Then-Offline Boundary
+## Dispatch, Wake, and Patrol
 
-Before dispatch, Checker completes every prerequisite check, record, progress
-snapshot, and formal message.
+Before dispatch, Checker completes gates, snapshots, and capability preflight.
+Worker alone may wake its frozen Checker: direct message at T+0; at T+2 read/list/unarchive and re-resolve the same Checker without guessing/replacement;
+at T+4 create/update one deterministic heartbeat; at T+6 write `PENDING_WAKE`.
+Each level waits at most two injected-clock minutes.
 
-Sending the Worker task is Checker's final action. Checker enters:
-
-```text
-OFFLINE_WAITING_WORKER_SIGNAL
-```
-
-and does not poll, inspect, run status, or perform pair work while Worker owns the
-CELL.
-
-Only these signals wake Checker:
-
-```text
-WORKER_COMPLETION_RECEIPT
-WORKER_BLOCKER_RECEIPT
-WORKER_EXECUTION_FAILURE
-```
-
-Supervisor safeguard patrol continues independently but does not wake a healthy
-offline Checker merely to inspect an active Worker.
-
-Verification uses the same non-interference principle: after Checker sends the
-neutral package directly, Checker and Supervisor do not inject suggestions into the
-active Verification conversation.
+Checker first emits scoped `WAKE_ACK`; matching ACK or processing proof stops escalation, deletes heartbeat, and consumes `PENDING_WAKE`. Supervisor never loops
+or waits with `wait_threads`; zero-time snapshots are allowed. The sole patrol
+consumes pending wakes and reports only mechanical Run faults. It never checks
+quality, repairs, takes over, dispatches, Pins, or creates roles. At
+`LOOP_TERMINAL`, it deletes heartbeat, records `PATROL_CLOSED`, and archives itself.
+The full machine rules are in
+[`references/worker-wake-patrol-and-progress.md`](references/worker-wake-patrol-and-progress.md).
 ## Pre-Authorized Worker Execution Gate
 
 Before dispatch, Supervisor provisions the pair under the frozen autonomy
@@ -803,27 +797,30 @@ authorization.
 Unexpected credentials, external side effects, destructive/security-sensitive
 actions, out-of-scope writes, and objective/acceptance changes route internally to
 Supervisor and only then to Owner when genuinely Owner-exclusive.
-## Project Progress
+## Progress and CELL Capacity
 
-Every Worker assignment includes accepted CELL progress, for example:
+Checker is the finest progress authority: only one effective D1 PASS adds to
+`D1_ACCEPTED`; delivery, tests, checking, rework, blocks, and duplicates do not. It
+reports `a/N`, unchanged on failure, and sends Supervisor one
+`GO_CANDIDATE_READY` milestone only after all Required CELLs are accepted. That
+state is not `D2_VERIFIED`.
 
-```text
-正在完成 LEVEL-01 / GO-01-C：35/231 CELL
-```
+Supervisor reports only substantive GO/Level/Run transitions, counting current D2
+verdicts and verified Levels. Verification emits verdicts only; patrol emits no
+engineering progress. Denominators come from versioned Required sets; amendment or
+split shows the new version/recomputed denominator without rewriting history. Keep
+`DELIVERED`, `D1_ACCEPTED`, `GO_CANDIDATE_READY`,
+`D2_VERIFIED`, `RUN_VERIFIED`, and `OWNER_ACCEPTED` distinct.
 
-Count each accepted CELL once. Assigned, active, unchecked, rework-pending, blocked,
-revoked, and duplicate attempts do not count.
-
-Supervisor also displays:
-
-```text
-LEVEL-01 GO验证：3/4
-项目LEVEL完成：1/3
-```
-
-The current Level remains active until every required member is `GO_VERIFIED`.
-Display `全部完成` only when every required CELL, GO, and Level is complete, final
-composition/safety/evidence pass, and configured `PROJECT_GOAL` is satisfied.
+CELL size is total engineering cost: implementation, dependencies, build/test/
+recheck/regression, evidence/hash/cleanup, context, services, retry, and cumulative
+coupling. Unknown capacity fails closed. Only `CELL_CAPACITY_GATE=PASS` dispatches;
+other results are `SPLIT_REQUIRED` or `CAPACITY_BLOCKED`. Pre-dispatch split keeps
+GO outcome/acceptance and creates no subagent. Worker never splits; excess becomes
+`CELL_SCOPE_EXCEEDED` with evidence. A post-dispatch 3+ split is
+`CELL_OVERSIZE_SEVERE` and re-evaluates remaining plan/device facts. Refresh load at
+GO/Level/Graph boundaries or measured deviation; logical parallelism never implies
+unbounded device command concurrency.
 ## Run Owner Acceptance and LCCoding Boundary
 
 After fresh D3 PASS, Supervisor immediately facilitates one bounded Run-product
@@ -971,7 +968,9 @@ Before project launch, Supervisor confirms:
 - no conditional branch, partial unlock, cycle, dynamic Chain, or GLK capability;
 - current `25/25` readiness and project `SIMULATION_PASS`;
 - visible persistent roles with isolated identities/environments;
+- exactly one Luna+xhigh Run patrol/heartbeat and no method-role Pin capability;
 - `PROJECT_AUTONOMY_ENVELOPE` covers routine work without Owner authorization;
+- versioned device/load facts and PASS capacity gates for dispatchable CELLs;
 - every GO has Calabash trace, Verification Contract/binding, CELL plan, and tiered
   detection profile;
 - cross-GO inputs exist only at verified Level boundaries;
@@ -986,15 +985,16 @@ fresh isolated Verification, neutral direct package, and no downstream Level wor
 from provisional output.
 ## Migration
 
-Active 1.8.3 MSLK, 2.0.0 CLK, and 2.3.1 CLK runs remain bound to their historical
+Active 1.8.3 MSLK and pre-2.5.0 CLK runs remain bound to their historical
 specifications. Preserve old receipts and read the matching migration guide:
 [`../MIGRATION-MSLK-TO-CLK.md`](../MIGRATION-MSLK-TO-CLK.md),
 [`../MIGRATION-2.0-TO-2.3.1.md`](../MIGRATION-2.0-TO-2.3.1.md), or
-[`../MIGRATION-2.3.1-TO-2.4.0.md`](../MIGRATION-2.3.1-TO-2.4.0.md).
+[`../MIGRATION-2.3.1-TO-2.4.0.md`](../MIGRATION-2.3.1-TO-2.4.0.md). For 2.4.0,
+read [`../MIGRATION-2.4.0-TO-2.5.0.md`](../MIGRATION-2.4.0-TO-2.5.0.md).
 If unfinished work cannot retain fixed Chains, ordered Levels, and full barriers,
 record `METHOD_BOUNDARY_EXCEEDED` and use a separate GLK run.
 ## Version Note
 
-CLK 2.4.0 preserves all 2.3.1 semantics while adding bounded Chain/Level/Barrier
-fault localization, one-hypothesis supersession, comparable healthy-Chain controls,
-and Receipt-derived minimal reverification. Dynamic graph behavior remains GLK-only.
+CLK 2.5.0 preserves 2.4.0 fault semantics while adding Worker-only bounded wake,
+one Run patrol, receipt-derived progress, cumulative device-aware CELL capacity,
+precise task/subagent identity, and Owner-only Pin authority. Dynamic graphs stay GLK-only.

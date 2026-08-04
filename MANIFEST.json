@@ -1,7 +1,7 @@
 {
   "name": "Chain Loop Skill",
   "abbreviation": "CLK",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "repository": "DWG7318/chain-loop-skill",
   "repository_id": 1298120736,
   "default_branch": "main",
@@ -29,6 +29,16 @@
     "output": "LOOP_OWNER_ACCEPTED",
     "output_scope": "RUN_PRODUCT_ONLY"
   },
+  "run_control": {
+    "worker_wake_actor": "WORKER",
+    "worker_wake_offsets_minutes": [0, 2, 4, 6],
+    "patrol_count_per_run": 1,
+    "patrol_model": "gpt-5.6-luna+xhigh",
+    "supervisor_wait_threads": false,
+    "progress_source": "CURRENT_EFFECTIVE_RECEIPTS",
+    "capacity_gate": ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"],
+    "method_role_pin": false
+  },
   "required_files": [
     ".gitattributes",
     ".github/workflows/validate.yml",
@@ -39,6 +49,7 @@
     "MANIFEST.json",
     "MIGRATION-2.0-TO-2.3.1.md",
     "MIGRATION-2.3.1-TO-2.4.0.md",
+    "MIGRATION-2.4.0-TO-2.5.0.md",
     "MIGRATION-MSLK-TO-CLK.md",
     "README.md",
     "SPEC.md",
@@ -51,6 +62,7 @@
     "scripts/validate_repository.py",
     "scripts/validate_runtime_state.py",
     "scripts/validate_topology_fault.py",
+    "scripts/validate_run_control.py",
     "chain-loop-skill/SKILL.md",
     "chain-loop-skill/agents/openai.yaml",
     "chain-loop-skill/contracts/clk-control-kernel.json",
@@ -59,10 +71,13 @@
     "chain-loop-skill/schemas/receipt-envelope.schema.json",
     "chain-loop-skill/schemas/runtime-state-index.schema.json",
     "chain-loop-skill/schemas/topology-fault-record.schema.json",
+    "chain-loop-skill/schemas/run-control-trace.schema.json",
     "chain-loop-skill/references/topology-fault-localization.md",
+    "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
     "chain-loop-skill/templates/go-amendment.yaml",
     "chain-loop-skill/templates/level-barrier-receipt.yaml",
     "chain-loop-skill/templates/owner-acceptance.yaml",
-    "chain-loop-skill/templates/topology-fault-record.yaml"
+    "chain-loop-skill/templates/topology-fault-record.yaml",
+    "chain-loop-skill/templates/run-control-trace.yaml"
   ]
 }

@@ -13,7 +13,7 @@ def contract() -> dict:
 
 def test_version_and_identity() -> None:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version == "2.4.0"
+    assert version == "2.5.0"
     assert f"Current version: **{version}**" in (ROOT / "README.md").read_text(encoding="utf-8")
     text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
     assert "# Chain Loop Skill (CLK)" in text
@@ -26,7 +26,7 @@ def test_contract_and_legacy() -> None:
     c = contract()
     assert c["method"] == "CLK"
     assert c["product_name"] == "Chain Loop Skill"
-    assert c["version"] == "2.4.0"
+    assert c["version"] == "2.5.0"
     assert c["synchronization_unit"] == "LEVEL"
     assert c["legacy_identity"]["abbreviation"] == "MSLK"
     assert c["legacy_identity"]["formal_new_runs_allowed"] is False
@@ -99,6 +99,91 @@ def test_layered_verification_barrier_and_owner_contract() -> None:
     assert c["owner_acceptance"]["delivery_authorized"] is False
 
 
+def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> None:
+    c = contract()
+    wake = c["worker_wake_ladder"]
+    assert wake["actor"] == "WORKER"
+    assert wake["target"] == "ORIGINALLY_BOUND_CHECKER"
+    assert wake["offset_minutes"] == [0, 2, 4, 6]
+    assert wake["max_wait_minutes_per_level"] == 2
+    assert wake["message_requires"] == [
+        "GO_ID",
+        "CELL_ORDINAL",
+        "REQUIRED_CELL_TOTAL",
+        "DELIVERED_OR_BLOCKED_OR_EXECUTION_FAILURE",
+    ]
+    assert wake["general_role_message_bus"] is False
+    assert all(wake["dispatch_capability_preflight"].values())
+
+    wait = c["supervisor_wait_policy"]
+    assert wait["wait_threads_allowed"] is False
+    assert wait["wait_threads_loop_allowed"] is False
+    assert wait["timeout_zero_snapshot_allowed"] is True
+
+    patrol = c["run_patrol"]
+    assert patrol["count_per_run"] == 1
+    assert patrol["heartbeat_count_per_run"] == 1
+    assert patrol["conversation_type"] == "RUN_PATROL_CONVERSATION"
+    assert patrol["model"] == "gpt-5.6-luna"
+    assert patrol["reasoning_effort"] == "xhigh"
+    assert patrol["interval_minutes"] == [10, 15, 30]
+    assert patrol["authoritative"] is False
+    assert patrol["technical_acceptance"] is False
+    assert patrol["product_work"] is False
+
+    identity = c["task_identity"]
+    assert identity["subtask_examples"] == ["GO", "CELL", "ROUND", "PLAN_STEP"]
+    assert identity["visible_peer_task_is_subagent"] is False
+    assert identity["subagent_capabilities"] == [
+        "spawn_agent",
+        "delegate_task",
+        "hidden_agent",
+        "background_agent",
+    ]
+
+    progress = c["layered_progress"]
+    assert progress["hard_rule_number"] == 5
+    assert progress["cell_numerator_source"] == "CURRENT_EFFECTIVE_D1_PASS_RECEIPTS"
+    assert progress["go_numerator_source"] == "CURRENT_D2_GO_VERIFIED_VERDICTS"
+    assert progress["denominator_source"] == "CURRENT_VERSIONED_REQUIRED_SET"
+    assert progress["worker_delivery_increments_accepted"] is False
+    assert progress["checker_cell_noise_to_supervisor"] is False
+    assert progress["verification_continuous_progress"] is False
+    assert progress["patrol_engineering_progress"] is False
+    assert progress["states"] == [
+        "DELIVERED",
+        "D1_ACCEPTED",
+        "GO_CANDIDATE_READY",
+        "D2_VERIFIED",
+        "RUN_VERIFIED",
+        "OWNER_ACCEPTED",
+    ]
+
+    capacity = c["cell_capacity"]
+    assert capacity["hard_rule_number"] == 6
+    assert capacity["supervisor_owns_device_and_cumulative_load"] is True
+    assert capacity["checker_runs_pre_dispatch_gate"] is True
+    assert capacity["gate_results"] == ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"]
+    assert capacity["dispatch_requires"] == "CURRENT_CELL_CAPACITY_GATE_PASS"
+    assert capacity["unknown_capability_result"] == "CAPACITY_BLOCKED"
+    assert capacity["worker_may_split"] is False
+    assert capacity["worker_scope_signal"] == "CELL_SCOPE_EXCEEDED"
+    assert capacity["post_dispatch_split_signal"] == "POST_DISPATCH_CELL_SPLIT"
+    assert capacity["three_or_more_post_dispatch_successors"] == "CELL_OVERSIZE_SEVERE"
+    assert capacity["six_seven_eight_are_always_severe"] is True
+    assert capacity["logical_level_parallelism_equals_device_concurrency"] is False
+
+    pin = c["thread_pin_policy"]
+    assert pin["hard_rule_number"] == 7
+    assert pin["method_role_may_pin"] is False
+    assert pin["patrol_may_pin_or_unpin"] is False
+    assert pin["legal_provenance"] == ["OWNER_UI", "OWNER_EXPLICIT_AUTHORIZATION"]
+    assert pin["agent_violation"] == "UNAUTHORIZED_THREAD_PIN"
+    assert pin["unknown_provenance"] == "PIN_PROVENANCE_UNKNOWN"
+    assert pin["pin_then_unpin_clears_violation"] is False
+    assert pin["archive_lifecycle_independent"] is True
+
+
 def test_topology_fault_localization_is_clk_native_and_bounded() -> None:
     c = contract()
     policy = c["topology_fault_localization"]
@@ -166,6 +251,7 @@ def test_canonical_agent_and_new_references_are_packaged() -> None:
         "run-lifecycle-and-verification.md",
         "receipt-and-state-contracts.md",
         "lccoding-interface.md",
+        "worker-wake-patrol-and-progress.md",
     ):
         assert (SKILL / "references" / name).is_file()
 
@@ -189,3 +275,21 @@ def test_readiness_count() -> None:
     assert len(q["questions"]) == 25
     assert len(a["answers"]) == 25
     assert {x["id"] for x in q["questions"]} == set(a["answers"])
+    joined = "\n".join(a["answers"].values())
+    for marker in (
+        "T+0、T+2、T+4、T+6",
+        "gpt-5.6-luna+xhigh",
+        "wait_threads",
+        "spawn_agent、delegate_task、隐藏Agent、后台Agent",
+        "第五项硬规则",
+        "DELIVERED不等于D1_ACCEPTED",
+        "GO_CANDIDATE_READY不等于D2_VERIFIED",
+        "第六项硬规则",
+        "DEVICE_CAPACITY_PROFILE",
+        "CELL_CAPACITY_GATE",
+        "CELL_OVERSIZE_SEVERE",
+        "第七项硬规则",
+        "UNAUTHORIZED_THREAD_PIN",
+        "PIN_PROVENANCE_UNKNOWN",
+    ):
+        assert marker in joined

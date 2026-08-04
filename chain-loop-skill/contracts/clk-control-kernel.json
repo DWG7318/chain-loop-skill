@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.4.0",
+  "schema_version": "2.5.0",
   "method": "CLK",
   "method_shape": "level_barrier_synchronized_multi_chain",
   "synchronization_unit": "LEVEL",
@@ -109,6 +109,108 @@
       "METHOD_BOUNDARY_EXCEEDED"
     ],
     "adds_role_or_verification_layer": false
+  },
+  "worker_wake_ladder": {
+    "actor": "WORKER",
+    "target": "ORIGINALLY_BOUND_CHECKER",
+    "offset_minutes": [0, 2, 4, 6],
+    "max_wait_minutes_per_level": 2,
+    "message_requires": [
+      "GO_ID",
+      "CELL_ORDINAL",
+      "REQUIRED_CELL_TOTAL",
+      "DELIVERED_OR_BLOCKED_OR_EXECUTION_FAILURE"
+    ],
+    "checker_first_action": "WAKE_ACK_RUN_GO_CELL_ROUND",
+    "general_role_message_bus": false,
+    "dispatch_capability_preflight": {
+      "send_message_to_thread": true,
+      "read_thread": true,
+      "list_threads": true,
+      "unarchive_thread": true,
+      "temporary_heartbeat_upsert_delete": true,
+      "pending_wake_write": true
+    }
+  },
+  "supervisor_wait_policy": {
+    "wait_threads_allowed": false,
+    "wait_threads_loop_allowed": false,
+    "wait_for_all_workers_allowed": false,
+    "timeout_zero_snapshot_allowed": true,
+    "end_turn_after_dispatch_or_control": true
+  },
+  "run_patrol": {
+    "count_per_run": 1,
+    "heartbeat_count_per_run": 1,
+    "conversation_type": "RUN_PATROL_CONVERSATION",
+    "visible": true,
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "xhigh",
+    "interval_minutes": [10, 15, 30],
+    "authoritative": false,
+    "technical_acceptance": false,
+    "product_work": false,
+    "engineering_progress": false,
+    "terminal_sequence": [
+      "LOOP_TERMINAL_CONFIRMED",
+      "PATROL_HEARTBEAT_DELETED",
+      "PATROL_CLOSED",
+      "PATROL_CONVERSATION_ARCHIVED"
+    ]
+  },
+  "task_identity": {
+    "subtask_examples": ["GO", "CELL", "ROUND", "PLAN_STEP"],
+    "visible_peer_task_is_subagent": false,
+    "subagent_capabilities": [
+      "spawn_agent",
+      "delegate_task",
+      "hidden_agent",
+      "background_agent"
+    ]
+  },
+  "layered_progress": {
+    "hard_rule_number": 5,
+    "cell_numerator_source": "CURRENT_EFFECTIVE_D1_PASS_RECEIPTS",
+    "go_numerator_source": "CURRENT_D2_GO_VERIFIED_VERDICTS",
+    "denominator_source": "CURRENT_VERSIONED_REQUIRED_SET",
+    "worker_delivery_increments_accepted": false,
+    "checker_cell_noise_to_supervisor": false,
+    "verification_continuous_progress": false,
+    "patrol_engineering_progress": false,
+    "states": [
+      "DELIVERED",
+      "D1_ACCEPTED",
+      "GO_CANDIDATE_READY",
+      "D2_VERIFIED",
+      "RUN_VERIFIED",
+      "OWNER_ACCEPTED"
+    ]
+  },
+  "cell_capacity": {
+    "hard_rule_number": 6,
+    "supervisor_owns_device_and_cumulative_load": true,
+    "checker_runs_pre_dispatch_gate": true,
+    "gate_results": ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"],
+    "dispatch_requires": "CURRENT_CELL_CAPACITY_GATE_PASS",
+    "unknown_capability_result": "CAPACITY_BLOCKED",
+    "worker_may_split": false,
+    "worker_scope_signal": "CELL_SCOPE_EXCEEDED",
+    "post_dispatch_split_signal": "POST_DISPATCH_CELL_SPLIT",
+    "three_or_more_post_dispatch_successors": "CELL_OVERSIZE_SEVERE",
+    "six_seven_eight_are_always_severe": true,
+    "logical_level_parallelism_equals_device_concurrency": false,
+    "split_preserves_go_outcome_acceptance_and_verification": true,
+    "split_recomputes_required_denominator_without_acceptance_increment": true
+  },
+  "thread_pin_policy": {
+    "hard_rule_number": 7,
+    "method_role_may_pin": false,
+    "patrol_may_pin_or_unpin": false,
+    "legal_provenance": ["OWNER_UI", "OWNER_EXPLICIT_AUTHORIZATION"],
+    "agent_violation": "UNAUTHORIZED_THREAD_PIN",
+    "unknown_provenance": "PIN_PROVENANCE_UNKNOWN",
+    "pin_then_unpin_clears_violation": false,
+    "archive_lifecycle_independent": true
   },
   "verification_policy": {
     "binding_frozen_before_level": true,
@@ -244,7 +346,7 @@
     "frozen_outputs_required": true
   },
   "product_name": "Chain Loop Skill",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "legacy_identity": {
     "product_name": "Multi Small Loop Skill",
     "abbreviation": "MSLK",

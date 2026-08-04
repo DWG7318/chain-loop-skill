@@ -88,9 +88,9 @@ class MultiSmallLoopContractTest(unittest.TestCase):
             )
         self.assertLess(len(SKILL.splitlines()), 900)
 
-    def test_release_identity_is_clk_v2_4_0_with_legacy_assets_preserved(self):
-        self.assertEqual(VERSION, "2.4.0")
-        self.assertIn("Current version: **2.4.0**", README)
+    def test_release_identity_is_clk_v2_5_0_with_legacy_assets_preserved(self):
+        self.assertEqual(VERSION, "2.5.0")
+        self.assertIn("Current version: **2.5.0**", README)
         self.assertIn("GitHub repository ID: `1298120736`", SKILL)
         self.assertIn("Multi Small Loop Skill", SKILL)
         self.assertNotIn("all nine rules", README.lower())

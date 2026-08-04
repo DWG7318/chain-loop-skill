@@ -1,4 +1,4 @@
-# Chain Loop Skill Standard Specification 2.4.0
+# Chain Loop Skill Standard Specification 2.5.0
 
 ## 1. Identity and boundary
 
@@ -180,7 +180,100 @@ ownership, dependency, Chain/Level plan, or topology. Route such evidence as
 runtime path choice as `METHOD_BOUNDARY_EXCEEDED`. These are handoff boundaries,
 not new CLK roles or verification layers.
 
-## 10. Level Barrier
+## 10. Worker wake, Supervisor wait, and Run patrol
+
+Only Worker may use the four-level wake ladder, and only toward its originally
+bound Checker after a formal CELL delivery, BLOCKED result, or execution failure.
+Dispatch freezes Checker thread/host and Run/GO/CELL/Round scope and preflights
+send/read/list/unarchive, temporary-heartbeat, and PENDING_WAKE capabilities.
+
+Worker sends one scoped GO/CELL `n/N` signal at T+0, inspects and may unarchive or
+re-resolve the same Checker at T+2, upserts one deterministic temporary heartbeat
+at T+4, and writes PENDING_WAKE at T+6. Each injected-clock window is at most two
+minutes. Matching `WAKE_ACK` or mechanical processing evidence stops later levels.
+No identity guessing, replacement Checker, duplicate work, real test sleep, or
+general role message bus is allowed.
+
+Supervisor cannot wait through `wait_threads`, loop it, or wait for all Workers.
+Zero-time snapshots remain allowed; Supervisor ends its turn after dispatch or
+control.
+
+Each Run has exactly one visible `RUN_PATROL_CONVERSATION`, one heartbeat, model
+`gpt-5.6-luna`, reasoning `xhigh`, and frozen 10/15/30-minute interval. Patrol is
+non-authoritative, performs no product work, acceptance, repair, redispatch, or
+engineering-progress reporting, and does not alter CLK role/D-layer enums. It
+mechanically reports unexplained stalls, PENDING_WAKE, forbidden Agent evidence,
+Supervisor wait, duplicate patrol, Pin provenance errors, and missing terminal
+closure. Formal pause, legitimate block, and documented external wait are normal.
+
+GO, CELL, Round, plan step, and the Chinese term `子任务` are subtasks. A visible
+same-project task with stable thread ID is a peer conversation, not a subagent.
+Only spawn/delegate/hidden/background Agent capabilities constitute subagents.
+
+## 11. Layered real-time progress
+
+Worker delivery signal contains GO ID, CELL ordinal, current Required CELL total,
+and delivered/check, BLOCKED, or execution-failure semantics. It never increments
+accepted progress and all wake levels retain one progress identity.
+
+Checker ACKs first and derives `accepted_cell_count` only from unique current
+effective D1 PASS Receipts. FAIL, rework, BLOCKED, duplicate Receipt, green Worker
+tests, and inspection do not increment. Checker sends Supervisor no CELL stream;
+only a GO boundary yields `GO_CANDIDATE_READY`, `VERIFYING`, or `D2_VERIFIED`, and
+candidate ready never substitutes for D2.
+
+Supervisor emits only substantive GO/Level/frozen-graph-or-manifest/Run/D3/Owner
+updates. Its current-Level GO numerator is current D2 `GO_VERIFIED`; its Level
+numerator is verified Levels. Denominators come from the current versioned Required
+set. Amendment activates a new version, explicitly preserves evidence, and
+recomputes counts without rewriting history. Controlled states are `DELIVERED`,
+`D1_ACCEPTED`, `GO_CANDIDATE_READY`, `D2_VERIFIED`, `RUN_VERIFIED`, and
+`OWNER_ACCEPTED`. Verification emits verdicts only; patrol emits no engineering
+progress.
+
+## 12. CELL capacity planning
+
+Before Run/plan freeze, Supervisor freezes a versioned, measured or conservative
+`DEVICE_CAPACITY_PROFILE` for CPU, available RAM, applicable GPU/VRAM, disk/IO,
+network/external services, processes/ports, safe command concurrency, command/test/
+build duration, context, and evidence budgets. Relevant unknown capability is
+`CAPACITY_BLOCKED`; vague resource prose is invalid.
+
+Versioned `CUMULATIVE_ENGINEERING_LOAD` records code/dependency/artifact size,
+regression time, peak memory, evidence/hash volume, context reload, external cost,
+and accepted-baseline coupling at Run/GO/Level/frozen graph-manifest/feedback
+boundaries. Every unstarted CELL is re-estimated after material feedback.
+
+Each CELL binds total engineering cost, including implementation, dependencies,
+artifacts, test matrix, Checker verification, regression, evidence/hash/cleanup,
+context, tools/services, rollback/retry, and cumulative coupling. The mechanical
+gate is exactly `PASS`, `SPLIT_REQUIRED`, or `CAPACITY_BLOCKED`; only current PASS
+permits dispatch.
+
+Pre-dispatch split preserves GO outcome/acceptance and verification quality and
+produces independently deliverable, independently D1-checkable CELLs without new
+GO, Worker, or agent. Worker cannot split; actual overrun emits
+`CELL_SCOPE_EXCEEDED` with immutable checkpoint/evidence. Post-dispatch split emits
+`POST_DISPATCH_CELL_SPLIT`; three or more successors also emit
+`CELL_OVERSIZE_SEVERE` and force remaining-plan/device/load reassessment. Six,
+seven, and eight successors are always severe. Split versions the fifth-rule
+Required denominator and does not increment acceptance. Logical Level concurrency
+may safely use lower serialized device-command concurrency without inventing GO
+dependencies.
+
+## 13. Thread Pin prohibition
+
+Every method-role and patrol capability denies `set_thread_pinned(true)`. Creation,
+dispatch, ACTIVE, wait, BLOCKED, rework, verification, milestone, persistence, and
+importance never imply authorization. Pin cannot replace registry, status,
+progress, recovery, archive, or unarchive.
+
+Only Owner UI choice or current-Run item-specific Owner authorization is legal.
+Agent/method Pin records `UNAUTHORIZED_THREAD_PIN`, even after later unpin. Unknown
+provenance records `PIN_PROVENANCE_UNKNOWN`; patrol reports but cannot unpin or
+guess provenance.
+
+## 14. Level Barrier
 
 Barrier PASS requires:
 
@@ -199,7 +292,7 @@ Barrier PASS requires:
 the Baseline. Governance may use an approved amendment to cancel, remove, defer, or
 supersede the GO; only the amended Baseline participates in Barrier calculation.
 
-## 11. Runtime state
+## 15. Runtime state
 
 The mutable runtime index records the current Run, open Level, per-Chain current and
 ACTIVE GO, GO/Level state, verification attempts, workspace/write scopes, latest
@@ -209,7 +302,7 @@ Receipts, topology-fault records, or amendments.
 
 Level close, Barrier PASS, and next-Level open are recorded as an atomic transition.
 
-## 12. Receipt envelope
+## 16. Receipt envelope
 
 Every technical Receipt binds receipt type and ID, Run/Feature Slice, Baseline and
 Contract versions/hashes, attempt, immutable candidate digest, actor and sole
@@ -220,7 +313,7 @@ failure reason.
 Verification context detail is stored once in a frozen referenced artifact rather
 than duplicated in every Receipt.
 
-## 13. Amendments
+## 17. Amendments
 
 Frozen structure changes only through `CHAIN_AMENDMENT`, `LEVEL_AMENDMENT`, or
 `GO_AMENDMENT`. Every amendment binds identity, version, state, authority, time,
@@ -230,7 +323,7 @@ supersession links. Historical records are never rewritten.
 
 Product-definition changes return to LCCoding/Calabash governance.
 
-## 14. Owner Acceptance and security boundary
+## 18. Owner Acceptance and security boundary
 
 After D3 PASS, Supervisor immediately presents the current bounded Run candidate,
 entry point, concise steps, visible outcomes, limitations, and D3-covered invisible
@@ -249,7 +342,7 @@ one independent project security audit after all required Runs are accepted,
 coordinates engineering repair and auditor reverification, then performs
 Post-Security Owner Acceptance and Delivery governance.
 
-## 15. Completion
+## 19. Completion
 
 A CLK Run completes only when every Required GO and Level is verified, all required
 Barriers pass, D3 binds the final candidate and passes, evidence is synchronized,

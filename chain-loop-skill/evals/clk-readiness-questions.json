@@ -1,5 +1,5 @@
 {
-  "version": "2.4.0",
+  "version": "2.5.0",
   "questions": [
     {
       "id": "Q01",
@@ -27,11 +27,11 @@
     },
     {
       "id": "Q07",
-      "prompt": "CLK有哪些外部角色类型？"
+      "prompt": "CLK有哪些技术角色？唯一巡检员是什么？子任务、可见平级任务与子代理怎样区分，谁可置顶任务？"
     },
     {
       "id": "Q08",
-      "prompt": "哪些角色持久，Verification何时预绑定、何时实例化？"
+      "prompt": "哪些角色持久，Verification何时实例化，Worker如何有界叫醒原Checker？"
     },
     {
       "id": "Q09",
@@ -51,7 +51,7 @@
     },
     {
       "id": "Q13",
-      "prompt": "哪些情况才允许Supervisor联系Owner？"
+      "prompt": "哪些情况才允许Supervisor联系Owner？Supervisor可否用wait_threads持续等待，巡检员能否接管？"
     },
     {
       "id": "Q14",
@@ -59,7 +59,7 @@
     },
     {
       "id": "Q15",
-      "prompt": "谁拥有CELL验收与CELL路由权？"
+      "prompt": "谁拥有CELL验收与进度？派工前如何按设备与累计工程负载控制CELL容量？"
     },
     {
       "id": "Q16",
@@ -71,7 +71,7 @@
     },
     {
       "id": "Q18",
-      "prompt": "CLK 2.4.0的D0、D1、D2、LEVEL和D3分别证明什么？"
+      "prompt": "CLK 2.5.0的D0、D1、D2、LEVEL和D3分别证明什么？交付、候选与正式进度怎样区分？"
     },
     {
       "id": "Q19",

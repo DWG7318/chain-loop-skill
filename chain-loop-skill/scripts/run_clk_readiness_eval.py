@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run or grade the CLK 2.4.0 readiness evaluation."""
+"""Run or grade the CLK 2.5.0 readiness evaluation."""
 
 from __future__ import annotations
 

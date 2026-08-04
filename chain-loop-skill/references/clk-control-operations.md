@@ -16,8 +16,8 @@ Before opening one Level, Supervisor:
 4. creates every GO's fresh Verification attempt;
 5. binds isolated environments, model identities, evidence paths, and direct routes;
 6. obtains role readiness and Verification preflight;
-7. records `LEVEL_START_GATE_PASS`;
-8. authorizes all Checkers to dispatch first CELLs in the same activation cycle.
+7. freezes current device/load facts and requires PASS capacity gates;
+8. records `LEVEL_START_GATE_PASS` and authorizes first CELL dispatch together.
 
 No partial Level start is allowed.
 
@@ -48,12 +48,18 @@ Supervisor records `RESUME_AUTHORIZED`. The same persistent Checker revalidates
 conditions; a changed GO candidate uses a new Verification attempt. Resume never
 requires routine Owner approval.
 
-## Safeguard patrol
+## Wake and mechanical patrol
 
-Supervisor may inspect control state, resolve provisioning, repair authorization,
-prepare versioned plan correction, and restore progress. It must not execute Worker
-work, perform Checker validation, issue a GO verdict, partially open a Level, inject
-suggestions into Verification, or ask Owner for routine authorization.
+Worker alone may use the four-level bounded ladder to wake its frozen Checker.
+Supervisor finishes its control turn and never waits through `wait_threads`. Each
+Run has exactly one visible Luna+xhigh patrol and one heartbeat; patrol reports
+mechanical faults and pending wakes but never accepts, repairs, dispatches, takes
+over, Pins, or reports engineering progress. See
+[`worker-wake-patrol-and-progress.md`](worker-wake-patrol-and-progress.md).
+
+Every role lacks task-Pin capability. Patrol classifies evidenced Agent Pin as
+`UNAUTHORIZED_THREAD_PIN` and unknown provenance as `PIN_PROVENANCE_UNKNOWN`, but
+never unpins. Owner-explicit Pin remains valid and lifecycle-independent.
 
 ## Owner-free autonomy
 
@@ -66,6 +72,6 @@ unavoidable, record `EXECUTION_PERMISSION_BLOCKED` with exact evidence.
 
 ## Control receipts
 
-Every control action records an idempotent receipt with Calabash/plan version, Level,
-Chain and role IDs, candidate identity where relevant, old/new state, evidence, and
-result.
+Every control action records an idempotent receipt with Calabash/plan/Required-set
+version, Level, Chain and role IDs, candidate identity where relevant, old/new
+state, evidence, and result.

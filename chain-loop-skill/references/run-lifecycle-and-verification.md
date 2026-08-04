@@ -7,6 +7,7 @@ RUN_CONTRACT_FROZEN
 → CALABASH_AND_CHAIN_LEVEL_BASELINE_FROZEN
 → READINESS_25_OF_25
 → SIMULATION_PASS
+→ DEVICE/LOAD FACTS + CELL_CAPACITY_GATE PASS
 → LEVEL_START_GATE_PASS
 → D0 → D1 → D2 per GO
 → conditional LEVEL Verification
@@ -21,6 +22,10 @@ Only one Level is open. All listed GO candidates are launch-ready in the same
 activation cycle. Different Chains may be active concurrently when workspace,
 write scope, resources, rollback, and external-state risk are controlled. Each
 Chain has at most one ACTIVE GO.
+
+Each Run also has exactly one visible mechanical patrol and heartbeat. Supervisor
+does not wait for members; Worker alone may perform bounded ACK waits while waking
+its own frozen Checker. Method roles never Pin tasks.
 
 ## Verification economy
 
@@ -58,3 +63,17 @@ When none applies, the Supervisor may pass the Barrier mechanically from complet
 D2 and terminal Optional evidence. The decision remains auditable.
 
 An unresolved `TOPOLOGY_FAULT_RECORD` for the current Level blocks that pass.
+
+## Versioned progress and capacity
+
+Worker delivery reports GO/CELL/Round and current `n/N` but adds no accepted count.
+Checker increments only from one current effective D1 PASS and notifies Supervisor
+only at the GO boundary. Supervisor counts current D2 verdicts and verified Levels.
+Required-set amendment or CELL split changes the displayed version and denominator
+without rewriting historical receipts.
+
+`DEVICE_CAPACITY_PROFILE` and `CUMULATIVE_ENGINEERING_LOAD` are refreshed at major
+boundaries and measured deviation. Only a current `CELL_CAPACITY_GATE=PASS` can be
+dispatched; unknown capacity blocks. Worker reports `CELL_SCOPE_EXCEEDED` rather
+than splitting. Three or more post-dispatch successors record
+`CELL_OVERSIZE_SEVERE` and force remaining-plan re-evaluation.

@@ -9,7 +9,7 @@ Canonical repository: `DWG7318/chain-loop-skill`
 
 GitHub repository ID: `1298120736`
 
-Current version: **2.4.0**
+Current version: **2.5.0**
 
 ## Definition and input
 
@@ -96,6 +96,26 @@ route must agree. Receipt-consumption edges determine the exact reverification
 closure; Barrier-only correction preserves all technical Receipts. An unresolved
 fault for the current Level blocks Barrier PASS.
 
+## Run control, progress, and capacity
+
+Worker completion uses a scoped four-level wake ladder for its frozen Checker only:
+direct delivery, same-task recovery, deterministic temporary heartbeat, then
+`PENDING_WAKE`. Each level is bounded to two injected-clock minutes. Supervisor
+does not stay online with `wait_threads`; one non-authoritative
+`gpt-5.6-luna+xhigh` patrol per Run reports only mechanical control faults.
+
+Worker reports delivered CELL position, Checker derives accepted CELL progress
+from current D1 receipts, and Supervisor reports only D2/Level/Run milestones.
+Versioned Required sets provide denominators. Delivery and candidate readiness are
+never counted as D1 acceptance or D2 verification.
+
+Before dispatch, versioned device facts and cumulative engineering load feed
+`CELL_CAPACITY_GATE`. Only `PASS` dispatches; `SPLIT_REQUIRED` is resolved before
+dispatch and `CAPACITY_BLOCKED` fails closed. Worker cannot split its own CELL.
+Visible same-project role tasks are not subagents; spawned, delegated, hidden, or
+background Agents are forbidden. Every method role is also denied task-Pin
+capability: only explicit Owner provenance legitimizes a Pin.
+
 ## Owner acceptance and outer boundary
 
 After D3 PASS, CLK immediately facilitates the current Run's small Owner
@@ -112,6 +132,7 @@ python scripts/validate_repository.py
 python scripts/validate_chain_level_plan.py tests/fixtures/plans/valid-minimal.yaml
 python scripts/validate_runtime_state.py tests/fixtures/runtime/valid-level-active.yaml
 python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-chain-local.yaml
+python scripts/validate_run_control.py chain-loop-skill/templates/run-control-trace.yaml
 python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-receipt.yaml chain-loop-skill/templates/d1-checker-receipt.yaml chain-loop-skill/templates/d2-go-verification-receipt.yaml
 python -m pytest -q
 ```
