@@ -51,13 +51,17 @@ requires routine Owner approval.
 ## Wake and mechanical patrol
 
 Worker alone may use the four-level bounded ladder to wake its frozen Checker.
+Every active dispatch binds one same-scope lifecycle; only an explicit initial
+undispatched trace can contain no wake or Worker signal.
 Supervisor finishes its control turn and never waits through `wait_threads`. Each
 Run has exactly one visible Luna+xhigh patrol and one heartbeat; patrol reports
-mechanical faults and pending wakes but never accepts, repairs, dispatches, takes
+mechanical faults through fixed check/status/finding and observation/evidence
+identity. Project workload maps LOW→10, MEDIUM→15, HIGH→30 minutes. Patrol never accepts, repairs, dispatches, takes
 over, Pins, or reports engineering progress. See
 [`worker-wake-patrol-and-progress.md`](worker-wake-patrol-and-progress.md).
 
-Every role lacks task-Pin capability. Patrol classifies evidenced Agent Pin as
+The four canonical technical roles lack task-Pin capability; patrol is separate
+and also Pin-denied. Patrol classifies evidenced Agent Pin as
 `UNAUTHORIZED_THREAD_PIN` and unknown provenance as `PIN_PROVENANCE_UNKNOWN`, but
 never unpins. Owner-explicit Pin remains valid and lifecycle-independent.
 

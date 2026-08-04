@@ -54,6 +54,7 @@ def test_canonical_answers_pass() -> None:
         "第七项硬规则",
         "UNAUTHORIZED_THREAD_PIN",
         "PIN_PROVENANCE_UNKNOWN",
+        "LOW→10、MEDIUM→15、HIGH→30",
     ):
         assert marker in joined
 

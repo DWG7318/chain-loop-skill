@@ -186,6 +186,9 @@ Only Worker may use the four-level wake ladder, and only toward its originally
 bound Checker after a formal CELL delivery, BLOCKED result, or execution failure.
 Dispatch freezes Checker thread/host and Run/GO/CELL/Round scope and preflights
 send/read/list/unarchive, temporary-heartbeat, and PENDING_WAKE capabilities.
+Every active `CELL_DISPATCH` must bind one current Worker/Checker and exactly one
+same-scope wake lifecycle. An `INITIAL_UNDISPATCHED` trace may have no wake; an
+active trace, orphan Worker signal, or erased event ledger cannot use that exception.
 
 Worker sends one scoped GO/CELL `n/N` signal at T+0, inspects and may unarchive or
 re-resolve the same Checker at T+2, upserts one deterministic temporary heartbeat
@@ -205,6 +208,9 @@ engineering-progress reporting, and does not alter CLK role/D-layer enums. It
 mechanically reports unexplained stalls, PENDING_WAKE, forbidden Agent evidence,
 Supervisor wait, duplicate patrol, Pin provenance errors, and missing terminal
 closure. Formal pause, legitimate block, and documented external wait are normal.
+Project workload maps `LOW→10`, `MEDIUM→15`, and `HIGH→30` minutes. Every patrol
+status carries the complete fixed check set plus evidence; every alert uses a fixed
+finding and binds its observation/evidence identity. Free-form “normal” is invalid.
 
 GO, CELL, Round, plan step, and the Chinese term `子任务` are subtasks. A visible
 same-project task with stable thread ID is a peer conversation, not a subagent.
@@ -221,6 +227,9 @@ effective D1 PASS Receipts. FAIL, rework, BLOCKED, duplicate Receipt, green Work
 tests, and inspection do not increment. Checker sends Supervisor no CELL stream;
 only a GO boundary yields `GO_CANDIDATE_READY`, `VERIFYING`, or `D2_VERIFIED`, and
 candidate ready never substitutes for D2.
+Each unique D1 decision/Receipt has exactly one same-scope Checker progress update.
+Each material GO/Level/Required-set/Run/D3/Owner trigger has exactly one later
+Supervisor update; omission, duplication, reordering, or trigger reuse is invalid.
 
 Supervisor emits only substantive GO/Level/frozen-graph-or-manifest/Run/D3/Owner
 updates. Its current-Level GO numerator is current D2 `GO_VERIFIED`; its Level
@@ -263,7 +272,9 @@ dependencies.
 
 ## 13. Thread Pin prohibition
 
-Every method-role and patrol capability denies `set_thread_pinned(true)`. Creation,
+The canonical technical-role matrix remains exactly Supervisor, Checker, Worker,
+and Verification. Patrol stays a separate non-authoritative binding. Both that
+matrix and the patrol binding deny `set_thread_pinned(true)`. Creation,
 dispatch, ACTIVE, wait, BLOCKED, rework, verification, milestone, persistence, and
 importance never imply authorization. Pin cannot replace registry, status,
 progress, recovery, archive, or unarchive.

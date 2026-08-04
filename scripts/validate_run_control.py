@@ -18,7 +18,35 @@ from jsonschema import Draft202012Validator
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "chain-loop-skill" / "schemas" / "run-control-trace.schema.json"
 WAKE_OFFSETS = {1: 0, 2: 2, 3: 4}
-PATROL_INTERVAL = {"LOW": 30, "MEDIUM": 15, "HIGH": 10}
+PATROL_INTERVAL = {"LOW": 10, "MEDIUM": 15, "HIGH": 30}
+CANONICAL_ROLE_KINDS = {"SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"}
+WAKE_LIFECYCLE_ACTIONS = {
+    "WAKE_ATTEMPT", "WAKE_ACK", "MECHANICAL_CHECKER_STARTED", "CHECKER_START",
+    "TEMP_HEARTBEAT_UPSERT", "TEMP_HEARTBEAT_DELETE", "PENDING_WAKE_WRITE",
+    "PENDING_WAKE_CONSUME",
+}
+PATROL_CHECKS = {
+    "UNEXPLAINED_STALL",
+    "PENDING_WAKE",
+    "SUBAGENT_EVIDENCE",
+    "SUPERVISOR_WAIT",
+    "DUPLICATE_PATROL_OR_HEARTBEAT",
+    "THREAD_PIN_PROVENANCE",
+    "TERMINAL_NOT_CLOSED",
+}
+PATROL_STATUSES = {
+    "CLEAR", "LEGAL_PAUSE", "LEGAL_BLOCKED", "LEGAL_EXTERNAL_WAIT", "ALERTS_EMITTED"
+}
+PATROL_FINDINGS = {
+    "UNEXPLAINED_STALL",
+    "PENDING_WAKE",
+    "SUBAGENT_EVIDENCE",
+    "SUPERVISOR_WAIT",
+    "DUPLICATE_PATROL_OR_HEARTBEAT",
+    "UNAUTHORIZED_THREAD_PIN",
+    "PIN_PROVENANCE_UNKNOWN",
+    "TERMINAL_NOT_CLOSED",
+}
 FORBIDDEN_AGENT_EVIDENCE = {
     "OBSERVE_SPAWN_AGENT",
     "OBSERVE_DELEGATE_TASK",
@@ -115,9 +143,10 @@ def validate_patrol(trace: dict[str, Any]) -> dict[str, Any]:
     require(patrol["heartbeat_id"] == f"PATROL::{run_id}", "patrol heartbeat must be deterministic for the Run")
     require(patrol["heartbeat_count"] == 1, "exactly one patrol heartbeat is required")
     require(
-        patrol["interval_minutes"] == PATROL_INTERVAL[patrol["difficulty"]],
-        "patrol interval must match frozen Run difficulty",
+        patrol["interval_minutes"] == PATROL_INTERVAL[patrol["project_workload"]],
+        "patrol interval must match frozen project workload",
     )
+    require(patrol["set_thread_pinned"] is False, "patrol set_thread_pinned capability must be denied")
     if trace["run"]["state"] == "LOOP_TERMINAL":
         require(patrol["heartbeat_state"] == "DELETED", "terminal patrol heartbeat must be deleted")
     else:
@@ -163,12 +192,14 @@ def validate_actor_boundaries(trace: dict[str, Any], patrol: dict[str, Any]) -> 
             raise RunControlValidationError("Worker must not split a CELL")
 
 
-def validate_pin_policy(trace: dict[str, Any], event_index: dict[str, dict[str, Any]]) -> None:
+def validate_pin_policy(trace: dict[str, Any], event_index: dict[str, dict[str, Any]]) -> bool:
     rows = trace["method_role_capabilities"]
-    required_kinds = {"SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION", "ROUTER", "GRAPHER", "PATROL"}
     unique([item["role_id"] for item in rows], "method-role Pin capability IDs must be unique")
     unique([item["role_kind"] for item in rows], "method-role Pin capability kinds must be unique")
-    require({item["role_kind"] for item in rows} == required_kinds, "Pin capability matrix must cover every method-role kind")
+    require(
+        {item["role_kind"] for item in rows} == CANONICAL_ROLE_KINDS,
+        "Pin capability matrix must contain only canonical CLK technical roles",
+    )
     require(not any(item["set_thread_pinned"] for item in rows), "every method-role set_thread_pinned capability must be denied")
 
     observations = trace["pin_observations"]
@@ -184,6 +215,7 @@ def validate_pin_policy(trace: dict[str, Any], event_index: dict[str, dict[str, 
 
     observed_agent_events: set[str] = set()
     unknown_exists = False
+    agent_violation = False
     for observation in observations:
         provenance = observation["provenance"]
         disposition = observation["disposition"]
@@ -208,12 +240,86 @@ def validate_pin_policy(trace: dict[str, Any], event_index: dict[str, dict[str, 
                 any(event_index[event_id]["action"] == "SET_THREAD_PINNED_TRUE" for event_id in action_ids),
                 "Agent Pin observation must retain the original Pin call",
             )
-            raise RunControlValidationError("UNAUTHORIZED_THREAD_PIN")
+            agent_violation = True
     if unknown_exists:
         require(not unpin_events, "unknown Pin provenance must not be auto-unpinned")
     unattributed = [item for item in pin_events if item["event_id"] not in observed_agent_events]
     if unattributed:
         raise RunControlValidationError("UNAUTHORIZED_THREAD_PIN")
+    return agent_violation
+
+
+def validate_patrol_reports(trace: dict[str, Any], event_index: dict[str, dict[str, Any]]) -> None:
+    statuses = [item for item in trace["events"] if item["action"] == "PATROL_STATUS"]
+    alerts = [item for item in trace["events"] if item["action"] == "PATROL_ALERT"]
+    status_by_cycle: dict[str, dict[str, Any]] = {}
+    alert_by_finding: dict[str, dict[str, Any]] = {}
+
+    for item in statuses:
+        data = item["data"]
+        require(
+            set(data) == {"cycle_id", "status", "checks", "finding_ids", "evidence_refs"}
+            and set(data.get("checks", [])) == PATROL_CHECKS
+            and len(data.get("checks", [])) == len(PATROL_CHECKS),
+            "patrol status must bind the complete mechanical check set",
+        )
+        cycle_id = data["cycle_id"]
+        require(cycle_id not in status_by_cycle, "patrol cycle must have exactly one status")
+        require(data["status"] in PATROL_STATUSES, "patrol status result is not a fixed enum")
+        require(bool(data["evidence_refs"]), "patrol status requires evidence identity")
+        unique(data["evidence_refs"], "patrol status evidence identities must be unique")
+        unique(data["finding_ids"], "patrol status finding identities must be unique")
+        if data["status"] == "ALERTS_EMITTED":
+            require(bool(data["finding_ids"]), "ALERTS_EMITTED requires findings")
+        else:
+            require(not data["finding_ids"], "non-alert patrol status must not claim findings")
+        expected_legal = {
+            "LEGAL_PAUSE": "PAUSED",
+            "LEGAL_BLOCKED": "BLOCKED",
+            "LEGAL_EXTERNAL_WAIT": "WAITING_EXTERNAL",
+        }
+        if data["status"] in expected_legal:
+            require(trace["run"]["state"] == expected_legal[data["status"]], "legal patrol status mismatches Run state")
+        status_by_cycle[cycle_id] = item
+
+    for item in alerts:
+        data = item["data"]
+        require(
+            set(data) == {"cycle_id", "finding_id", "finding", "observation_refs", "evidence_refs"},
+            "patrol alert must use the fixed mechanical finding envelope",
+        )
+        require(data["finding"] in PATROL_FINDINGS, "patrol alert finding is not a fixed enum")
+        require(bool(data["observation_refs"]) and bool(data["evidence_refs"]), "patrol alert requires observation and evidence identity")
+        unique(data["observation_refs"], "patrol alert observation identities must be unique")
+        unique(data["evidence_refs"], "patrol alert evidence identities must be unique")
+        require(data["finding_id"] not in alert_by_finding, "patrol finding must have exactly one alert")
+        alert_by_finding[data["finding_id"]] = item
+
+    for cycle_id, status in status_by_cycle.items():
+        finding_ids = set(status["data"]["finding_ids"])
+        cycle_alert_ids = {
+            item["data"]["finding_id"] for item in alerts if item["data"]["cycle_id"] == cycle_id
+        }
+        require(finding_ids == cycle_alert_ids, "patrol status findings must exactly match bound alerts")
+    for item in alerts:
+        require(item["data"]["cycle_id"] in status_by_cycle, "patrol alert requires one bound patrol status")
+
+    required_alerts: list[tuple[str, str, str]] = []
+    for item in trace["events"]:
+        if item["action"] == "PENDING_WAKE_WRITE":
+            required_alerts.append(("PENDING_WAKE", item["event_id"], "PENDING_WAKE"))
+    for observation in trace["pin_observations"]:
+        if observation["disposition"] == "PIN_PROVENANCE_UNKNOWN":
+            required_alerts.append(("PIN_PROVENANCE_UNKNOWN", observation["observation_id"], "PIN_PROVENANCE_UNKNOWN"))
+        elif observation["disposition"] == "UNAUTHORIZED_THREAD_PIN":
+            required_alerts.append(("UNAUTHORIZED_THREAD_PIN", observation["observation_id"], "UNAUTHORIZED_THREAD_PIN"))
+    for finding, observation_ref, label in required_alerts:
+        matches = [
+            item for item in alerts
+            if item["data"]["finding"] == finding
+            and observation_ref in item["data"]["observation_refs"]
+        ]
+        require(len(matches) == 1, f"{label} requires a bound PATROL_ALERT")
 
 
 def expected_progress_identity(run_id: str, scope: dict[str, Any]) -> str:
@@ -247,12 +353,64 @@ def validate_worker_message(item: dict[str, Any]) -> None:
 
 def validate_worker_wakes(trace: dict[str, Any], bindings: dict[str, dict[str, Any]], patrol: dict[str, Any]) -> None:
     events = trace["events"]
+    dispatches = [item for item in events if item["action"] == "CELL_DISPATCH"]
+    phase = trace["run"]["dispatch_phase"]
+    if phase == "ACTIVE":
+        if not dispatches and any(item["action"] in WAKE_LIFECYCLE_ACTIONS for item in events):
+            raise RunControlValidationError("wake lifecycle requires one CELL_DISPATCH")
+        require(bool(dispatches), "ACTIVE dispatch phase requires CELL_DISPATCH")
+    elif phase == "INITIAL_UNDISPATCHED":
+        require(
+            not dispatches and not any(item["action"] in WAKE_LIFECYCLE_ACTIONS for item in events),
+            "INITIAL_UNDISPATCHED trace cannot contain dispatch or Worker wake lifecycle",
+        )
+        require(
+            not any(item["actor_kind"] == "WORKER" for item in events),
+            "INITIAL_UNDISPATCHED trace cannot contain Worker signal",
+        )
+    elif phase == "TERMINAL":
+        require(trace["run"]["state"] == "LOOP_TERMINAL", "TERMINAL dispatch phase requires LOOP_TERMINAL")
+
+    dispatch_by_wake: dict[str, dict[str, Any]] = {}
+    current_set = next(
+        item for item in trace["required_sets"]
+        if item["version"] == trace["run"]["required_set_version"]
+    )
+    current_cells = required_cell_map(current_set)
+    for item in dispatches:
+        scope = item["scope"]
+        wake_id = item["wake_id"]
+        data = item["data"]
+        require(wake_id is not None and scope is not None, "CELL dispatch requires wake and full scope identity")
+        require(wake_id not in dispatch_by_wake, "one wake lifecycle cannot cover multiple CELL dispatches")
+        require(all(scope.get(name) is not None for name in (
+            "go_id", "cell_id", "cell_ordinal", "required_cell_total", "round_id", "required_set_version"
+        )), "CELL dispatch requires complete GO/CELL/Round/progress scope")
+        require(
+            scope["required_set_version"] == trace["run"]["required_set_version"]
+            and scope["go_id"] in current_cells
+            and scope["cell_id"] in current_cells[scope["go_id"]],
+            "CELL dispatch scope must belong to the current Required set",
+        )
+        worker_id = data.get("worker_id")
+        require(worker_id in bindings, "CELL dispatch must bind a current Worker")
+        binding = bindings[worker_id]
+        require(
+            item["actor_kind"] == "CHECKER"
+            and item["actor_id"] == binding["checker_id"]
+            and data.get("checker_id") == binding["checker_id"],
+            "CELL dispatch must bind its current Checker",
+        )
+        require(data.get("worker_id") == binding["worker_id"], "CELL dispatch Worker binding mismatch")
+        dispatch_by_wake[wake_id] = item
+
     attempts_by_wake: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in events:
         if item["action"] == "WAKE_ATTEMPT":
             require(item["actor_kind"] == "WORKER", "only WORKER may use the wake ladder")
             require(item["actor_id"] in bindings, "wake Worker must have a frozen Checker binding")
             require(item["wake_id"] is not None and item["scope"] is not None, "wake attempt requires wake and scope identity")
+            require(item["wake_id"] in dispatch_by_wake, "wake lifecycle requires one CELL_DISPATCH")
             attempts_by_wake[item["wake_id"]].append(item)
         elif item["action"] in {"WAKE_ACK", "MECHANICAL_CHECKER_STARTED", "PENDING_WAKE_WRITE"}:
             require(item["wake_id"] is not None, f"{item['action']} requires wake identity")
@@ -262,6 +420,8 @@ def validate_worker_wakes(trace: dict[str, Any], bindings: dict[str, dict[str, A
         first = attempts[0]
         binding = bindings[first["actor_id"]]
         scope = first["scope"]
+        dispatch = dispatch_by_wake[wake_id]
+        require(dispatch["scope"] == scope, "wake lifecycle scope must match CELL dispatch")
         levels = [item["data"]["level"] for item in attempts]
         early_successes = [
             item for item in events
@@ -279,6 +439,7 @@ def validate_worker_wakes(trace: dict[str, Any], bindings: dict[str, dict[str, A
             level = item["data"]["level"]
             require(item["minute"] == WAKE_OFFSETS[level], f"wake Level {level} must use injected T+{WAKE_OFFSETS[level]}")
             require(item["scope"] == scope, "all wake levels must keep the same frozen scope")
+            require(item["data"].get("dispatch_event_id") == dispatch["event_id"], "wake lifecycle must bind its CELL dispatch event")
             validate_worker_message(item)
             messages.add(item["data"]["message"])
             identities.add(item["data"].get("progress_identity"))
@@ -327,8 +488,21 @@ def validate_worker_wakes(trace: dict[str, Any], bindings: dict[str, dict[str, A
             last_attempt = max(prior_attempts, key=lambda item: item["minute"])
             require(success["minute"] <= last_attempt["minute"] + 2, "Worker wait exceeds two minutes for a wake level")
             require(not any(item["minute"] > success["minute"] for item in attempts), "wake attempt occurred after wake success")
-            checker_actions = [item for item in events if item["wake_id"] == wake_id and item["actor_kind"] == "CHECKER"]
+            checker_actions = [
+                item for item in events
+                if item["wake_id"] == wake_id
+                and item["actor_kind"] == "CHECKER"
+                and item["action"] != "CELL_DISPATCH"
+            ]
             require(checker_actions and checker_actions[0]["action"] in {"WAKE_ACK", "MECHANICAL_CHECKER_STARTED"}, "Checker first wake action must be WAKE_ACK")
+            if success["action"] == "WAKE_ACK":
+                starts = [item for item in checker_actions if item["action"] == "CHECKER_START"]
+                require(
+                    len(starts) == 1
+                    and starts[0]["scope"] == scope
+                    and starts[0]["minute"] >= success["minute"],
+                    "WAKE_ACK requires one scoped CHECKER_START",
+                )
             if levels[-1] == 3:
                 deletes = [item for item in events if item["action"] == "TEMP_HEARTBEAT_DELETE" and item["wake_id"] == wake_id]
                 require(len(deletes) == 1 and deletes[0]["actor_kind"] == "CHECKER", "Checker must delete the temporary heartbeat after ACK")
@@ -345,8 +519,18 @@ def validate_worker_wakes(trace: dict[str, Any], bindings: dict[str, dict[str, A
             require(len(consumes) == 1 and consumes[0]["actor_id"] == patrol["patrol_id"], "PENDING_WAKE must be consumed by the unique patrol")
 
     for item in events:
-        if item["action"] in {"WAKE_ACK", "MECHANICAL_CHECKER_STARTED", "PENDING_WAKE_WRITE"}:
+        if item["action"] in WAKE_LIFECYCLE_ACTIONS:
             require(item["wake_id"] in attempts_by_wake, f"{item['action']} references an unknown wake")
+    for wake_id in dispatch_by_wake:
+        require(wake_id in attempts_by_wake, "CELL dispatch requires one wake lifecycle")
+    for item in events:
+        if item["action"] == "CELL_SCOPE_EXCEEDED":
+            matches = [
+                dispatch for dispatch in dispatches
+                if dispatch["scope"] == item["scope"]
+                and dispatch["data"].get("worker_id") == item["actor_id"]
+            ]
+            require(len(matches) == 1, "Worker signal requires one matching CELL_DISPATCH")
 
 
 def estimated_cell_cost(gate: dict[str, Any], load: dict[str, Any]) -> dict[str, int]:
@@ -470,6 +654,36 @@ def validate_progress(trace: dict[str, Any], sets: dict[str, dict[str, Any]], ev
     candidate_ready: set[str] = set()
     completed_levels: set[str] = set()
 
+    d1_decisions: dict[str, dict[str, Any]] = {}
+    for item in trace["events"]:
+        if item["action"] == "D1_VERDICT":
+            receipt_id = item["data"].get("receipt_id")
+            if receipt_id not in d1_decisions:
+                d1_decisions[receipt_id] = item
+    checker_progress = [item for item in trace["events"] if item["action"] == "CHECKER_PROGRESS"]
+    for receipt_id, decision in d1_decisions.items():
+        matches = [
+            item for item in checker_progress
+            if item["data"].get("trigger_event_id") == decision["event_id"]
+            and item["data"].get("trigger_receipt_id") == receipt_id
+        ]
+        require(len(matches) == 1, "D1 verdict requires exactly one Checker progress update")
+        require(matches[0]["minute"] >= decision["minute"], "Checker progress cannot precede its D1 verdict")
+        require(matches[0]["scope"] == decision["scope"], "Checker progress scope must match its D1 verdict")
+
+    material_events = [item for item in trace["events"] if item["action"] in MATERIAL_PROGRESS_TRIGGERS]
+    supervisor_progress = [item for item in trace["events"] if item["action"] == "SUPERVISOR_PROGRESS"]
+    for trigger in material_events:
+        matches = [
+            item for item in supervisor_progress
+            if item["data"].get("trigger_event_id") == trigger["event_id"]
+        ]
+        require(
+            len(matches) == 1,
+            "material progress trigger requires exactly one Supervisor progress update",
+        )
+        require(matches[0]["minute"] >= trigger["minute"], "Supervisor progress cannot precede its trigger")
+
     for item in trace["events"]:
         action = item["action"]
         data = item["data"]
@@ -495,6 +709,21 @@ def validate_progress(trace: dict[str, Any], sets: dict[str, dict[str, Any]], ev
             require(version == current_version, "Checker progress must show current Required-set version")
             go_id = scope["go_id"]
             require(go_id in cell_map, "Checker progress GO is not currently Required")
+            trigger_id = data.get("trigger_event_id")
+            require(trigger_id in event_index, "Checker progress requires a known trigger identity")
+            trigger = event_index[trigger_id]
+            require(trigger["minute"] <= item["minute"], "Checker progress cannot precede its trigger")
+            if trigger["action"] == "D1_VERDICT":
+                require(
+                    data.get("trigger_receipt_id") == trigger["data"].get("receipt_id"),
+                    "Checker progress Receipt identity must match its D1 verdict",
+                )
+            else:
+                require(
+                    trigger["action"] in {"WAKE_ACK", "MECHANICAL_CHECKER_STARTED", "CHECKER_START", "REQUIRED_SET_AMENDMENT"}
+                    and data.get("trigger_receipt_id") is None,
+                    "non-D1 Checker progress must bind a delivery or plan-revision trigger",
+                )
             total = len(cell_map[go_id])
             accepted = len(cell_map[go_id] & set(accepted_cells))
             require(data.get("required_cell_total") == total, "Checker progress Required CELL denominator mismatch")
@@ -555,7 +784,7 @@ def validate_progress(trace: dict[str, Any], sets: dict[str, dict[str, Any]], ev
             require(data.get("total_level_count") == trace["run"]["total_level_count"], "Supervisor total Level denominator mismatch")
             if data.get("state") == "D2_VERIFIED":
                 require(verified > 0, "D2 verified GO count cannot be claimed without a current verdict")
-            require(data.get("state") in {"GO_CANDIDATE_READY", "D2_VERIFIED", "RUN_VERIFIED", "OWNER_ACCEPTED"}, "Supervisor progress state is not layer-specific")
+            require(data.get("state") in {"PLAN_REVISED", "GO_CANDIDATE_READY", "D2_VERIFIED", "RUN_VERIFIED", "OWNER_ACCEPTED"}, "Supervisor progress state is not layer-specific")
 
 
 def validate_terminal(trace: dict[str, Any], patrol: dict[str, Any]) -> None:
@@ -579,8 +808,11 @@ def validate_trace(trace: dict[str, Any]) -> None:
     bindings = validate_bindings(trace)
     patrol = validate_patrol(trace)
     event_index = validate_event_order(trace)
-    validate_pin_policy(trace, event_index)
+    agent_pin_violation = validate_pin_policy(trace, event_index)
     validate_actor_boundaries(trace, patrol)
+    validate_patrol_reports(trace, event_index)
+    if agent_pin_violation:
+        raise RunControlValidationError("UNAUTHORIZED_THREAD_PIN")
     validate_worker_wakes(trace, bindings, patrol)
     validate_capacity(trace, event_index)
     validate_progress(trace, sets, event_index)

@@ -32,10 +32,14 @@
   "run_control": {
     "worker_wake_actor": "WORKER",
     "worker_wake_offsets_minutes": [0, 2, 4, 6],
+    "active_dispatch_requires_wake_lifecycle": true,
     "patrol_count_per_run": 1,
     "patrol_model": "gpt-5.6-luna+xhigh",
+    "patrol_project_workload_minutes": {"LOW": 10, "MEDIUM": 15, "HIGH": 30},
+    "canonical_technical_roles": ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"],
     "supervisor_wait_threads": false,
     "progress_source": "CURRENT_EFFECTIVE_RECEIPTS",
+    "progress_trigger_cardinality": "EXACTLY_ONE",
     "capacity_gate": ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"],
     "method_role_pin": false
   },

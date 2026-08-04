@@ -2,6 +2,15 @@
 
 ## 2.5.0
 
+- Hardened post-dispatch closure: active dispatches cannot omit wake, active traces
+  cannot erase events, and orphan Worker signals fail closed.
+- Made D1→Checker and material-trigger→Supervisor progress updates exact one-to-one
+  bindings; missing, duplicate, reordered, or reused triggers are rejected.
+- Restored the canonical technical role matrix to Supervisor/Checker/Worker/
+  Verification, with patrol capability and Pin denial kept in its separate binding.
+- Added fixed patrol check/status/finding envelopes with observation/evidence
+  identity and corrected project workload mapping to LOW→10/MEDIUM→15/HIGH→30.
+
 - Added the Worker-only T+0/T+2/T+4/T+6 wake ladder for its frozen Checker,
   scoped delivery messages, `WAKE_ACK`, temporary heartbeat, and `PENDING_WAKE`.
 - Prohibited Supervisor `wait_threads` waiting and added exactly one mechanical

@@ -10,7 +10,7 @@ For a new 2.5.0 Run:
 2. Freeze one Worker-to-Checker wake binding per pair and preflight direct send,
    task read/list/unarchive, temporary heartbeat, and `PENDING_WAKE` capability.
 3. Create exactly one visible `RUN_PATROL_CONVERSATION` and one heartbeat, bound to
-   `gpt-5.6-luna+xhigh` and a frozen 10/15/30-minute interval.
+   `gpt-5.6-luna+xhigh`; map project workload LOW→10, MEDIUM→15, HIGH→30 minutes.
 4. Version Required CELL/GO/Level sets. Rebuild displayed progress only from current
    D1 and D2 receipts; do not translate delivery positions into accepted progress.
 5. Record `DEVICE_CAPACITY_PROFILE` and initial `CUMULATIVE_ENGINEERING_LOAD`; run
@@ -18,6 +18,12 @@ For a new 2.5.0 Run:
 6. Remove task-Pin capability from every method role. Preserve Owner-explicit Pin
    provenance; report Agent or unknown provenance without automatic unpin.
 7. Validate a complete `RUN_CONTROL_TRACE` before activating Level work.
+
+For traces regenerated after this correction, set an explicit dispatch phase,
+bind every dispatch to one complete wake lifecycle, bind every unique D1 and
+material progress trigger to exactly one update, keep the technical role matrix to
+Supervisor/Checker/Worker/Verification, and place patrol Pin denial/reporting in
+the separate patrol binding. Older rejected 2.5.0 candidates are not evidence.
 
 The migration adds no new D layer, dynamic Chain, conditional route, general role
 message bus, technical patrol authority, device monitor, or product lifecycle gate.

@@ -113,6 +113,9 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
         "DELIVERED_OR_BLOCKED_OR_EXECUTION_FAILURE",
     ]
     assert wake["general_role_message_bus"] is False
+    assert wake["dispatch_requires_complete_wake_lifecycle"] is True
+    assert wake["initial_undispatched_may_have_no_wake"] is True
+    assert wake["worker_signal_requires_matching_dispatch"] is True
     assert all(wake["dispatch_capability_preflight"].values())
 
     wait = c["supervisor_wait_policy"]
@@ -127,6 +130,23 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
     assert patrol["model"] == "gpt-5.6-luna"
     assert patrol["reasoning_effort"] == "xhigh"
     assert patrol["interval_minutes"] == [10, 15, 30]
+    assert patrol["project_workload_interval_minutes"] == {
+        "LOW": 10,
+        "MEDIUM": 15,
+        "HIGH": 30,
+    }
+    assert patrol["canonical_technical_role"] is False
+    assert patrol["set_thread_pinned"] is False
+    assert patrol["mechanical_checks"] == [
+        "UNEXPLAINED_STALL",
+        "PENDING_WAKE",
+        "SUBAGENT_EVIDENCE",
+        "SUPERVISOR_WAIT",
+        "DUPLICATE_PATROL_OR_HEARTBEAT",
+        "THREAD_PIN_PROVENANCE",
+        "TERMINAL_NOT_CLOSED",
+    ]
+    assert patrol["status_and_alerts_require_observation_and_evidence_identity"] is True
     assert patrol["authoritative"] is False
     assert patrol["technical_acceptance"] is False
     assert patrol["product_work"] is False
@@ -150,6 +170,10 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
     assert progress["checker_cell_noise_to_supervisor"] is False
     assert progress["verification_continuous_progress"] is False
     assert progress["patrol_engineering_progress"] is False
+    assert progress["every_d1_decision_has_exactly_one_checker_progress"] is True
+    assert progress["checker_progress_binds_d1_event_and_receipt"] is True
+    assert progress["every_material_trigger_has_exactly_one_supervisor_progress"] is True
+    assert progress["trigger_reuse_or_omission_allowed"] is False
     assert progress["states"] == [
         "DELIVERED",
         "D1_ACCEPTED",
@@ -291,5 +315,6 @@ def test_readiness_count() -> None:
         "第七项硬规则",
         "UNAUTHORIZED_THREAD_PIN",
         "PIN_PROVENANCE_UNKNOWN",
+        "LOW→10、MEDIUM→15、HIGH→30",
     ):
         assert marker in joined

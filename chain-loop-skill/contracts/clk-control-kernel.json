@@ -123,6 +123,9 @@
     ],
     "checker_first_action": "WAKE_ACK_RUN_GO_CELL_ROUND",
     "general_role_message_bus": false,
+    "dispatch_requires_complete_wake_lifecycle": true,
+    "initial_undispatched_may_have_no_wake": true,
+    "worker_signal_requires_matching_dispatch": true,
     "dispatch_capability_preflight": {
       "send_message_to_thread": true,
       "read_thread": true,
@@ -147,6 +150,23 @@
     "model": "gpt-5.6-luna",
     "reasoning_effort": "xhigh",
     "interval_minutes": [10, 15, 30],
+    "project_workload_interval_minutes": {
+      "LOW": 10,
+      "MEDIUM": 15,
+      "HIGH": 30
+    },
+    "canonical_technical_role": false,
+    "set_thread_pinned": false,
+    "mechanical_checks": [
+      "UNEXPLAINED_STALL",
+      "PENDING_WAKE",
+      "SUBAGENT_EVIDENCE",
+      "SUPERVISOR_WAIT",
+      "DUPLICATE_PATROL_OR_HEARTBEAT",
+      "THREAD_PIN_PROVENANCE",
+      "TERMINAL_NOT_CLOSED"
+    ],
+    "status_and_alerts_require_observation_and_evidence_identity": true,
     "authoritative": false,
     "technical_acceptance": false,
     "product_work": false,
@@ -177,6 +197,10 @@
     "checker_cell_noise_to_supervisor": false,
     "verification_continuous_progress": false,
     "patrol_engineering_progress": false,
+    "every_d1_decision_has_exactly_one_checker_progress": true,
+    "checker_progress_binds_d1_event_and_receipt": true,
+    "every_material_trigger_has_exactly_one_supervisor_progress": true,
+    "trigger_reuse_or_omission_allowed": false,
     "states": [
       "DELIVERED",
       "D1_ACCEPTED",

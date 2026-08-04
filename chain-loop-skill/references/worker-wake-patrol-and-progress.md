@@ -14,6 +14,12 @@ version. Preflight all Worker capabilities for send, read, list, unarchive,
 temporary-heartbeat upsert/delete, and PENDING_WAKE write. Any missing capability
 fails closed before dispatch.
 
+Every active `CELL_DISPATCH` binds exactly one current pair, complete
+Run/GO/CELL/Round/Required-set scope, and one wake identity. That identity must
+close through success at its reached level or through all three attempts and T+6
+PENDING_WAKE. `INITIAL_UNDISPATCHED` may contain no wake; an active dispatch or
+Worker signal can never use the empty-trace exception.
+
 Worker uses the ladder only after the current formal CELL delivery, BLOCKED, or
 EXECUTION_FAILURE. No other role may use it. The message binds one progress
 identity and a short scope:
@@ -61,7 +67,8 @@ reasoning_effort: xhigh
 interval_minutes: 10 | 15 | 30
 ```
 
-Frozen Run difficulty maps HIGH→10, MEDIUM→15, and LOW→30. Patrol is
+Frozen project workload maps LOW→10, MEDIUM→15, and HIGH→30: a heavy project's
+normal silent command window is longer. Patrol is
 non-authoritative, performs no product work or technical acceptance, and is not
 added to the canonical method-role or D-layer enums.
 
@@ -76,7 +83,10 @@ Patrol checks only:
 - patrol left open after formal termination.
 
 Formal PAUSED, legitimate BLOCKED, and documented external-condition wait are not
-stalls. Patrol emits fixed status, evidence, and alerts only. It cannot inspect
+stalls. Every status binds the complete fixed check set, a fixed status enum, and
+evidence identity. Every alert binds a fixed finding, observation identity, and
+evidence identity; findings and alerts match one-to-one. Free-form “all normal” is
+invalid. Patrol cannot inspect
 code quality, judge plans or acceptance, repair, take over, redispatch, report
 engineering progress, create/fork/spawn/delegate, Pin, or unpin.
 
@@ -113,6 +123,9 @@ Receipts:
 
 Green Worker tests, delivery, inspection, rework, and duplicate Receipt do not
 increment. One Required CELL ID contributes at most once.
+Every unique D1 decision is followed by exactly one Checker update bound to that
+D1 event, Receipt, current Required-set, and scope. Missing, duplicate, stale,
+wrong-trigger, or pre-verdict updates are invalid.
 
 ### Checker and Supervisor
 
@@ -127,6 +140,10 @@ graph/manifest Required-set, Run, D3, or Owner-Acceptance change. It derives:
 - current-Level D2-verified Required GOs / current-Level Required GOs;
 - verified Levels / total Required Levels;
 - current Required-set version and hierarchical state.
+
+Every material trigger has exactly one later Supervisor update bound by event ID.
+One trigger cannot cover another; missing, duplicate, reordered, or reused trigger
+identity fails closed.
 
 CELL means D1 accepted; GO means D2 verified; Run verified requires D3; Owner
 accepted requires the bounded Owner verdict. Verification emits formal verdicts
@@ -198,8 +215,8 @@ the fifth-rule Required-set version and denominator but not accepted progress.
 
 Creation, dispatch, ACTIVE, wait, BLOCKED, rework, verification, milestone,
 persistence, and project importance never authorize Pin. Every Supervisor,
-Checker, Worker, Verification, Router, Grapher, and patrol capability binding has
-`set_thread_pinned: false`. Pin cannot replace registry, status, progress, recovery,
+The canonical Supervisor/Checker/Worker/Verification capability matrix and the
+separate patrol binding have `set_thread_pinned: false`. Pin cannot replace registry, status, progress, recovery,
 archive, or unarchive.
 
 Only Owner UI action or current-Run item-specific Owner authorization is legal.

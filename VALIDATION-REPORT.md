@@ -36,10 +36,10 @@ python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-re
 PASS: CLK Receipt chain
 
 python -m pytest -q
-176 passed, 181 subtests passed
+201 passed, 181 subtests passed
 
 python -O -m pytest tests/test_run_control.py::test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions -q
-20 passed; the expected pytest optimized-mode warning was emitted
+27 passed; the expected pytest optimized-mode warning was emitted
 
 git diff --check
 PASS
@@ -52,18 +52,29 @@ The candidate proves:
 - Worker-only T+0/T+2/T+4/T+6 wake escalation, exact frozen Checker identity,
   archive/host repair without guessing, ACK stop, temporary-heartbeat cleanup, and
   deterministic `PENDING_WAKE` fallback;
+- every active formal dispatch binds one current Worker/Checker/scope and exactly
+  one complete wake lifecycle; only `INITIAL_UNDISPATCHED` may contain no wake,
+  while erased active events and orphan Worker signals fail closed;
 - Supervisor no-wait behavior and exactly one visible Luna+xhigh mechanical Run
   patrol/heartbeat, including pause tolerance, duplicate rejection, pending-wake
-  consumption, and terminal cleanup/archive;
+  consumption, and terminal cleanup/archive; project workload maps LOW→10,
+  MEDIUM→15, HIGH→30 minutes;
+- patrol reports use a complete fixed check set, fixed status/finding enums, and
+  observation/evidence identities; unknown Pin without a bound alert and arbitrary
+  “all normal” prose fail closed;
 - visible peer tasks are not subagents, while spawned/delegated/hidden/background
   Agent evidence is rejected;
 - delivery does not increment acceptance, D1 PASS increments once, duplicate or
   rework receipts do not, GO candidate readiness differs from D2, and amendments
   version/recompute denominators without rewriting history;
+- every unique D1 decision/Receipt has exactly one same-scope Checker progress
+  update, and every material trigger has exactly one later Supervisor update;
+  missing, duplicate, reordered, wrong, or reused trigger identities are rejected;
 - unknown or insufficient device capacity blocks or splits before dispatch; actual
   load feedback tightens later gates; Worker self-split is rejected; post-dispatch
   splits of 3, 6, 7, or 8 successors are severe and re-evaluate remaining work;
-- every method role denies Pin capability; explicit Owner Pin is accepted, Agent
+- the canonical technical-role matrix remains exactly Supervisor/Checker/Worker/
+  Verification; patrol remains separate, and both deny Pin capability. Explicit Owner Pin is accepted, Agent
   Pin is `UNAUTHORIZED_THREAD_PIN`, unknown provenance is
   `PIN_PROVENANCE_UNKNOWN`, and Pin-then-Unpin preserves violation evidence without
   automatic unpin.

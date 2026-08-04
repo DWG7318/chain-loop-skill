@@ -11,6 +11,15 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate_run_control.py"
+PATROL_CHECKS = [
+    "UNEXPLAINED_STALL",
+    "PENDING_WAKE",
+    "SUBAGENT_EVIDENCE",
+    "SUPERVISOR_WAIT",
+    "DUPLICATE_PATROL_OR_HEARTBEAT",
+    "THREAD_PIN_PROVENANCE",
+    "TERMINAL_NOT_CLOSED",
+]
 
 
 def event(
@@ -48,6 +57,37 @@ def wake_scope(round_id: str = "R01") -> dict:
     }
 
 
+def patrol_status_data(
+    status: str,
+    *,
+    cycle_id: str = "PATROL-CYCLE-001",
+    finding_ids: list[str] | None = None,
+) -> dict:
+    return {
+        "cycle_id": cycle_id,
+        "status": status,
+        "checks": PATROL_CHECKS,
+        "finding_ids": finding_ids or [],
+        "evidence_refs": ["PATROL-SNAPSHOT-001"],
+    }
+
+
+def patrol_alert_data(
+    finding_id: str,
+    finding: str,
+    observation_ref: str,
+    *,
+    cycle_id: str = "PATROL-CYCLE-001",
+) -> dict:
+    return {
+        "cycle_id": cycle_id,
+        "finding_id": finding_id,
+        "finding": finding,
+        "observation_refs": [observation_ref],
+        "evidence_refs": [f"EVIDENCE::{observation_ref}"],
+    }
+
+
 def wake_attempt(
     level: int,
     minute: int,
@@ -64,6 +104,7 @@ def wake_attempt(
         "target_thread_id": "THREAD-CHECKER-A",
         "target_host_id": target_host_id,
         "progress_identity": "RUN-001|REQ-001|GO-01-A|CELL-01-A.01|R01",
+        "dispatch_event_id": "EVENT-DISPATCH-A",
         "message": message,
         "guessed_id": False,
         "created_replacement_checker": False,
@@ -92,6 +133,7 @@ def valid_trace() -> dict:
             "baseline_id": "BASELINE-001",
             "required_set_version": "REQ-001",
             "state": "RUNNING",
+            "dispatch_phase": "ACTIVE",
             "pause_reason": None,
             "terminal_confirmed": False,
             "total_level_count": 1,
@@ -196,9 +238,6 @@ def valid_trace() -> dict:
             {"role_id": "CHECKER-A", "role_kind": "CHECKER", "set_thread_pinned": False},
             {"role_id": "WORKER-A", "role_kind": "WORKER", "set_thread_pinned": False},
             {"role_id": "VERIFICATION-D2-A", "role_kind": "VERIFICATION", "set_thread_pinned": False},
-            {"role_id": "ROUTER-001", "role_kind": "ROUTER", "set_thread_pinned": False},
-            {"role_id": "GRAPHER-001", "role_kind": "GRAPHER", "set_thread_pinned": False},
-            {"role_id": "PATROL-RUN-001", "role_kind": "PATROL", "set_thread_pinned": False},
         ],
         "pin_observations": [],
         "worker_bindings": [
@@ -231,9 +270,10 @@ def valid_trace() -> dict:
                 "authoritative": False,
                 "technical_acceptance": False,
                 "product_work": False,
+                "set_thread_pinned": False,
                 "model": "gpt-5.6-luna",
                 "reasoning_effort": "xhigh",
-                "difficulty": "MEDIUM",
+                "project_workload": "MEDIUM",
                 "interval_minutes": 15,
                 "heartbeat_id": "PATROL::RUN-001",
                 "heartbeat_count": 1,
@@ -247,8 +287,14 @@ def valid_trace() -> dict:
                 "CHECKER",
                 "CHECKER-A",
                 "CELL_DISPATCH",
+                wake_id="WAKE-001",
                 scope=wake_scope(),
-                data={"gate_id": "CAPACITY-GATE-001", "plan_version": "PLAN-001"},
+                data={
+                    "gate_id": "CAPACITY-GATE-001",
+                    "plan_version": "PLAN-001",
+                    "worker_id": "WORKER-A",
+                    "checker_id": "CHECKER-A",
+                },
             ),
             wake_attempt(1, 0, "SENT"),
             event(
@@ -278,6 +324,8 @@ def valid_trace() -> dict:
                 "CHECKER_PROGRESS",
                 scope=wake_scope(),
                 data={
+                    "trigger_event_id": "EVENT-ACK",
+                    "trigger_receipt_id": None,
                     "accepted_cell_count": 0,
                     "required_cell_total": 1,
                     "state": "DELIVERED",
@@ -305,6 +353,8 @@ def valid_trace() -> dict:
                 "CHECKER_PROGRESS",
                 scope=wake_scope(),
                 data={
+                    "trigger_event_id": "EVENT-D1-A",
+                    "trigger_receipt_id": "RECEIPT-D1-A",
                     "accepted_cell_count": 1,
                     "required_cell_total": 1,
                     "state": "D1_ACCEPTED",
@@ -580,7 +630,22 @@ def pending_wake_trace() -> dict:
                 "PATROL-RUN-001",
                 "PATROL_ALERT",
                 wake_id="WAKE-001",
-                data={"reason": "PENDING_WAKE", "evidence_event_id": "EVENT-PENDING-WAKE"},
+                data=patrol_alert_data(
+                    "FINDING-PENDING-WAKE",
+                    "PENDING_WAKE",
+                    "EVENT-PENDING-WAKE",
+                ),
+            ),
+            event(
+                "EVENT-PATROL-STATUS",
+                7,
+                "PATROL",
+                "PATROL-RUN-001",
+                "PATROL_STATUS",
+                data=patrol_status_data(
+                    "ALERTS_EMITTED",
+                    finding_ids=["FINDING-PENDING-WAKE"],
+                ),
             ),
         ]
     )
@@ -628,6 +693,52 @@ def test_non_worker_cannot_use_wake_ladder(tmp_path: Path) -> None:
     trace = valid_trace()
     next(item for item in trace["events"] if item["action"] == "WAKE_ATTEMPT")["actor_kind"] = "CHECKER"
     assert_invalid(tmp_path, trace, "only WORKER")
+
+
+def test_dispatched_cell_cannot_omit_its_complete_wake_lifecycle(tmp_path: Path) -> None:
+    trace = valid_trace()
+    wake_actions = {
+        "WAKE_ATTEMPT", "WAKE_ACK", "MECHANICAL_CHECKER_STARTED", "CHECKER_START",
+        "TEMP_HEARTBEAT_UPSERT", "TEMP_HEARTBEAT_DELETE", "PENDING_WAKE_WRITE",
+        "PENDING_WAKE_CONSUME",
+    }
+    trace["events"] = [item for item in trace["events"] if item["action"] not in wake_actions]
+    assert_invalid(tmp_path, trace, "CELL dispatch requires one wake lifecycle")
+
+
+def test_active_trace_cannot_erase_all_events(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["events"] = []
+    assert_invalid(tmp_path, trace, "ACTIVE dispatch phase requires CELL_DISPATCH")
+
+
+def test_worker_wake_lifecycle_cannot_exist_without_its_dispatch(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["events"] = [item for item in trace["events"] if item["action"] != "CELL_DISPATCH"]
+    assert_invalid(tmp_path, trace, "wake lifecycle requires one CELL_DISPATCH")
+
+
+def test_initial_undispatched_trace_allows_no_wake_but_rejects_worker_signal(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["run"]["dispatch_phase"] = "INITIAL_UNDISPATCHED"
+    trace["events"] = []
+    assert_valid(tmp_path, trace)
+    trace["events"].append(
+        event(
+            "EVENT-ORPHAN-SCOPE-EXCEEDED",
+            0,
+            "WORKER",
+            "WORKER-A",
+            "CELL_SCOPE_EXCEEDED",
+            scope=wake_scope(),
+            data={
+                "checkpoint_id": "CHECKPOINT-ORPHAN",
+                "evidence_hash": "d" * 64,
+                "worker_continued": False,
+            },
+        )
+    )
+    assert_invalid(tmp_path, trace, "INITIAL_UNDISPATCHED trace cannot contain Worker signal")
 
 
 def test_supervisor_wait_threads_is_rejected_but_zero_snapshot_is_allowed(tmp_path: Path) -> None:
@@ -684,7 +795,9 @@ def test_subagent_capability_evidence_is_rejected(tmp_path: Path, action: str) -
 
 def test_formal_pause_is_not_false_alerted(tmp_path: Path) -> None:
     trace = valid_trace()
-    trace["run"].update(state="PAUSED", pause_reason="FORMAL_PAUSE")
+    trace["run"].update(
+        state="PAUSED", pause_reason="FORMAL_PAUSE", dispatch_phase="INITIAL_UNDISPATCHED"
+    )
     trace["events"] = [
         event(
             "EVENT-PAUSE-STATUS",
@@ -692,10 +805,82 @@ def test_formal_pause_is_not_false_alerted(tmp_path: Path) -> None:
             "PATROL",
             "PATROL-RUN-001",
             "PATROL_STATUS",
-            data={"status": "LEGAL_PAUSE", "alert": False},
+            data=patrol_status_data("LEGAL_PAUSE"),
         )
     ]
     assert_valid(tmp_path, trace)
+
+
+@pytest.mark.parametrize(
+    ("run_state", "patrol_status"),
+    [("BLOCKED", "LEGAL_BLOCKED"), ("WAITING_EXTERNAL", "LEGAL_EXTERNAL_WAIT")],
+)
+def test_legal_blocked_and_external_wait_are_not_false_alerted(
+    tmp_path: Path, run_state: str, patrol_status: str
+) -> None:
+    trace = valid_trace()
+    trace["run"].update(
+        state=run_state,
+        pause_reason="AUTHORIZED_CONDITION",
+        dispatch_phase="INITIAL_UNDISPATCHED",
+    )
+    trace["events"] = [
+        event(
+            "EVENT-LEGAL-STATUS",
+            0,
+            "PATROL",
+            "PATROL-RUN-001",
+            "PATROL_STATUS",
+            data=patrol_status_data(patrol_status),
+        )
+    ]
+    assert_valid(tmp_path, trace)
+
+
+def test_unexplained_stall_uses_fixed_bound_patrol_finding(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["events"].extend(
+        [
+            event(
+                "EVENT-STALL-ALERT",
+                4,
+                "PATROL",
+                "PATROL-RUN-001",
+                "PATROL_ALERT",
+                data=patrol_alert_data(
+                    "FINDING-STALL",
+                    "UNEXPLAINED_STALL",
+                    "STALL-OBSERVATION-001",
+                ),
+            ),
+            event(
+                "EVENT-STALL-STATUS",
+                4,
+                "PATROL",
+                "PATROL-RUN-001",
+                "PATROL_STATUS",
+                data=patrol_status_data(
+                    "ALERTS_EMITTED", finding_ids=["FINDING-STALL"]
+                ),
+            ),
+        ]
+    )
+    assert_valid(tmp_path, trace)
+
+
+def test_patrol_status_rejects_free_text_without_fixed_checks_or_evidence(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["events"].append(
+        event(
+            "EVENT-ARBITRARY-PATROL",
+            4,
+            "PATROL",
+            "PATROL-RUN-001",
+            "PATROL_STATUS",
+            data={"reason": "EVERYTHING_FINE_WITHOUT_CHECKS"},
+        )
+    )
+    assert_invalid(tmp_path, trace, "patrol status must bind the complete mechanical check set")
 
 
 def test_duplicate_patrol_or_heartbeat_is_rejected(tmp_path: Path) -> None:
@@ -706,7 +891,9 @@ def test_duplicate_patrol_or_heartbeat_is_rejected(tmp_path: Path) -> None:
 
 def test_terminal_cleanup_deletes_heartbeat_closes_and_archives(tmp_path: Path) -> None:
     trace = valid_trace()
-    trace["run"].update(state="LOOP_TERMINAL", terminal_confirmed=True)
+    trace["run"].update(
+        state="LOOP_TERMINAL", terminal_confirmed=True, dispatch_phase="TERMINAL"
+    )
     trace["patrols"][0]["heartbeat_state"] = "DELETED"
     trace["events"] = [
         event("EVENT-TERMINAL", 0, "SUPERVISOR", "SUPERVISOR-001", "LOOP_TERMINAL_CONFIRMED"),
@@ -796,6 +983,52 @@ def test_supervisor_progress_uses_current_level_topology_and_verdicts(tmp_path: 
     update = next(item for item in trace["events"] if item["event_id"] == "EVENT-SUPERVISOR-D2")
     update["data"]["current_level_verified_go_count"] = 2
     assert_invalid(tmp_path, trace, "D2 verified GO count")
+
+
+def test_every_d1_verdict_requires_exactly_one_bound_checker_progress(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["events"] = [item for item in trace["events"] if item["event_id"] != "EVENT-PROGRESS-D1"]
+    assert_invalid(tmp_path, trace, "D1 verdict requires exactly one Checker progress update")
+
+
+def test_checker_progress_rejects_wrong_order_and_wrong_trigger(tmp_path: Path) -> None:
+    trace = valid_trace()
+    progress = next(item for item in trace["events"] if item["event_id"] == "EVENT-PROGRESS-D1")
+    progress["minute"] = 1
+    trace["events"].sort(key=lambda item: item["minute"])
+    assert_invalid(tmp_path, trace, "Checker progress cannot precede its D1 verdict")
+
+    trace = valid_trace()
+    progress = next(item for item in trace["events"] if item["event_id"] == "EVENT-PROGRESS-D1")
+    progress["data"].update(trigger_event_id="EVENT-ACK", trigger_receipt_id=None)
+    assert_invalid(tmp_path, trace, "D1 verdict requires exactly one Checker progress update")
+
+    trace = valid_trace()
+    duplicate = deepcopy(next(item for item in trace["events"] if item["event_id"] == "EVENT-PROGRESS-D1"))
+    duplicate["event_id"] = "EVENT-PROGRESS-D1-DUPLICATE"
+    trace["events"].append(duplicate)
+    trace["events"].sort(key=lambda item: item["minute"])
+    assert_invalid(tmp_path, trace, "D1 verdict requires exactly one Checker progress update")
+
+
+def test_every_material_trigger_requires_exactly_one_supervisor_progress(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["events"] = [item for item in trace["events"] if item["action"] != "SUPERVISOR_PROGRESS"]
+    assert_invalid(tmp_path, trace, "material progress trigger requires exactly one Supervisor progress update")
+
+    trace = valid_trace()
+    duplicate = deepcopy(next(item for item in trace["events"] if item["event_id"] == "EVENT-SUPERVISOR-D2"))
+    duplicate["event_id"] = "EVENT-SUPERVISOR-D2-DUPLICATE"
+    trace["events"].append(duplicate)
+    trace["events"].sort(key=lambda item: item["minute"])
+    assert_invalid(tmp_path, trace, "material progress trigger requires exactly one Supervisor progress update")
+
+
+def test_supervisor_progress_cannot_let_one_trigger_cover_another(tmp_path: Path) -> None:
+    trace = valid_trace()
+    candidate = next(item for item in trace["events"] if item["event_id"] == "EVENT-SUPERVISOR-CANDIDATE")
+    candidate["data"]["trigger_event_id"] = "EVENT-D2-A"
+    assert_invalid(tmp_path, trace, "material progress trigger requires exactly one Supervisor progress update")
 
 
 def test_required_set_amendment_recomputes_denominator(tmp_path: Path) -> None:
@@ -926,7 +1159,8 @@ def test_unknown_device_capability_is_capacity_blocked(tmp_path: Path) -> None:
     trace = valid_trace()
     trace["device_capacity_profile"]["unknown_capabilities"] = ["AVAILABLE_RAM"]
     trace["cell_capacity_gates"][0]["result"] = "CAPACITY_BLOCKED"
-    trace["events"] = [item for item in trace["events"] if item["action"] != "CELL_DISPATCH"]
+    trace["run"]["dispatch_phase"] = "INITIAL_UNDISPATCHED"
+    trace["events"] = []
     assert_valid(tmp_path, trace)
     trace["cell_capacity_gates"][0]["result"] = "PASS"
     assert_invalid(tmp_path, trace, "unknown capability")
@@ -1058,6 +1292,7 @@ def test_capacity_split_recomputes_progress_denominator_without_increment(tmp_pa
             ],
         }
     )
+    trace["run"]["dispatch_phase"] = "INITIAL_UNDISPATCHED"
     trace["events"] = [
         event(
             "EVENT-PRE-SPLIT",
@@ -1094,7 +1329,29 @@ def test_capacity_split_recomputes_progress_denominator_without_increment(tmp_pa
             "CHECKER-A",
             "CHECKER_PROGRESS",
             scope={**wake_scope(), "cell_id": "CELL-01-A.01-1", "required_cell_total": 2, "required_set_version": "REQ-SPLIT"},
-            data={"accepted_cell_count": 0, "required_cell_total": 2, "state": "DELIVERED"},
+            data={
+                "trigger_event_id": "EVENT-SPLIT-AMEND",
+                "trigger_receipt_id": None,
+                "accepted_cell_count": 0,
+                "required_cell_total": 2,
+                "state": "DELIVERED",
+            },
+        ),
+        event(
+            "EVENT-SPLIT-SUPERVISOR-PROGRESS",
+            0,
+            "SUPERVISOR",
+            "SUPERVISOR-001",
+            "SUPERVISOR_PROGRESS",
+            data={
+                "trigger_event_id": "EVENT-SPLIT-AMEND",
+                "required_set_version": "REQ-SPLIT",
+                "current_level_verified_go_count": 0,
+                "current_level_required_go_total": 2,
+                "completed_level_count": 0,
+                "total_level_count": 1,
+                "state": "PLAN_REVISED",
+            },
         ),
     ]
     gate = trace["cell_capacity_gates"][0]
@@ -1133,7 +1390,7 @@ def test_creation_dispatch_and_method_states_do_not_trigger_pin(tmp_path: Path) 
 
 @pytest.mark.parametrize(
     "role_kind",
-    ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION", "ROUTER", "GRAPHER", "PATROL"],
+    ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"],
 )
 def test_all_method_roles_permanently_deny_pin_capability(tmp_path: Path, role_kind: str) -> None:
     trace = valid_trace()
@@ -1142,12 +1399,42 @@ def test_all_method_roles_permanently_deny_pin_capability(tmp_path: Path, role_k
     assert_invalid(tmp_path, trace, "set_thread_pinned capability")
 
 
+def test_pin_capability_matrix_contains_only_canonical_clk_roles(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["method_role_capabilities"] = [
+        item
+        for item in trace["method_role_capabilities"]
+        if item["role_kind"] in {"SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"}
+    ]
+    assert_valid(tmp_path, trace)
+
+
+@pytest.mark.parametrize("extra_role", ["ROUTER", "GRAPHER", "PATROL"])
+def test_extra_role_in_canonical_clk_pin_matrix_is_rejected(tmp_path: Path, extra_role: str) -> None:
+    trace = valid_trace()
+    trace["method_role_capabilities"] = [
+        item
+        for item in trace["method_role_capabilities"]
+        if item["role_kind"] in {"SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"}
+    ]
+    trace["method_role_capabilities"].append(
+        {"role_id": f"EXTRA-{extra_role}", "role_kind": extra_role, "set_thread_pinned": False}
+    )
+    assert_invalid(tmp_path, trace, "is too long")
+
+
 def test_patrol_cannot_pin(tmp_path: Path) -> None:
     trace = valid_trace()
     trace["events"].append(
         event("EVENT-PATROL-PIN", 4, "PATROL", "PATROL-RUN-001", "SET_THREAD_PINNED_TRUE")
     )
     assert_invalid(tmp_path, trace, "patrol must not Pin")
+
+
+def test_patrol_pin_capability_is_independently_denied(tmp_path: Path) -> None:
+    trace = valid_trace()
+    trace["patrols"][0]["set_thread_pinned"] = True
+    assert_invalid(tmp_path, trace, "False was expected")
 
 
 @pytest.mark.parametrize("provenance", ["OWNER_UI", "OWNER_EXPLICIT_AUTHORIZATION"])
@@ -1168,14 +1455,55 @@ def test_agent_pin_emits_stable_unauthorized_violation(tmp_path: Path) -> None:
     assert_invalid(tmp_path, trace, "UNAUTHORIZED_THREAD_PIN")
 
 
-def test_unknown_pin_provenance_warns_without_unpin(tmp_path: Path) -> None:
+def test_unknown_pin_provenance_requires_bound_patrol_alert_without_unpin(tmp_path: Path) -> None:
     trace = valid_trace()
     trace["pin_observations"].append(
         pin_observation("UNKNOWN", "PIN_PROVENANCE_UNKNOWN", evidence=None)
     )
+    assert_invalid(tmp_path, trace, "PIN_PROVENANCE_UNKNOWN requires a bound PATROL_ALERT")
+
+    trace["events"].extend(
+        [
+            event(
+                "EVENT-PIN-UNKNOWN-ALERT",
+                4,
+                "PATROL",
+                "PATROL-RUN-001",
+                "PATROL_ALERT",
+                data=patrol_alert_data(
+                    "FINDING-PIN-UNKNOWN",
+                    "PIN_PROVENANCE_UNKNOWN",
+                    "PIN-UNKNOWN",
+                ),
+            ),
+            event(
+                "EVENT-PIN-UNKNOWN-STATUS",
+                4,
+                "PATROL",
+                "PATROL-RUN-001",
+                "PATROL_STATUS",
+                data=patrol_status_data(
+                    "ALERTS_EMITTED",
+                    finding_ids=["FINDING-PIN-UNKNOWN"],
+                ),
+            ),
+        ]
+    )
     assert_valid(tmp_path, trace)
     trace["pin_observations"][0]["patrol_unpinned"] = True
     assert_invalid(tmp_path, trace, "must not unpin unknown provenance")
+
+
+@pytest.mark.parametrize(
+    ("project_workload", "interval"),
+    [("LOW", 10), ("MEDIUM", 15), ("HIGH", 30)],
+)
+def test_project_workload_maps_to_patrol_interval(
+    tmp_path: Path, project_workload: str, interval: int
+) -> None:
+    trace = valid_trace()
+    trace["patrols"][0].update(project_workload=project_workload, interval_minutes=interval)
+    assert_valid(tmp_path, trace)
 
 
 def test_pin_then_unpin_keeps_original_agent_violation(tmp_path: Path) -> None:
@@ -1215,6 +1543,13 @@ def test_archive_lifecycle_is_independent_from_pin(tmp_path: Path) -> None:
         ("unknown_capacity", "unknown capability"),
         ("agent_pin", "UNAUTHORIZED_THREAD_PIN"),
         ("unknown_pin_unpin", "must not unpin unknown provenance"),
+        ("missing_wake", "CELL dispatch requires one wake lifecycle"),
+        ("missing_checker_progress", "D1 verdict requires exactly one Checker progress update"),
+        ("missing_supervisor_progress", "material progress trigger requires exactly one Supervisor progress update"),
+        ("unknown_pin_without_alert", "PIN_PROVENANCE_UNKNOWN requires a bound PATROL_ALERT"),
+        ("arbitrary_patrol_status", "patrol status must bind the complete mechanical check set"),
+        ("checker_wrong_trigger", "D1 verdict requires exactly one Checker progress update"),
+        ("supervisor_wrong_trigger", "material progress trigger requires exactly one Supervisor progress update"),
     ],
 )
 def test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes(
@@ -1249,6 +1584,37 @@ def test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes(
         observation = pin_observation("UNKNOWN", "PIN_PROVENANCE_UNKNOWN", evidence=None)
         observation["patrol_unpinned"] = True
         trace["pin_observations"].append(observation)
+    elif mutation == "missing_wake":
+        trace["events"] = [item for item in trace["events"] if item["action"] not in {
+            "WAKE_ATTEMPT", "WAKE_ACK", "MECHANICAL_CHECKER_STARTED", "CHECKER_START",
+            "TEMP_HEARTBEAT_UPSERT", "TEMP_HEARTBEAT_DELETE", "PENDING_WAKE_WRITE",
+            "PENDING_WAKE_CONSUME",
+        }]
+    elif mutation == "missing_checker_progress":
+        trace["events"] = [item for item in trace["events"] if item["event_id"] != "EVENT-PROGRESS-D1"]
+    elif mutation == "missing_supervisor_progress":
+        trace["events"] = [item for item in trace["events"] if item["action"] != "SUPERVISOR_PROGRESS"]
+    elif mutation == "unknown_pin_without_alert":
+        trace["pin_observations"].append(
+            pin_observation("UNKNOWN", "PIN_PROVENANCE_UNKNOWN", evidence=None)
+        )
+    elif mutation == "arbitrary_patrol_status":
+        trace["events"].append(
+            event(
+                "EVENT-BAD-PATROL",
+                4,
+                "PATROL",
+                "PATROL-RUN-001",
+                "PATROL_STATUS",
+                data={"reason": "EVERYTHING_FINE_WITHOUT_CHECKS"},
+            )
+        )
+    elif mutation == "checker_wrong_trigger":
+        progress = next(item for item in trace["events"] if item["event_id"] == "EVENT-PROGRESS-D1")
+        progress["data"].update(trigger_event_id="EVENT-ACK", trigger_receipt_id=None)
+    elif mutation == "supervisor_wrong_trigger":
+        progress = next(item for item in trace["events"] if item["event_id"] == "EVENT-SUPERVISOR-CANDIDATE")
+        progress["data"]["trigger_event_id"] = "EVENT-D2-A"
     path = write_trace(tmp_path, trace, f"{mutation}.yaml")
     for optimized in (False, True):
         result = run_trace(path, optimized=optimized)

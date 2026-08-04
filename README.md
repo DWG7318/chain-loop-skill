@@ -103,9 +103,15 @@ direct delivery, same-task recovery, deterministic temporary heartbeat, then
 `PENDING_WAKE`. Each level is bounded to two injected-clock minutes. Supervisor
 does not stay online with `wait_threads`; one non-authoritative
 `gpt-5.6-luna+xhigh` patrol per Run reports only mechanical control faults.
+Every active dispatch must close one same-scope wake lifecycle; only an explicitly
+initial, undispatched trace may contain neither. Patrol workload intervals are
+LOW→10, MEDIUM→15, HIGH→30 minutes and reports use fixed checks/findings with
+observation and evidence identity.
 
 Worker reports delivered CELL position, Checker derives accepted CELL progress
 from current D1 receipts, and Supervisor reports only D2/Level/Run milestones.
+Each unique D1 decision and each material Supervisor trigger has exactly one bound
+progress update; missing, duplicate, reordered, or reused trigger identity fails.
 Versioned Required sets provide denominators. Delivery and candidate readiness are
 never counted as D1 acceptance or D2 verification.
 

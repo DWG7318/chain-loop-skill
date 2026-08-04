@@ -25,7 +25,8 @@ Chain has at most one ACTIVE GO.
 
 Each Run also has exactly one visible mechanical patrol and heartbeat. Supervisor
 does not wait for members; Worker alone may perform bounded ACK waits while waking
-its own frozen Checker. Method roles never Pin tasks.
+its own frozen Checker. Every active dispatch closes one wake lifecycle. Canonical
+technical roles never Pin tasks; the separate patrol binding is also Pin-denied.
 
 ## Verification economy
 
@@ -69,6 +70,9 @@ An unresolved `TOPOLOGY_FAULT_RECORD` for the current Level blocks that pass.
 Worker delivery reports GO/CELL/Round and current `n/N` but adds no accepted count.
 Checker increments only from one current effective D1 PASS and notifies Supervisor
 only at the GO boundary. Supervisor counts current D2 verdicts and verified Levels.
+Each unique D1 event/Receipt and each material Supervisor trigger has exactly one
+later bound progress update; missing, duplicate, reordered, or reused identity is
+invalid.
 Required-set amendment or CELL split changes the displayed version and denominator
 without rewriting historical receipts.
 

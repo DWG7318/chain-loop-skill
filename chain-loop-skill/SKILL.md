@@ -775,14 +775,15 @@ Other independent GOs in the active Level may continue when the block cannot
 invalidate them, but the next Level remains closed until the full barrier passes.
 ## Dispatch, Wake, and Patrol
 
-Before dispatch, Checker completes gates, snapshots, and capability preflight.
+Before dispatch, Checker completes gates, snapshots, and capability preflight; each active dispatch binds one pair/scope and exactly one complete wake lifecycle.
 Worker alone may wake its frozen Checker: direct message at T+0; at T+2 read/list/unarchive and re-resolve the same Checker without guessing/replacement;
 at T+4 create/update one deterministic heartbeat; at T+6 write `PENDING_WAKE`.
 Each level waits at most two injected-clock minutes.
 
 Checker first emits scoped `WAKE_ACK`; matching ACK or processing proof stops escalation, deletes heartbeat, and consumes `PENDING_WAKE`. Supervisor never loops
 or waits with `wait_threads`; zero-time snapshots are allowed. The sole patrol
-consumes pending wakes and reports only mechanical Run faults. It never checks
+consumes pending wakes and reports only mechanical Run faults using a complete fixed check set, status/finding enums, and bound observation/evidence. `LOW→10`,
+`MEDIUM→15`, `HIGH→30` follows project workload. It never checks
 quality, repairs, takes over, dispatches, Pins, or creates roles. At
 `LOOP_TERMINAL`, it deletes heartbeat, records `PATROL_CLOSED`, and archives itself.
 The full machine rules are in
@@ -799,14 +800,13 @@ actions, out-of-scope writes, and objective/acceptance changes route internally 
 Supervisor and only then to Owner when genuinely Owner-exclusive.
 ## Progress and CELL Capacity
 
-Checker is the finest progress authority: only one effective D1 PASS adds to
+Checker is the finest progress authority: each unique D1 decision has exactly one bound progress update, and only one effective D1 PASS adds to
 `D1_ACCEPTED`; delivery, tests, checking, rework, blocks, and duplicates do not. It
 reports `a/N`, unchanged on failure, and sends Supervisor one
 `GO_CANDIDATE_READY` milestone only after all Required CELLs are accepted. That
 state is not `D2_VERIFIED`.
 
-Supervisor reports only substantive GO/Level/Run transitions, counting current D2
-verdicts and verified Levels. Verification emits verdicts only; patrol emits no
+Supervisor reports exactly once per substantive GO/Level/Run trigger, counting current D2 verdicts and verified Levels. Verification emits verdicts only; patrol emits no
 engineering progress. Denominators come from versioned Required sets; amendment or
 split shows the new version/recomputed denominator without rewriting history. Keep
 `DELIVERED`, `D1_ACCEPTED`, `GO_CANDIDATE_READY`,

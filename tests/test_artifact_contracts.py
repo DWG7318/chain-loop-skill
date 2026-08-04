@@ -46,6 +46,27 @@ def test_contract_templates_validate_against_schemas() -> None:
     validate("run-control-trace.schema.json", load_yaml("run-control-trace.yaml"))
 
 
+def test_run_control_schema_keeps_patrol_outside_canonical_technical_roles() -> None:
+    schema = load_schema("run-control-trace.schema.json")
+    assert schema["$defs"]["method_role_capability"]["properties"]["role_kind"]["enum"] == [
+        "SUPERVISOR",
+        "CHECKER",
+        "WORKER",
+        "VERIFICATION",
+    ]
+    patrol = schema["$defs"]["patrol"]
+    assert patrol["properties"]["set_thread_pinned"]["const"] is False
+    assert "project_workload" in patrol["required"]
+    template = load_yaml("run-control-trace.yaml")
+    assert [item["role_kind"] for item in template["method_role_capabilities"]] == [
+        "SUPERVISOR",
+        "CHECKER",
+        "WORKER",
+        "VERIFICATION",
+    ]
+    assert template["patrols"][0]["set_thread_pinned"] is False
+
+
 def test_receipts_use_one_strong_envelope() -> None:
     names = [
         "d0-worker-receipt.yaml",
