@@ -9,7 +9,7 @@ Canonical repository: `DWG7318/chain-loop-skill`
 
 GitHub repository ID: `1298120736`
 
-Current version: **2.5.0**
+Current version: **2.6.0**
 
 ## Definition and input
 
@@ -101,8 +101,8 @@ fault for the current Level blocks Barrier PASS.
 Worker completion uses a scoped four-level wake ladder for its frozen Checker only:
 direct delivery, same-task recovery, deterministic temporary heartbeat, then
 `PENDING_WAKE`. Each level is bounded to two injected-clock minutes. Supervisor
-does not stay online with `wait_threads`; one non-authoritative
-`gpt-5.6-luna+xhigh` patrol per Run reports only mechanical control faults.
+does not stay online with `wait_threads`; one non-authoritative patrol per Run,
+normally `gpt-5.6-terra+xhigh`, reports only mechanical control faults.
 Every active dispatch must close one same-scope wake lifecycle; only an explicitly
 initial, undispatched trace may contain neither. Patrol workload intervals are
 LOW→10, MEDIUM→15, HIGH→30 minutes and reports use fixed checks/findings with
@@ -122,6 +122,21 @@ Visible same-project role tasks are not subagents; spawned, delegated, hidden, o
 background Agents are forbidden. Every method role is also denied task-Pin
 capability: only explicit Owner provenance legitimizes a Pin.
 
+## Controllable model binding
+
+Every technical role and the separate patrol defaults to
+`gpt-5.6-terra+xhigh`. Only a Worker executing a current CELL explicitly marked
+fine-grained, LOW-risk, and capacity-PASS may use `gpt-5.6-luna+xhigh`. Only
+high-complexity correction, root-cause diagnosis, or complex rework may use
+`gpt-5.6-sol+xhigh`. Other providers/models require content-hashed
+`PROVEN_EQUIVALENT` evidence for the selected capability tier.
+
+`MODEL_BINDING_LEDGER` binds the actual model, capability class, selection tier
+and reason, reasoning effort, scope, isolation identity, and fresh readiness and
+verification receipts. GPT 5.5 and lower fail closed. `ultra` requires an exact
+current-Run Owner authorization. Model changes create a new binding and repeat the
+gates; in-place or observed silent switching is invalid.
+
 ## Owner acceptance and outer boundary
 
 After D3 PASS, CLK immediately facilitates the current Run's small Owner
@@ -139,6 +154,7 @@ python scripts/validate_chain_level_plan.py tests/fixtures/plans/valid-minimal.y
 python scripts/validate_runtime_state.py tests/fixtures/runtime/valid-level-active.yaml
 python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-chain-local.yaml
 python scripts/validate_run_control.py chain-loop-skill/templates/run-control-trace.yaml
+python scripts/validate_model_policy.py chain-loop-skill/templates/model-binding-ledger.yaml
 python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-receipt.yaml chain-loop-skill/templates/d1-checker-receipt.yaml chain-loop-skill/templates/d2-go-verification-receipt.yaml
 python -m pytest -q
 ```

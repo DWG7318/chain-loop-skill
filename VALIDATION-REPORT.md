@@ -1,22 +1,31 @@
-# CLK 2.5.0 Validation Report
+# CLK 2.6.0 Validation Report
 
 ## Candidate
 
 - Product: Chain Loop Skill (CLK)
-- Version: 2.5.0
-- Branch: `feature/clk-2.5.0-worker-wake-patrol`
+- Version: 2.6.0
+- Branch: `feature/clk-2.6.0-controllable-model-policy`
 - Repository database ID: `1298120736`
-- Local validation date: 2026-08-04
+- Local validation date: 2026-08-06
 - Local platform: Windows, Python 3.14
 - CI target: Ubuntu, Python 3.11
 
-## Local release-gate result
+## Local candidate-gate result
 
-PASS. The following commands completed with exit code 0 on the candidate:
+PASS. Fresh local output on the candidate:
 
 ```text
+python -m pytest -q
+227 passed, 185 subtests passed
+
+python -O -m pytest -q \
+  tests/test_model_policy.py::test_critical_invalid_policy_fails_closed_under_python_optimized \
+  tests/test_run_control.py::test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes \
+  tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions
+32 passed; one expected pytest optimized-mode warning
+
 python scripts/validate_repository.py
-PASS: CLK repository 2.5.0
+PASS: CLK repository 2.6.0
 
 python scripts/validate_chain_level_plan.py tests/fixtures/plans/valid-minimal.yaml
 PASS: Chain/Level plan
@@ -32,59 +41,71 @@ PASS: CLK topology fault record (each fixture)
 python scripts/validate_run_control.py chain-loop-skill/templates/run-control-trace.yaml
 PASS: CLK run control trace
 
-python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-receipt.yaml chain-loop-skill/templates/d1-checker-receipt.yaml chain-loop-skill/templates/d2-go-verification-receipt.yaml
+python scripts/validate_model_policy.py chain-loop-skill/templates/model-binding-ledger.yaml
+PASS: CLK model binding policy
+
+python scripts/validate_receipt_chain.py \
+  chain-loop-skill/templates/d0-worker-receipt.yaml \
+  chain-loop-skill/templates/d1-checker-receipt.yaml \
+  chain-loop-skill/templates/d2-go-verification-receipt.yaml
 PASS: CLK Receipt chain
-
-python -m pytest -q
-201 passed, 181 subtests passed
-
-python -O -m pytest tests/test_run_control.py::test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions -q
-27 passed; the expected pytest optimized-mode warning was emitted
 
 git diff --check
 PASS
 ```
 
-## Run-control acceptance evidence
+## Model-policy acceptance evidence
 
 The candidate proves:
 
-- Worker-only T+0/T+2/T+4/T+6 wake escalation, exact frozen Checker identity,
-  archive/host repair without guessing, ACK stop, temporary-heartbeat cleanup, and
-  deterministic `PENDING_WAKE` fallback;
-- every active formal dispatch binds one current Worker/Checker/scope and exactly
-  one complete wake lifecycle; only `INITIAL_UNDISPATCHED` may contain no wake,
-  while erased active events and orphan Worker signals fail closed;
-- Supervisor no-wait behavior and exactly one visible Luna+xhigh mechanical Run
-  patrol/heartbeat, including pause tolerance, duplicate rejection, pending-wake
-  consumption, and terminal cleanup/archive; project workload maps LOW→10,
-  MEDIUM→15, HIGH→30 minutes;
-- patrol reports use a complete fixed check set, fixed status/finding enums, and
-  observation/evidence identities; unknown Pin without a bound alert and arbitrary
-  “all normal” prose fail closed;
-- visible peer tasks are not subagents, while spawned/delegated/hidden/background
-  Agent evidence is rejected;
-- delivery does not increment acceptance, D1 PASS increments once, duplicate or
-  rework receipts do not, GO candidate readiness differs from D2, and amendments
-  version/recompute denominators without rewriting history;
-- every unique D1 decision/Receipt has exactly one same-scope Checker progress
-  update, and every material trigger has exactly one later Supervisor update;
-  missing, duplicate, reordered, wrong, or reused trigger identities are rejected;
-- unknown or insufficient device capacity blocks or splits before dispatch; actual
-  load feedback tightens later gates; Worker self-split is rejected; post-dispatch
-  splits of 3, 6, 7, or 8 successors are severe and re-evaluate remaining work;
-- the canonical technical-role matrix remains exactly Supervisor/Checker/Worker/
-  Verification; patrol remains separate, and both deny Pin capability. Explicit Owner Pin is accepted, Agent
-  Pin is `UNAUTHORIZED_THREAD_PIN`, unknown provenance is
-  `PIN_PROVENANCE_UNKNOWN`, and Pin-then-Unpin preserves violation evidence without
-  automatic unpin.
+- `MODEL_BINDING_LEDGER` binds the Run roster, current CELL contracts, capability
+  class/equivalence, actual model, provider, reasoning effort, selection tier and
+  reason, exact scope, isolation identities, content-hashed evidence, and fresh
+  readiness/isolation/verification Receipts;
+- the Run ledger covers at least two Checker/Worker Chains and their current
+  Verification bindings, while patrol remains one separate nontechnical actor;
+- canonical technical roles and patrol default to `gpt-5.6-terra+xhigh`;
+- `gpt-5.6-luna+xhigh` passes only for a Worker whose current CELL is explicitly
+  fine-grained, LOW-risk, and capacity-PASS;
+- `gpt-5.6-sol+xhigh` passes only for evidenced high-complexity correction,
+  root-cause diagnosis, or complex rework;
+- another model passes only through content-hashed `PROVEN_EQUIVALENT` evidence
+  that exactly matches its actual model, selected tier, and capability class;
+- GPT 5.5 and lower, unapproved `ultra`, cost/convenience downgrade, Luna outside
+  an eligible Worker CELL, ordinary Sol, unproven/unknown equivalence, named
+  reference-model tier laundering, and patrol Luna bypass fail closed;
+- item-specific Owner evidence may authorize `ultra` only for the exact current
+  Run, actor, binding, and scope;
+- a legitimate model change closes the prior binding, creates a reciprocal
+  `MODEL_BINDING_CHANGE`, and supplies a new isolated binding with fresh readiness,
+  isolation, verification, selection, and observation evidence;
+- missing switch records, reused gate Receipts, actual-model/reasoning observation
+  drift, duplicate active bindings, single-Chain Run fragments, role pollution,
+  patrol CELL scope, and same-model capability/isolation reuse fail closed in normal
+  and optimized Python.
 
-Existing topology, Receipt, Barrier, identity, authority, repository-drift,
-malformed-structure, and hash-mismatch negative gates remain passing.
+## Preserved 2.5.0 behavior
+
+All prior topology and runtime suites remain green. The candidate does not change:
+
+- fixed persistent Chains, maximum valid Chain count, ordered Levels, or full
+  Barriers;
+- D0/D1/D2/conditional LEVEL/D3 authority and Receipt consumption;
+- topology fault localization, identity, issuer, closure, or route semantics;
+- Worker-only wake escalation, Supervisor no-wait rule, layered progress,
+  device/cumulative-load CELL capacity, Pin policy, or patrol authority;
+- the boundary to LCCoding, Calabash, SLK, or GLK.
+
+The former fixed patrol Luna value is replaced only at the model-binding interface:
+patrol now follows the Owner-controllable Terra default and remains non-authoritative.
 
 ## Integrity and boundary
 
 `FILE_HASHES.json` covers every release file except itself using LF-normalized
-SHA-256 for text and byte hashes for binary files. Local evidence does not claim
-GitHub or release state. Push, merge, PR, tag, and Release remain unperformed and
-require separate authorization and remote validation of the exact commit.
+SHA-256 for text and byte hashes for binary files. Active compatibility guidance
+contains no GPT 5.5-or-lower positive authorization; remaining 5.5 occurrences are
+rejection examples or negative tests. No secret, foreign-role, or cross-method
+implementation surface was added. Local evidence makes no remote-state claim.
+
+Per Owner instruction, push, merge, PR, tag, Release, and publication were not
+performed for this candidate.

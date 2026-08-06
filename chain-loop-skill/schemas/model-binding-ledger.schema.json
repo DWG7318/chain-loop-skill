@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DWG7318/chain-loop-skill/schema/model-binding-ledger-2.6.0.json",
+  "title": "CLK 2.6.0 Model Binding Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "artifact_type", "ledger_id", "run_id", "policy_version",
+    "required_actors", "cell_contracts", "capability_equivalences",
+    "owner_authorizations", "bindings", "binding_changes", "binding_observations"
+  ],
+  "properties": {
+    "version": {"const": "2.6.0"},
+    "artifact_type": {"const": "MODEL_BINDING_LEDGER"},
+    "ledger_id": {"$ref": "#/$defs/id"},
+    "run_id": {"$ref": "#/$defs/id"},
+    "policy_version": {"const": "MODEL-POLICY-2.6.0"},
+    "required_actors": {
+      "type": "array", "minItems": 5,
+      "items": {"$ref": "#/$defs/actor"}
+    },
+    "cell_contracts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/cell_contract"}
+    },
+    "capability_equivalences": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/equivalence"}
+    },
+    "owner_authorizations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/owner_authorization"}
+    },
+    "bindings": {
+      "type": "array", "minItems": 5,
+      "items": {"$ref": "#/$defs/binding"}
+    },
+    "binding_changes": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/binding_change"}
+    },
+    "binding_observations": {
+      "type": "array", "minItems": 5,
+      "items": {"$ref": "#/$defs/binding_observation"}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1},
+    "nullable_id": {"type": ["string", "null"]},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/id"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["run_id", "go_id", "cell_id", "round_id"],
+      "properties": {
+        "run_id": {"$ref": "#/$defs/id"},
+        "go_id": {"$ref": "#/$defs/nullable_id"},
+        "cell_id": {"$ref": "#/$defs/nullable_id"},
+        "round_id": {"$ref": "#/$defs/nullable_id"}
+      }
+    },
+    "actor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "role_kind"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/id"},
+        "role_kind": {"$ref": "#/$defs/id"}
+      }
+    },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["receipt_id", "status", "path", "sha256"],
+      "properties": {
+        "receipt_id": {"$ref": "#/$defs/id"},
+        "status": {"const": "PASS"},
+        "path": {"$ref": "#/$defs/id"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "cell_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "contract_id", "version", "run_id", "go_id", "cell_id", "worker_id",
+        "fine_grained", "risk_class", "capacity_gate_result", "evidence"
+      ],
+      "properties": {
+        "contract_id": {"$ref": "#/$defs/id"},
+        "version": {"$ref": "#/$defs/id"},
+        "run_id": {"$ref": "#/$defs/id"},
+        "go_id": {"$ref": "#/$defs/id"},
+        "cell_id": {"$ref": "#/$defs/id"},
+        "worker_id": {"$ref": "#/$defs/id"},
+        "fine_grained": {"type": "boolean"},
+        "risk_class": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+        "capacity_gate_result": {"enum": ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"]},
+        "evidence": {"$ref": "#/$defs/evidence"}
+      }
+    },
+    "equivalence": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "equivalence_id", "actual_model", "target_selection_tier",
+        "capability_class", "result", "evidence"
+      ],
+      "properties": {
+        "equivalence_id": {"$ref": "#/$defs/id"},
+        "actual_model": {"$ref": "#/$defs/id"},
+        "target_selection_tier": {"enum": ["TERRA_DEFAULT", "LUNA_FINE_GRAINED", "SOL_EXCEPTIONAL"]},
+        "capability_class": {"enum": [
+          "TECHNICAL_GENERAL", "FINE_GRAINED_EXECUTION", "ADVANCED_DIAGNOSTIC",
+          "NON_TECHNICAL_PATROL"
+        ]},
+        "result": {"enum": ["PROVEN_EQUIVALENT", "NOT_EQUIVALENT", "UNKNOWN"]},
+        "evidence": {"$ref": "#/$defs/evidence"}
+      }
+    },
+    "owner_authorization": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "authorization_id", "run_id", "actor_id", "binding_id", "scope",
+        "reasoning_effort", "evidence"
+      ],
+      "properties": {
+        "authorization_id": {"$ref": "#/$defs/id"},
+        "run_id": {"$ref": "#/$defs/id"},
+        "actor_id": {"$ref": "#/$defs/id"},
+        "binding_id": {"$ref": "#/$defs/id"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "reasoning_effort": {"const": "ultra"},
+        "evidence": {"$ref": "#/$defs/evidence"}
+      }
+    },
+    "binding": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "binding_id", "actor_id", "role_kind", "scope", "actual_model",
+        "model_provider", "capability_profile_id", "capability_class", "selection_tier", "selection_reason",
+        "reasoning_effort", "capability_equivalence_id", "conversation_id", "context_id",
+        "workspace_id", "runtime_namespace", "evidence_path", "selection_evidence",
+        "readiness_receipt", "isolation_receipt", "verification_receipt", "state",
+        "supersedes", "superseded_by"
+      ],
+      "properties": {
+        "binding_id": {"$ref": "#/$defs/id"},
+        "actor_id": {"$ref": "#/$defs/id"},
+        "role_kind": {"$ref": "#/$defs/id"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "actual_model": {"$ref": "#/$defs/id"},
+        "model_provider": {"$ref": "#/$defs/id"},
+        "capability_profile_id": {"$ref": "#/$defs/id"},
+        "capability_class": {"enum": [
+          "TECHNICAL_GENERAL", "FINE_GRAINED_EXECUTION", "ADVANCED_DIAGNOSTIC",
+          "NON_TECHNICAL_PATROL"
+        ]},
+        "selection_tier": {"enum": ["TERRA_DEFAULT", "LUNA_FINE_GRAINED", "SOL_EXCEPTIONAL"]},
+        "selection_reason": {"enum": [
+          "DEFAULT_TECHNICAL", "DEFAULT_PATROL", "FINE_GRAINED_LOW_RISK_CELL",
+          "HIGH_COMPLEXITY_CORRECTION", "ROOT_CAUSE_DIAGNOSIS", "COMPLEX_REWORK"
+        ]},
+        "reasoning_effort": {"enum": ["xhigh", "ultra"]},
+        "capability_equivalence_id": {"$ref": "#/$defs/nullable_id"},
+        "conversation_id": {"$ref": "#/$defs/id"},
+        "context_id": {"$ref": "#/$defs/id"},
+        "workspace_id": {"$ref": "#/$defs/id"},
+        "runtime_namespace": {"$ref": "#/$defs/id"},
+        "evidence_path": {"$ref": "#/$defs/id"},
+        "selection_evidence": {"$ref": "#/$defs/evidence"},
+        "readiness_receipt": {"$ref": "#/$defs/receipt"},
+        "isolation_receipt": {"$ref": "#/$defs/receipt"},
+        "verification_receipt": {"$ref": "#/$defs/receipt"},
+        "state": {"enum": ["ACTIVE", "SUPERSEDED"]},
+        "supersedes": {"$ref": "#/$defs/nullable_id"},
+        "superseded_by": {"$ref": "#/$defs/nullable_id"}
+      }
+    },
+    "binding_change": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "change_id", "actor_id", "scope", "previous_binding_id", "new_binding_id",
+        "change_reason", "evidence"
+      ],
+      "properties": {
+        "change_id": {"$ref": "#/$defs/id"},
+        "actor_id": {"$ref": "#/$defs/id"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "previous_binding_id": {"$ref": "#/$defs/id"},
+        "new_binding_id": {"$ref": "#/$defs/id"},
+        "change_reason": {"$ref": "#/$defs/id"},
+        "evidence": {"$ref": "#/$defs/evidence"}
+      }
+    },
+    "binding_observation": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "observation_id", "binding_id", "actor_id", "scope", "actual_model",
+        "reasoning_effort", "evidence"
+      ],
+      "properties": {
+        "observation_id": {"$ref": "#/$defs/id"},
+        "binding_id": {"$ref": "#/$defs/id"},
+        "actor_id": {"$ref": "#/$defs/id"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "actual_model": {"$ref": "#/$defs/id"},
+        "reasoning_effort": {"enum": ["xhigh", "ultra"]},
+        "evidence": {"$ref": "#/$defs/evidence"}
+      }
+    }
+  }
+}

@@ -1,0 +1,448 @@
+version: 2.6.0
+artifact_type: MODEL_BINDING_LEDGER
+ledger_id: MODEL-LEDGER-RUN-001-v1
+run_id: RUN-001
+policy_version: MODEL-POLICY-2.6.0
+required_actors:
+  - actor_id: SUPERVISOR-001
+    role_kind: SUPERVISOR
+  - actor_id: CHECKER-A
+    role_kind: CHECKER
+  - actor_id: WORKER-A
+    role_kind: WORKER
+  - actor_id: VERIFICATION-A
+    role_kind: VERIFICATION
+  - actor_id: CHECKER-B
+    role_kind: CHECKER
+  - actor_id: WORKER-B
+    role_kind: WORKER
+  - actor_id: VERIFICATION-B
+    role_kind: VERIFICATION
+  - actor_id: PATROL-RUN-001
+    role_kind: PATROL
+cell_contracts:
+  - contract_id: CELL-CONTRACT-01-A.01-v1
+    version: "1"
+    run_id: RUN-001
+    go_id: GO-01-A
+    cell_id: CELL-01-A.01
+    worker_id: WORKER-A
+    fine_grained: true
+    risk_class: LOW
+    capacity_gate_result: PASS
+    evidence:
+      path: evidence/cell-contract-01-a-01.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - contract_id: CELL-CONTRACT-01-B.01-v1
+    version: "1"
+    run_id: RUN-001
+    go_id: GO-01-B
+    cell_id: CELL-01-B.01
+    worker_id: WORKER-B
+    fine_grained: false
+    risk_class: MEDIUM
+    capacity_gate_result: PASS
+    evidence:
+      path: evidence/cell-contract-01-b-01.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+capability_equivalences: []
+owner_authorizations: []
+bindings:
+  - binding_id: BINDING::SUPERVISOR-001::001
+    actor_id: SUPERVISOR-001
+    role_kind: SUPERVISOR
+    scope: &run_scope
+      run_id: RUN-001
+      go_id: null
+      cell_id: null
+      round_id: null
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::SUPERVISOR-001
+    capability_class: TECHNICAL_GENERAL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_TECHNICAL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::SUPERVISOR-001
+    context_id: CONTEXT::SUPERVISOR-001
+    workspace_id: WORKSPACE::SUPERVISOR-001
+    runtime_namespace: RUNTIME::SUPERVISOR-001
+    evidence_path: evidence/binding-supervisor-001
+    selection_evidence:
+      path: evidence/selection-supervisor-001.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    readiness_receipt:
+      receipt_id: READINESS::SUPERVISOR-001
+      status: PASS
+      path: evidence/readiness-supervisor-001.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    isolation_receipt:
+      receipt_id: ISOLATION::SUPERVISOR-001
+      status: PASS
+      path: evidence/isolation-supervisor-001.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    verification_receipt:
+      receipt_id: VERIFICATION::SUPERVISOR-001
+      status: PASS
+      path: evidence/verification-supervisor-001.json
+      sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::CHECKER-A::001
+    actor_id: CHECKER-A
+    role_kind: CHECKER
+    scope: &go_scope
+      run_id: RUN-001
+      go_id: GO-01-A
+      cell_id: null
+      round_id: null
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::CHECKER-A
+    capability_class: TECHNICAL_GENERAL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_TECHNICAL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::CHECKER-A
+    context_id: CONTEXT::CHECKER-A
+    workspace_id: WORKSPACE::CHECKER-A
+    runtime_namespace: RUNTIME::CHECKER-A
+    evidence_path: evidence/binding-checker-a
+    selection_evidence:
+      path: evidence/selection-checker-a.json
+      sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    readiness_receipt:
+      receipt_id: READINESS::CHECKER-A
+      status: PASS
+      path: evidence/readiness-checker-a.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    isolation_receipt:
+      receipt_id: ISOLATION::CHECKER-A
+      status: PASS
+      path: evidence/isolation-checker-a.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    verification_receipt:
+      receipt_id: VERIFICATION::CHECKER-A
+      status: PASS
+      path: evidence/verification-checker-a.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::WORKER-A::001
+    actor_id: WORKER-A
+    role_kind: WORKER
+    scope: &cell_scope
+      run_id: RUN-001
+      go_id: GO-01-A
+      cell_id: CELL-01-A.01
+      round_id: R01
+    actual_model: gpt-5.6-luna
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::WORKER-A
+    capability_class: FINE_GRAINED_EXECUTION
+    selection_tier: LUNA_FINE_GRAINED
+    selection_reason: FINE_GRAINED_LOW_RISK_CELL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::WORKER-A
+    context_id: CONTEXT::WORKER-A
+    workspace_id: WORKSPACE::WORKER-A
+    runtime_namespace: RUNTIME::WORKER-A
+    evidence_path: evidence/binding-worker-a
+    selection_evidence:
+      path: evidence/selection-worker-a.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    readiness_receipt:
+      receipt_id: READINESS::WORKER-A
+      status: PASS
+      path: evidence/readiness-worker-a.json
+      sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    isolation_receipt:
+      receipt_id: ISOLATION::WORKER-A
+      status: PASS
+      path: evidence/isolation-worker-a.json
+      sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    verification_receipt:
+      receipt_id: VERIFICATION::WORKER-A
+      status: PASS
+      path: evidence/verification-worker-a.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::VERIFICATION-A::001
+    actor_id: VERIFICATION-A
+    role_kind: VERIFICATION
+    scope: *go_scope
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::VERIFICATION-A
+    capability_class: TECHNICAL_GENERAL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_TECHNICAL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::VERIFICATION-A
+    context_id: CONTEXT::VERIFICATION-A
+    workspace_id: WORKSPACE::VERIFICATION-A
+    runtime_namespace: RUNTIME::VERIFICATION-A
+    evidence_path: evidence/binding-verification-a
+    selection_evidence:
+      path: evidence/selection-verification-a.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    readiness_receipt:
+      receipt_id: READINESS::VERIFICATION-A
+      status: PASS
+      path: evidence/readiness-verification-a.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    isolation_receipt:
+      receipt_id: ISOLATION::VERIFICATION-A
+      status: PASS
+      path: evidence/isolation-verification-a.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    verification_receipt:
+      receipt_id: VERIFICATION::VERIFICATION-A
+      status: PASS
+      path: evidence/verification-verification-a.json
+      sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::CHECKER-B::001
+    actor_id: CHECKER-B
+    role_kind: CHECKER
+    scope: &go_scope_b
+      run_id: RUN-001
+      go_id: GO-01-B
+      cell_id: null
+      round_id: null
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::CHECKER-B
+    capability_class: TECHNICAL_GENERAL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_TECHNICAL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::CHECKER-B
+    context_id: CONTEXT::CHECKER-B
+    workspace_id: WORKSPACE::CHECKER-B
+    runtime_namespace: RUNTIME::CHECKER-B
+    evidence_path: evidence/binding-checker-b
+    selection_evidence:
+      path: evidence/selection-checker-b.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    readiness_receipt:
+      receipt_id: READINESS::CHECKER-B
+      status: PASS
+      path: evidence/readiness-checker-b.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    isolation_receipt:
+      receipt_id: ISOLATION::CHECKER-B
+      status: PASS
+      path: evidence/isolation-checker-b.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    verification_receipt:
+      receipt_id: VERIFICATION::CHECKER-B
+      status: PASS
+      path: evidence/verification-checker-b.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::WORKER-B::001
+    actor_id: WORKER-B
+    role_kind: WORKER
+    scope: &cell_scope_b
+      run_id: RUN-001
+      go_id: GO-01-B
+      cell_id: CELL-01-B.01
+      round_id: R01
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::WORKER-B
+    capability_class: TECHNICAL_GENERAL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_TECHNICAL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::WORKER-B
+    context_id: CONTEXT::WORKER-B
+    workspace_id: WORKSPACE::WORKER-B
+    runtime_namespace: RUNTIME::WORKER-B
+    evidence_path: evidence/binding-worker-b
+    selection_evidence:
+      path: evidence/selection-worker-b.json
+      sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    readiness_receipt:
+      receipt_id: READINESS::WORKER-B
+      status: PASS
+      path: evidence/readiness-worker-b.json
+      sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    isolation_receipt:
+      receipt_id: ISOLATION::WORKER-B
+      status: PASS
+      path: evidence/isolation-worker-b.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    verification_receipt:
+      receipt_id: VERIFICATION::WORKER-B
+      status: PASS
+      path: evidence/verification-worker-b.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::VERIFICATION-B::001
+    actor_id: VERIFICATION-B
+    role_kind: VERIFICATION
+    scope: *go_scope_b
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::VERIFICATION-B
+    capability_class: TECHNICAL_GENERAL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_TECHNICAL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::VERIFICATION-B
+    context_id: CONTEXT::VERIFICATION-B
+    workspace_id: WORKSPACE::VERIFICATION-B
+    runtime_namespace: RUNTIME::VERIFICATION-B
+    evidence_path: evidence/binding-verification-b
+    selection_evidence:
+      path: evidence/selection-verification-b.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    readiness_receipt:
+      receipt_id: READINESS::VERIFICATION-B
+      status: PASS
+      path: evidence/readiness-verification-b.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    isolation_receipt:
+      receipt_id: ISOLATION::VERIFICATION-B
+      status: PASS
+      path: evidence/isolation-verification-b.json
+      sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    verification_receipt:
+      receipt_id: VERIFICATION::VERIFICATION-B
+      status: PASS
+      path: evidence/verification-verification-b.json
+      sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+  - binding_id: BINDING::PATROL-RUN-001::001
+    actor_id: PATROL-RUN-001
+    role_kind: PATROL
+    scope: *run_scope
+    actual_model: gpt-5.6-terra
+    model_provider: OPENAI
+    capability_profile_id: CAPABILITY::PATROL-RUN-001
+    capability_class: NON_TECHNICAL_PATROL
+    selection_tier: TERRA_DEFAULT
+    selection_reason: DEFAULT_PATROL
+    reasoning_effort: xhigh
+    capability_equivalence_id: null
+    conversation_id: CONVERSATION::PATROL-RUN-001
+    context_id: CONTEXT::PATROL-RUN-001
+    workspace_id: WORKSPACE::PATROL-RUN-001
+    runtime_namespace: RUNTIME::PATROL-RUN-001
+    evidence_path: evidence/binding-patrol-run-001
+    selection_evidence:
+      path: evidence/selection-patrol-run-001.json
+      sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    readiness_receipt:
+      receipt_id: READINESS::PATROL-RUN-001
+      status: PASS
+      path: evidence/readiness-patrol-run-001.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    isolation_receipt:
+      receipt_id: ISOLATION::PATROL-RUN-001
+      status: PASS
+      path: evidence/isolation-patrol-run-001.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    verification_receipt:
+      receipt_id: VERIFICATION::PATROL-RUN-001
+      status: PASS
+      path: evidence/verification-patrol-run-001.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    state: ACTIVE
+    supersedes: null
+    superseded_by: null
+binding_changes: []
+binding_observations:
+  - observation_id: OBS::SUPERVISOR-001::001
+    binding_id: BINDING::SUPERVISOR-001::001
+    actor_id: SUPERVISOR-001
+    scope: *run_scope
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-supervisor-001.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+  - observation_id: OBS::CHECKER-A::001
+    binding_id: BINDING::CHECKER-A::001
+    actor_id: CHECKER-A
+    scope: *go_scope
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-checker-a.json
+      sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+  - observation_id: OBS::WORKER-A::001
+    binding_id: BINDING::WORKER-A::001
+    actor_id: WORKER-A
+    scope: *cell_scope
+    actual_model: gpt-5.6-luna
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-worker-a.json
+      sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  - observation_id: OBS::VERIFICATION-A::001
+    binding_id: BINDING::VERIFICATION-A::001
+    actor_id: VERIFICATION-A
+    scope: *go_scope
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-verification-a.json
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - observation_id: OBS::CHECKER-B::001
+    binding_id: BINDING::CHECKER-B::001
+    actor_id: CHECKER-B
+    scope: *go_scope_b
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-checker-b.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+  - observation_id: OBS::WORKER-B::001
+    binding_id: BINDING::WORKER-B::001
+    actor_id: WORKER-B
+    scope: *cell_scope_b
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-worker-b.json
+      sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+  - observation_id: OBS::VERIFICATION-B::001
+    binding_id: BINDING::VERIFICATION-B::001
+    actor_id: VERIFICATION-B
+    scope: *go_scope_b
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-verification-b.json
+      sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+  - observation_id: OBS::PATROL-RUN-001::001
+    binding_id: BINDING::PATROL-RUN-001::001
+    actor_id: PATROL-RUN-001
+    scope: *run_scope
+    actual_model: gpt-5.6-terra
+    reasoning_effort: xhigh
+    evidence:
+      path: evidence/observation-patrol-run-001.json
+      sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

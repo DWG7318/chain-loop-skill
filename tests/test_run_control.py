@@ -126,7 +126,7 @@ def wake_attempt(
 def valid_trace() -> dict:
     return {
         "trace_type": "CLK_RUN_CONTROL_TRACE",
-        "version": "2.5.0",
+        "version": "2.6.0",
         "clock_mode": "INJECTED_MINUTES",
         "run": {
             "run_id": "RUN-001",
@@ -271,7 +271,8 @@ def valid_trace() -> dict:
                 "technical_acceptance": False,
                 "product_work": False,
                 "set_thread_pinned": False,
-                "model": "gpt-5.6-luna",
+                "model_binding_id": "BINDING::PATROL-RUN-001::001",
+                "model": "gpt-5.6-terra",
                 "reasoning_effort": "xhigh",
                 "project_workload": "MEDIUM",
                 "interval_minutes": 15,

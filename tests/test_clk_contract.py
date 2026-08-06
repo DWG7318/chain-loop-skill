@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "chain-loop-skill"
 
@@ -13,7 +15,7 @@ def contract() -> dict:
 
 def test_version_and_identity() -> None:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version == "2.5.0"
+    assert version == "2.6.0"
     assert f"Current version: **{version}**" in (ROOT / "README.md").read_text(encoding="utf-8")
     text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
     assert "# Chain Loop Skill (CLK)" in text
@@ -26,7 +28,7 @@ def test_contract_and_legacy() -> None:
     c = contract()
     assert c["method"] == "CLK"
     assert c["product_name"] == "Chain Loop Skill"
-    assert c["version"] == "2.5.0"
+    assert c["version"] == "2.6.0"
     assert c["synchronization_unit"] == "LEVEL"
     assert c["legacy_identity"]["abbreviation"] == "MSLK"
     assert c["legacy_identity"]["formal_new_runs_allowed"] is False
@@ -127,7 +129,7 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
     assert patrol["count_per_run"] == 1
     assert patrol["heartbeat_count_per_run"] == 1
     assert patrol["conversation_type"] == "RUN_PATROL_CONVERSATION"
-    assert patrol["model"] == "gpt-5.6-luna"
+    assert patrol["model"] == "gpt-5.6-terra"
     assert patrol["reasoning_effort"] == "xhigh"
     assert patrol["interval_minutes"] == [10, 15, 30]
     assert patrol["project_workload_interval_minutes"] == {
@@ -150,6 +152,25 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
     assert patrol["authoritative"] is False
     assert patrol["technical_acceptance"] is False
     assert patrol["product_work"] is False
+
+    model_policy = c["model_selection_policy"]
+    assert model_policy["default_model"] == "gpt-5.6-terra"
+    assert model_policy["default_reasoning_effort"] == "xhigh"
+    assert model_policy["fine_grained_low_risk_worker_model"] == "gpt-5.6-luna"
+    assert model_policy["exceptional_correction_model"] == "gpt-5.6-sol"
+    assert model_policy["patrol_uses_default_policy"] is True
+    assert model_policy["gpt_5_5_and_lower_allowed"] is False
+    assert model_policy["ultra_requires_item_specific_owner_authorization"] is True
+    assert model_policy["silent_model_switch_allowed"] is False
+    assert model_policy["capability_equivalence_required_for_alternatives"] is True
+    assert model_policy["switch_requires_new_binding_and_fresh_readiness_isolation_verification"] is True
+    assert model_policy["same_model_role_isolation_required"] is True
+
+    run_control = yaml.safe_load((SKILL / "templates" / "run-control-trace.yaml").read_text(encoding="utf-8"))
+    model_ledger = yaml.safe_load((SKILL / "templates" / "model-binding-ledger.yaml").read_text(encoding="utf-8"))
+    patrol_binding = next(item for item in model_ledger["bindings"] if item["role_kind"] == "PATROL")
+    assert run_control["patrols"][0]["model_binding_id"] == patrol_binding["binding_id"]
+    assert run_control["patrols"][0]["model"] == patrol_binding["actual_model"]
 
     identity = c["task_identity"]
     assert identity["subtask_examples"] == ["GO", "CELL", "ROUND", "PLAN_STEP"]
@@ -276,6 +297,7 @@ def test_canonical_agent_and_new_references_are_packaged() -> None:
         "receipt-and-state-contracts.md",
         "lccoding-interface.md",
         "worker-wake-patrol-and-progress.md",
+        "model-selection-and-binding.md",
     ):
         assert (SKILL / "references" / name).is_file()
 
@@ -302,7 +324,11 @@ def test_readiness_count() -> None:
     joined = "\n".join(a["answers"].values())
     for marker in (
         "T+0、T+2、T+4、T+6",
+        "gpt-5.6-terra+xhigh",
         "gpt-5.6-luna+xhigh",
+        "gpt-5.6-sol+xhigh",
+        "PROVEN_EQUIVALENT",
+        "SILENT_MODEL_SWITCH",
         "wait_threads",
         "spawn_agent、delegate_task、隐藏Agent、后台Agent",
         "第五项硬规则",

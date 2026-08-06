@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.5.0",
+  "schema_version": "2.6.0",
   "method": "CLK",
   "method_shape": "level_barrier_synchronized_multi_chain",
   "synchronization_unit": "LEVEL",
@@ -147,7 +147,7 @@
     "heartbeat_count_per_run": 1,
     "conversation_type": "RUN_PATROL_CONVERSATION",
     "visible": true,
-    "model": "gpt-5.6-luna",
+    "model": "gpt-5.6-terra",
     "reasoning_effort": "xhigh",
     "interval_minutes": [10, 15, 30],
     "project_workload_interval_minutes": {
@@ -177,6 +177,31 @@
       "PATROL_CLOSED",
       "PATROL_CONVERSATION_ARCHIVED"
     ]
+  },
+  "model_selection_policy": {
+    "artifact": "MODEL_BINDING_LEDGER",
+    "default_model": "gpt-5.6-terra",
+    "default_reasoning_effort": "xhigh",
+    "patrol_uses_default_policy": true,
+    "fine_grained_low_risk_worker_model": "gpt-5.6-luna",
+    "fine_grained_low_risk_worker_requirements": [
+      "ROLE_WORKER",
+      "CURRENT_CELL_CONTRACT_FINE_GRAINED_TRUE",
+      "CURRENT_CELL_RISK_LOW",
+      "CURRENT_CELL_CAPACITY_GATE_PASS"
+    ],
+    "exceptional_correction_model": "gpt-5.6-sol",
+    "exceptional_reasons": [
+      "HIGH_COMPLEXITY_CORRECTION",
+      "ROOT_CAUSE_DIAGNOSIS",
+      "COMPLEX_REWORK"
+    ],
+    "gpt_5_5_and_lower_allowed": false,
+    "ultra_requires_item_specific_owner_authorization": true,
+    "capability_equivalence_required_for_alternatives": true,
+    "silent_model_switch_allowed": false,
+    "switch_requires_new_binding_and_fresh_readiness_isolation_verification": true,
+    "same_model_role_isolation_required": true
   },
   "task_identity": {
     "subtask_examples": ["GO", "CELL", "ROUND", "PLAN_STEP"],
@@ -370,7 +395,7 @@
     "frozen_outputs_required": true
   },
   "product_name": "Chain Loop Skill",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "legacy_identity": {
     "product_name": "Multi Small Loop Skill",
     "abbreviation": "MSLK",

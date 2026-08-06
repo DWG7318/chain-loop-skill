@@ -16,7 +16,7 @@ CLK therefore requires procedural and environmental isolation.
 | Runtime state | Worker namespace | Checker namespace | Verification namespace |
 | Evidence | Worker method evidence | Checker CELL evidence | Verification GO evidence |
 | Input | Formal CELL | Immutable CELL candidate | Neutral Calabash-grounded GO package |
-| Model binding | Per plan/CELL | Persistent high-capability binding | Fresh high-capability binding |
+| Model binding | Versioned per current CELL | Persistent verified binding | Fresh verified binding |
 | Lifecycle | Across Chain | Across Chain | One candidate verdict only |
 
 Checker and Verification are especially isolated. They must not share a mutable
@@ -102,6 +102,12 @@ runtime_namespace
 ```
 
 Model diversity is an extra defense, not the definition of independence.
+
+Model selection, capability-equivalence proof, reasoning authorization, and model
+changes are governed solely by
+[`model-selection-and-binding.md`](model-selection-and-binding.md). A change never
+mutates the current binding: it creates a new binding and repeats readiness,
+isolation, and verification before use.
 
 ## Contamination incidents
 

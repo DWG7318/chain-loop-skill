@@ -1,7 +1,7 @@
 {
   "name": "Chain Loop Skill",
   "abbreviation": "CLK",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "repository": "DWG7318/chain-loop-skill",
   "repository_id": 1298120736,
   "default_branch": "main",
@@ -34,14 +34,23 @@
     "worker_wake_offsets_minutes": [0, 2, 4, 6],
     "active_dispatch_requires_wake_lifecycle": true,
     "patrol_count_per_run": 1,
-    "patrol_model": "gpt-5.6-luna+xhigh",
+    "patrol_model": "gpt-5.6-terra+xhigh",
     "patrol_project_workload_minutes": {"LOW": 10, "MEDIUM": 15, "HIGH": 30},
     "canonical_technical_roles": ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"],
     "supervisor_wait_threads": false,
     "progress_source": "CURRENT_EFFECTIVE_RECEIPTS",
     "progress_trigger_cardinality": "EXACTLY_ONE",
     "capacity_gate": ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"],
-    "method_role_pin": false
+    "method_role_pin": false,
+    "model_binding_policy": "MODEL_BINDING_LEDGER"
+  },
+  "model_selection": {
+    "default": "gpt-5.6-terra+xhigh",
+    "fine_grained_low_risk_worker": "gpt-5.6-luna+xhigh",
+    "exceptional_correction": "gpt-5.6-sol+xhigh",
+    "alternative_requires": "PROVEN_EQUIVALENT",
+    "gpt_5_5_and_lower": "REJECT",
+    "silent_switch": "REJECT"
   },
   "required_files": [
     ".gitattributes",
@@ -54,6 +63,7 @@
     "MIGRATION-2.0-TO-2.3.1.md",
     "MIGRATION-2.3.1-TO-2.4.0.md",
     "MIGRATION-2.4.0-TO-2.5.0.md",
+    "MIGRATION-2.5.0-TO-2.6.0.md",
     "MIGRATION-MSLK-TO-CLK.md",
     "README.md",
     "SPEC.md",
@@ -67,6 +77,7 @@
     "scripts/validate_runtime_state.py",
     "scripts/validate_topology_fault.py",
     "scripts/validate_run_control.py",
+    "scripts/validate_model_policy.py",
     "chain-loop-skill/SKILL.md",
     "chain-loop-skill/agents/openai.yaml",
     "chain-loop-skill/contracts/clk-control-kernel.json",
@@ -76,12 +87,15 @@
     "chain-loop-skill/schemas/runtime-state-index.schema.json",
     "chain-loop-skill/schemas/topology-fault-record.schema.json",
     "chain-loop-skill/schemas/run-control-trace.schema.json",
+    "chain-loop-skill/schemas/model-binding-ledger.schema.json",
     "chain-loop-skill/references/topology-fault-localization.md",
     "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
+    "chain-loop-skill/references/model-selection-and-binding.md",
     "chain-loop-skill/templates/go-amendment.yaml",
     "chain-loop-skill/templates/level-barrier-receipt.yaml",
     "chain-loop-skill/templates/owner-acceptance.yaml",
     "chain-loop-skill/templates/topology-fault-record.yaml",
-    "chain-loop-skill/templates/run-control-trace.yaml"
+    "chain-loop-skill/templates/run-control-trace.yaml",
+    "chain-loop-skill/templates/model-binding-ledger.yaml"
   ]
 }

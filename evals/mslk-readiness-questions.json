@@ -73,12 +73,12 @@
     {
       "id": "MSLK-Q07",
       "type": "multiple_select",
-      "prompt": "Select valid MSLK model assignments.",
+      "prompt": "Select the only valid migration-compatibility model assignment; formal new Runs use CLK policy.",
       "options": [
-        {"id": "A", "text": "Supervisor and every Checker: gpt-5.6-sol xhigh."},
-        {"id": "B", "text": "Checker: gpt-5.5 high when its Worker is simple."},
-        {"id": "C", "text": "Worker: gpt-5.5 high or gpt-5.6-sol high by task."},
-        {"id": "D", "text": "Worker: gpt-5.6-sol xhigh."}
+        {"id": "A", "text": "Every compatibility candidate: gpt-5.6-terra xhigh."},
+        {"id": "B", "text": "Checker: gpt-5.5 high when its Worker is simple (rejected)."},
+        {"id": "C", "text": "Worker: gpt-5.5 high to save cost (rejected)."},
+        {"id": "D", "text": "Any role: ultra without item-specific Owner evidence (rejected)."}
       ]
     },
     {

@@ -31,7 +31,7 @@ def test_complete_repository_passes_release_validator() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "PASS: CLK repository 2.5.0" in result.stdout
+    assert "PASS: CLK repository 2.6.0" in result.stdout
 
 
 def test_missing_skill_frontmatter_is_rejected(tmp_path: Path) -> None:
@@ -46,20 +46,20 @@ def test_version_drift_is_rejected(tmp_path: Path) -> None:
     module = load_validator()
     (tmp_path / "chain-loop-skill" / "contracts").mkdir(parents=True)
     (tmp_path / "chain-loop-skill" / "templates").mkdir(parents=True)
-    (tmp_path / "VERSION").write_text("2.5.0\n", encoding="utf-8")
+    (tmp_path / "VERSION").write_text("2.6.0\n", encoding="utf-8")
     (tmp_path / "README.md").write_text("Current version: **2.3.0**\n", encoding="utf-8")
-    (tmp_path / "SPEC.md").write_text("# Specification 2.5.0\n", encoding="utf-8")
-    (tmp_path / "CHANGELOG.md").write_text("## 2.5.0\n", encoding="utf-8")
-    (tmp_path / "MANIFEST.json").write_text('{"version":"2.5.0"}', encoding="utf-8")
+    (tmp_path / "SPEC.md").write_text("# Specification 2.6.0\n", encoding="utf-8")
+    (tmp_path / "CHANGELOG.md").write_text("## 2.6.0\n", encoding="utf-8")
+    (tmp_path / "MANIFEST.json").write_text('{"version":"2.6.0"}', encoding="utf-8")
     (tmp_path / "chain-loop-skill" / "SKILL.md").write_text(
-        "---\nname: chain-loop-skill\ndescription: test\n---\nCurrent specification version: `2.5.0`.\n",
+        "---\nname: chain-loop-skill\ndescription: test\n---\nCurrent specification version: `2.6.0`.\n",
         encoding="utf-8",
     )
     (tmp_path / "chain-loop-skill" / "contracts" / "clk-control-kernel.json").write_text(
-        '{"version":"2.5.0","schema_version":"2.5.0"}', encoding="utf-8"
+        '{"version":"2.6.0","schema_version":"2.6.0"}', encoding="utf-8"
     )
     (tmp_path / "chain-loop-skill" / "templates" / "clk-run-receipt.yaml").write_text(
-        "version: 2.5.0\n", encoding="utf-8"
+        "version: 2.6.0\n", encoding="utf-8"
     )
     with pytest.raises(module.RepositoryValidationError, match="README"):
         module.validate_version_consistency(tmp_path)
@@ -93,6 +93,24 @@ def test_malformed_yaml_is_rejected(tmp_path: Path) -> None:
         module.parse_structured_files(tmp_path)
 
 
+def test_retired_low_model_positive_guidance_is_rejected(tmp_path: Path) -> None:
+    module = load_validator()
+    (tmp_path / "agents").mkdir(parents=True)
+    (tmp_path / "chain-loop-skill" / "agents").mkdir(parents=True)
+    files = {
+        "SKILL.md": "`gpt-5.5` with `high` reasoning as the minimum\n",
+        "agents/openai.yaml": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "chain-loop-skill/SKILL.md": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "chain-loop-skill/agents/openai.yaml": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "README.md": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "SPEC.md": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+    }
+    for relative, content in files.items():
+        (tmp_path / relative).write_text(content, encoding="utf-8")
+    with pytest.raises(module.RepositoryValidationError, match="retired GPT 5.5"):
+        module.validate_active_model_guidance(tmp_path)
+
+
 def test_required_go_amendment_and_ci_assets_are_present() -> None:
     module = load_validator()
     module.validate_required_files(ROOT)
@@ -101,14 +119,19 @@ def test_required_go_amendment_and_ci_assets_are_present() -> None:
     assert (ROOT / "requirements-dev.txt").is_file()
     for relative in (
         "MIGRATION-2.4.0-TO-2.5.0.md",
+        "MIGRATION-2.5.0-TO-2.6.0.md",
         "scripts/validate_topology_fault.py",
         "scripts/validate_run_control.py",
+        "scripts/validate_model_policy.py",
         "chain-loop-skill/schemas/topology-fault-record.schema.json",
         "chain-loop-skill/schemas/run-control-trace.schema.json",
+        "chain-loop-skill/schemas/model-binding-ledger.schema.json",
         "chain-loop-skill/templates/topology-fault-record.yaml",
         "chain-loop-skill/templates/run-control-trace.yaml",
+        "chain-loop-skill/templates/model-binding-ledger.yaml",
         "chain-loop-skill/references/topology-fault-localization.md",
         "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
+        "chain-loop-skill/references/model-selection-and-binding.md",
     ):
         assert relative in module.REQUIRED_FILES
         assert (ROOT / relative).is_file()
@@ -120,3 +143,4 @@ def test_ci_pip_cache_uses_the_declared_dependency_file() -> None:
     assert "cache-dependency-path: requirements-dev.txt" in workflow
     assert "scripts/validate_topology_fault.py" in workflow
     assert "scripts/validate_run_control.py" in workflow
+    assert "scripts/validate_model_policy.py" in workflow

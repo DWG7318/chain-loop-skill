@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the complete CLK 2.5.0 repository contract."""
+"""Validate the complete CLK 2.6.0 repository contract."""
 
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ REQUIRED_FILES = {
     "MIGRATION-2.0-TO-2.3.1.md",
     "MIGRATION-2.3.1-TO-2.4.0.md",
     "MIGRATION-2.4.0-TO-2.5.0.md",
+    "MIGRATION-2.5.0-TO-2.6.0.md",
     "MIGRATION-MSLK-TO-CLK.md",
     "README.md",
     "SPEC.md",
@@ -45,6 +46,7 @@ REQUIRED_FILES = {
     "scripts/validate_runtime_state.py",
     "scripts/validate_topology_fault.py",
     "scripts/validate_run_control.py",
+    "scripts/validate_model_policy.py",
     "chain-loop-skill/SKILL.md",
     "chain-loop-skill/agents/openai.yaml",
     "chain-loop-skill/contracts/clk-control-kernel.json",
@@ -54,13 +56,16 @@ REQUIRED_FILES = {
     "chain-loop-skill/schemas/runtime-state-index.schema.json",
     "chain-loop-skill/schemas/topology-fault-record.schema.json",
     "chain-loop-skill/schemas/run-control-trace.schema.json",
+    "chain-loop-skill/schemas/model-binding-ledger.schema.json",
     "chain-loop-skill/references/topology-fault-localization.md",
     "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
+    "chain-loop-skill/references/model-selection-and-binding.md",
     "chain-loop-skill/templates/go-amendment.yaml",
     "chain-loop-skill/templates/level-barrier-receipt.yaml",
     "chain-loop-skill/templates/owner-acceptance.yaml",
     "chain-loop-skill/templates/topology-fault-record.yaml",
     "chain-loop-skill/templates/run-control-trace.yaml",
+    "chain-loop-skill/templates/model-binding-ledger.yaml",
 }
 
 
@@ -118,7 +123,7 @@ def validate_skill_frontmatter(path: Path) -> None:
 
 def validate_version_consistency(root: Path) -> None:
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
-    require(version == "2.5.0", f"VERSION must be 2.5.0, got {version}")
+    require(version == "2.6.0", f"VERSION must be 2.6.0, got {version}")
     manifest = json.loads((root / "MANIFEST.json").read_text(encoding="utf-8"))
     require(manifest.get("version") == version, "MANIFEST version differs from VERSION")
     readme = (root / "README.md").read_text(encoding="utf-8")
@@ -144,6 +149,32 @@ def validate_version_consistency(root: Path) -> None:
             (root / "chain-loop-skill" / "evals" / name).read_text(encoding="utf-8")
         )
         require(readiness.get("version") == version, f"{name} version differs from VERSION")
+    model_ledger = load_yaml(root / "chain-loop-skill" / "templates" / "model-binding-ledger.yaml")
+    require(str(model_ledger.get("version")) == version, "model binding ledger version differs from VERSION")
+
+
+def validate_active_model_guidance(root: Path) -> None:
+    governed = [
+        root / "SKILL.md",
+        root / "agents" / "openai.yaml",
+        root / "chain-loop-skill" / "SKILL.md",
+        root / "chain-loop-skill" / "agents" / "openai.yaml",
+        root / "README.md",
+        root / "SPEC.md",
+    ]
+    combined = "\n".join(path.read_text(encoding="utf-8") for path in governed)
+    forbidden_positive_phrases = (
+        "`gpt-5.5` with `high` reasoning as the minimum",
+        "Prefer `gpt-5.5 high` for routine",
+        "Workers use gpt-5.5 high through",
+        "every Worker is from `gpt-5.5 high`",
+    )
+    require(
+        not any(phrase in combined for phrase in forbidden_positive_phrases),
+        "retired GPT 5.5-or-lower positive guidance remains active",
+    )
+    require("gpt-5.6-terra+xhigh" in combined, "Terra xhigh default guidance is missing")
+    require("MODEL_BINDING_LEDGER" in combined, "model binding ledger guidance is missing")
 
 
 def parse_structured_files(root: Path) -> None:
@@ -202,6 +233,7 @@ def validate_templates(root: Path) -> None:
         ("runtime-state-index.schema.json", "runtime-state-index.yaml"),
         ("topology-fault-record.schema.json", "topology-fault-record.yaml"),
         ("run-control-trace.schema.json", "run-control-trace.yaml"),
+        ("model-binding-ledger.schema.json", "model-binding-ledger.yaml"),
     ]
     receipt_names = [
         "d0-worker-receipt.yaml",
@@ -235,6 +267,7 @@ def validate_repository(root: Path) -> None:
     validate_required_files(root)
     validate_skill_frontmatter(root / "chain-loop-skill" / "SKILL.md")
     validate_version_consistency(root)
+    validate_active_model_guidance(root)
     parse_structured_files(root)
     validate_manifest(root)
     validate_templates(root)
@@ -251,7 +284,7 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError, RepositoryValidationError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 2
-    print("PASS: CLK repository 2.5.0")
+    print("PASS: CLK repository 2.6.0")
     return 0
 
 

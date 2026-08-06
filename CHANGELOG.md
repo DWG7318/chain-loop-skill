@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.6.0
+
+- Replaced fixed role-wide model assumptions with a versioned, fail-closed
+  `MODEL_BINDING_LEDGER` that records capability class/equivalence, actual model,
+  reasoning effort, selection tier/reason, scope, isolation, and gate evidence.
+- Made `gpt-5.6-terra+xhigh` the technical-role and patrol default; limited Luna to
+  explicitly fine-grained, LOW-risk, capacity-PASS Worker CELLs and Sol to evidenced
+  high-complexity correction, root-cause diagnosis, or complex rework.
+- Prohibited GPT 5.5 and lower, unapproved `ultra`, unproven alternative models,
+  role pollution, stale binding receipts, and same-model isolation reuse.
+- Required every model change to create reciprocal old/new binding identities and
+  fresh readiness/isolation/verification evidence; observations fail on silent
+  actual-model or reasoning drift.
+- Added the model schema/template/reference/validator, normal and optimized-mode
+  adversarial tests, readiness coverage, CI/repository gates, and migration guidance
+  without changing CLK topology, D0–D3, wake, progress, capacity, or authority.
+
 ## 2.5.0
 
 - Hardened post-dispatch closure: active dispatches cannot omit wake, active traces

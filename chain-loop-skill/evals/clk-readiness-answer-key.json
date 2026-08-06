@@ -1,5 +1,5 @@
 {
-  "version": "2.5.0",
+  "version": "2.6.0",
   "answers": {
     "Q01": "Chain Loop Skill；CLK；$chain-loop-skill；一种分层推进、完整屏障同步的多链执行方法；MSLK只作为历史迁移术语，新运行不得使用旧身份。",
     "Q02": "必须；使用完整Calabash，或至少Grandpa、Product Architecture、Ontology组成的Minimum Calabash。",
@@ -7,11 +7,11 @@
     "Q04": "LEVEL是同时可开工的同步层；CHAIN是固定Checker/Worker责任链；GO-01-A是LEVEL-01中CHAIN-A的真实GO。",
     "Q05": "同一开放LEVEL可让不同CHAIN的GO并发；每条CHAIN最多一个ACTIVE GO；资源、写集或回滚风险可安全串行化但不能改变冻结拓扑。",
     "Q06": "先冻结Run和GO粒度，再在稳定所有权、CHAIN内聚、同LEVEL启动与验收独立、写域隔离、严格本地顺序、全Run完整屏障且无人工拆分均成立的合法分解中选择最大有效CHAIN数量；资源只降低ACTIVE并发，不改变roster。需要条件分支、部分解锁、循环、动态CHAIN或任意路由时记录METHOD_BOUNDARY_EXCEEDED并另用GLK。",
-    "Q07": "canonical技术角色严格只有Supervisor、Checker、Worker、Verification；巡检员是每Run单独且唯一的非权威gpt-5.6-luna+xhigh运行保障绑定和heartbeat，不进入技术角色或D层。GO、CELL、Round、计划步骤是子任务；有稳定threadId的同项目可见任务是平级角色；只有spawn_agent、delegate_task、隐藏Agent、后台Agent才是禁用子代理。第七项硬规则分别禁止四种技术角色矩阵和巡检绑定调用set_thread_pinned(true)；只有Owner UI或当前Run逐项明确授权合法。Agent证据记UNAUTHORIZED_THREAD_PIN，来源未知记PIN_PROVENANCE_UNKNOWN且不自动unpin，先Pin后Unpin也不消除违规。",
+    "Q07": "canonical技术角色严格只有Supervisor、Checker、Worker、Verification；巡检员是每Run单独且唯一的非权威运行保障绑定和heartbeat，不进入技术角色或D层，并按2.6.0默认策略使用gpt-5.6-terra+xhigh而不是隐含Luna例外。GO、CELL、Round、计划步骤是子任务；有稳定threadId的同项目可见任务是平级角色；只有spawn_agent、delegate_task、隐藏Agent、后台Agent才是禁用子代理。第七项硬规则分别禁止四种技术角色矩阵和巡检绑定调用set_thread_pinned(true)；只有Owner UI或当前Run逐项明确授权合法。Agent证据记UNAUTHORIZED_THREAD_PIN，来源未知记PIN_PROVENANCE_UNKNOWN且不自动unpin，先Pin后Unpin也不消除违规。",
     "Q08": "Supervisor、每条CHAIN的Checker和Worker持久；每个GO计划时预绑定Verification并在LEVEL开工前创建全新attempt。每个ACTIVE CELL_DISPATCH必须绑定当前Worker/Checker、完整scope/progress identity和恰好一条同身份wake lifecycle；只有INITIAL_UNDISPATCHED可无wake，已派工、Worker signal或删空事件不能绕过。Worker完成CELL或正式BLOCKED/EXECUTION_FAILURE后，使用冻结Checker thread/host按T+0、T+2、T+4、T+6四级叫醒：直接消息、只恢复同一任务、唯一临时heartbeat、PENDING_WAKE；每级最多两分钟，匹配WAKE_ACK立即停止、清理并消费。其他角色不得使用，缺能力派工前fail closed。",
     "Q09": "Checker冻结中立GO候选并直接发送GO_READY_FOR_VERIFICATION给预设Verification；Supervisor不做中转、改写或总结。",
     "Q10": "同时直接发给Checker和Supervisor；Verification只独立验证并签发一个verdict，不能规划、实施、修复、改标准或路由。",
-    "Q11": "不足；还必须隔离context、workspace、runtime state、database/fixture、port、browser profile、model binding、input、evidence和lifecycle。",
+    "Q11": "不足；还必须隔离context、workspace、runtime state、database/fixture、port、browser profile、model binding、input、evidence和lifecycle。MODEL_BINDING_LEDGER记录capability class/equivalence、实际model、xhigh或逐项Owner授权的ultra、选择层级/理由及readiness/isolation/verification证据。技术角色和巡检默认gpt-5.6-terra+xhigh；只有明确fine-grained=true、LOW risk且容量PASS的Worker CELL可用gpt-5.6-luna+xhigh；只有高难纠错、根因诊断、复杂返工可用gpt-5.6-sol+xhigh；GPT 5.5及以下禁止，替代模型必须PROVEN_EQUIVALENT。换模必须新binding、reciprocal change和新鲜三类Receipt，同binding观察到漂移即SILENT_MODEL_SWITCH并fail closed。",
     "Q12": "不需要；自治包络内的常规工作免Owner逐CELL、逐GO和逐LEVEL授权。",
     "Q13": "仅不可约的Owner独占事项，如改变Grandpa/产品结果/范围/验收/安全、真实Calabash歧义、私密凭证、法律同意、破坏性不可逆高成本物理或外部账户动作。Supervisor不得用wait_threads长期等待、循环等待或等待全部Worker，控制动作后结束turn；零时快照可用。唯一巡检员项目负载间隔为LOW→10、MEDIUM→15、HIGH→30分钟；每次状态必须含完整机械检查集、固定status/finding及观察/证据身份，告警一一绑定。它只报告最低运行错误与PENDING_WAKE，不修复、不接管、不派工；合法PAUSED、BLOCKED、外部等待不误报。",
     "Q14": "Worker；Checker和Verification不得修改产品候选后验收自己的修改。",

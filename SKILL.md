@@ -163,23 +163,12 @@ receive fresh roles.
 
 ## Model Policy
 
-The Supervisor and every Checker must use `gpt-5.6-sol` with `xhigh` reasoning.
-
-Workers may use only:
-
-- `gpt-5.5` with `high` reasoning as the minimum;
-- `gpt-5.6-sol` with `high` reasoning as the maximum.
-
-During planning, assign a Worker model and reasoning level to every CELL based
-on task type, difficulty, risk, tool burden, and validation burden. Prefer
-`gpt-5.5 high` for routine bounded implementation and `gpt-5.6-sol high` for
-complex integration, architecture-sensitive work, or difficult diagnosis.
-Record the assignment in the CELL plan before launch.
-
-The controlling Checker may change the Worker model as evidence changes the task
-classification. Record the change before dispatch. Never assign a Worker below
-`gpt-5.5 high`, above `gpt-5.6-sol high`, or at a reasoning level other than
-`high`.
+These MSLK assets are migration-only and cannot authorize a formal new Run. Any
+compatibility evaluation uses `gpt-5.6-terra+xhigh`; GPT 5.5 and lower are rejected.
+Formal CLK model selection is governed by the canonical
+`chain-loop-skill/templates/model-binding-ledger.yaml` and its validator: Terra is
+default, while Luna/Sol require their scoped fine-grained or exceptional evidence.
+No compatibility record may silently change model or bypass fresh binding gates.
 
 ## Role Contract
 
@@ -873,9 +862,9 @@ Before launching multiple loops, the Supervisor confirms:
   OSV-Scanner/Trivy, Playwright, coverage/mutation, and API/schema layers are
   assigned at GO level and provisioned, or are excluded from that GO with an
   approved plan-level rationale before any CELL starts.
-- Every CELL declares an allowed Worker model and reasoning level.
-- The Supervisor and every Checker are `gpt-5.6-sol xhigh`; every Worker is from
-  `gpt-5.5 high` through `gpt-5.6-sol high` according to task type.
+- Every compatibility CELL declares an explicit model binding and reasoning level.
+- Compatibility readiness uses `gpt-5.6-terra xhigh`; GPT 5.5 and lower are
+  rejection cases, and formal model exceptions belong only to canonical CLK.
 - GO scope follows project need; every CELL is sized for reliable execution on
   the current computer without weakening GO acceptance.
 - Every Checker task displays project-wide `正在完成 GO-NN：accepted/total`, and

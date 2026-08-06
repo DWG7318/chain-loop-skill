@@ -24,6 +24,7 @@ jobs:
       - run: python scripts/validate_runtime_state.py tests/fixtures/runtime/valid-level-active.yaml
       - run: python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-chain-local.yaml
       - run: python scripts/validate_run_control.py chain-loop-skill/templates/run-control-trace.yaml
+      - run: python scripts/validate_model_policy.py chain-loop-skill/templates/model-binding-ledger.yaml
       - run: >-
           python scripts/validate_receipt_chain.py
           chain-loop-skill/templates/d0-worker-receipt.yaml

@@ -1,7 +1,7 @@
 receipt_id: CLK-RUN-RECEIPT-001
 run_id: RUN-001
 method: CLK
-version: 2.5.0
+version: 2.6.0
 chain_level_baseline_ref: CLK-BASELINE-001
 chain_level_baseline_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 level_barrier_receipts: [RECEIPT-LEVEL-BARRIER-01, RECEIPT-LEVEL-BARRIER-02]

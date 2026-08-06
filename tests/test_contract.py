@@ -88,9 +88,9 @@ class MultiSmallLoopContractTest(unittest.TestCase):
             )
         self.assertLess(len(SKILL.splitlines()), 900)
 
-    def test_release_identity_is_clk_v2_5_0_with_legacy_assets_preserved(self):
-        self.assertEqual(VERSION, "2.5.0")
-        self.assertIn("Current version: **2.5.0**", README)
+    def test_release_identity_is_clk_v2_6_0_with_legacy_assets_preserved(self):
+        self.assertEqual(VERSION, "2.6.0")
+        self.assertIn("Current version: **2.6.0**", README)
         self.assertIn("GitHub repository ID: `1298120736`", SKILL)
         self.assertIn("Multi Small Loop Skill", SKILL)
         self.assertNotIn("all nine rules", README.lower())
@@ -395,8 +395,8 @@ class MultiSmallLoopContractTest(unittest.TestCase):
             "Archive it immediately",
             "GO_REVISION_SIMULATION_PASS",
             "must not send a repair task back to the Worker",
-            "`gpt-5.5` with `high` reasoning as the minimum",
-            "`gpt-5.6-sol` with `high` reasoning as the maximum",
+            "compatibility evaluation uses `gpt-5.6-terra+xhigh`",
+            "GPT 5.5 and lower are rejected",
             "GO scope follows project need and must not be reduced for device capacity",
             "CELL size must be kept modest enough for the current computer",
             "正在完成 GO-03：35/231",

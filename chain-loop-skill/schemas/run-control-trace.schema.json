@@ -11,7 +11,7 @@
   ],
   "properties": {
     "trace_type": {"const": "CLK_RUN_CONTROL_TRACE"},
-    "version": {"const": "2.5.0"},
+    "version": {"const": "2.6.0"},
     "clock_mode": {"const": "INJECTED_MINUTES"},
     "run": {"$ref": "#/$defs/run"},
     "required_sets": {
@@ -317,7 +317,7 @@
       "type": "object", "additionalProperties": false,
       "required": [
         "patrol_id", "conversation_type", "conversation_id", "thread_id", "host_id",
-        "visible", "authoritative", "technical_acceptance", "product_work", "set_thread_pinned", "model",
+        "visible", "authoritative", "technical_acceptance", "product_work", "set_thread_pinned", "model_binding_id", "model",
         "reasoning_effort", "project_workload", "interval_minutes", "heartbeat_id",
         "heartbeat_count", "heartbeat_state"
       ],
@@ -332,7 +332,8 @@
         "technical_acceptance": {"const": false},
         "product_work": {"const": false},
         "set_thread_pinned": {"const": false},
-        "model": {"const": "gpt-5.6-luna"},
+        "model_binding_id": {"$ref": "#/$defs/id"},
+        "model": {"const": "gpt-5.6-terra"},
         "reasoning_effort": {"const": "xhigh"},
         "project_workload": {"enum": ["LOW", "MEDIUM", "HIGH"]},
         "interval_minutes": {"enum": [10, 15, 30]},

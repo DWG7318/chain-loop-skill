@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate CLK 2.5.0 Worker wake, patrol, capacity, and layered progress traces."""
+"""Validate CLK 2.6.0 Worker wake, patrol, capacity, and layered progress traces."""
 
 from __future__ import annotations
 
@@ -142,6 +142,9 @@ def validate_patrol(trace: dict[str, Any]) -> dict[str, Any]:
     run_id = trace["run"]["run_id"]
     require(patrol["heartbeat_id"] == f"PATROL::{run_id}", "patrol heartbeat must be deterministic for the Run")
     require(patrol["heartbeat_count"] == 1, "exactly one patrol heartbeat is required")
+    require(patrol["model_binding_id"].startswith("BINDING::"), "patrol must reference an explicit model binding")
+    require(patrol["model"] == "gpt-5.6-terra", "patrol default model must be Terra")
+    require(patrol["reasoning_effort"] == "xhigh", "patrol default reasoning must be xhigh")
     require(
         patrol["interval_minutes"] == PATROL_INTERVAL[patrol["project_workload"]],
         "patrol interval must match frozen project workload",

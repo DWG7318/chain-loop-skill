@@ -33,8 +33,8 @@ def test_canonical_answers_pass() -> None:
     passed, results = module.grade(bank, key, submitted, [q["id"] for q in order])
     assert passed
     assert all(item["passed"] for item in results)
-    assert bank["version"] == "2.5.0"
-    assert key["version"] == "2.5.0"
+    assert bank["version"] == "2.6.0"
+    assert key["version"] == "2.6.0"
     joined = "\n".join(key["answers"].values())
     for marker in (
         "每条CHAIN最多一个ACTIVE GO",
@@ -44,7 +44,12 @@ def test_canonical_answers_pass() -> None:
         "LOOP_OWNER_ACCEPTED",
         "CHAIN_LOCAL、CROSS_CHAIN_COMPOSITION、LEVEL_BARRIER",
         "T+0、T+2、T+4、T+6",
+        "gpt-5.6-terra+xhigh",
+        "fine-grained=true、LOW risk且容量PASS",
         "gpt-5.6-luna+xhigh",
+        "gpt-5.6-sol+xhigh",
+        "PROVEN_EQUIVALENT",
+        "SILENT_MODEL_SWITCH",
         "第五项硬规则",
         "DELIVERED不等于D1_ACCEPTED",
         "第六项硬规则",

@@ -1,4 +1,4 @@
-# Chain Loop Skill Standard Specification 2.5.0
+# Chain Loop Skill Standard Specification 2.6.0
 
 ## 1. Identity and boundary
 
@@ -201,8 +201,8 @@ Supervisor cannot wait through `wait_threads`, loop it, or wait for all Workers.
 Zero-time snapshots remain allowed; Supervisor ends its turn after dispatch or
 control.
 
-Each Run has exactly one visible `RUN_PATROL_CONVERSATION`, one heartbeat, model
-`gpt-5.6-luna`, reasoning `xhigh`, and frozen 10/15/30-minute interval. Patrol is
+Each Run has exactly one visible `RUN_PATROL_CONVERSATION`, one heartbeat, default
+model `gpt-5.6-terra`, reasoning `xhigh`, and frozen 10/15/30-minute interval. Patrol is
 non-authoritative, performs no product work, acceptance, repair, redispatch, or
 engineering-progress reporting, and does not alter CLK role/D-layer enums. It
 mechanically reports unexplained stalls, PENDING_WAKE, forbidden Agent evidence,
@@ -211,6 +211,31 @@ closure. Formal pause, legitimate block, and documented external wait are normal
 Project workload maps `LOW→10`, `MEDIUM→15`, and `HIGH→30` minutes. Every patrol
 status carries the complete fixed check set plus evidence; every alert uses a fixed
 finding and binds its observation/evidence identity. Free-form “normal” is invalid.
+
+### 10.1 Controllable model binding
+
+`MODEL_BINDING_LEDGER` is the single model-selection authority. It records every
+required actor's capability class, actual model, reasoning effort, selection tier
+and reason, Run/GO/CELL/Round scope, capability-equivalence evidence, isolation
+identities, and fresh readiness/isolation/verification Receipts. Canonical technical
+roles remain Supervisor, Checker, Worker, and Verification; patrol is checked in a
+separate non-authoritative binding.
+
+Ordinary technical work and patrol use `gpt-5.6-terra+xhigh`. A Worker may use
+`gpt-5.6-luna+xhigh` only when the current versioned CELL Contract states
+`fine_grained=true`, `risk_class=LOW`, and `capacity_gate_result=PASS`. A technical
+role may use `gpt-5.6-sol+xhigh` only for `HIGH_COMPLEXITY_CORRECTION`,
+`ROOT_CAUSE_DIAGNOSIS`, or `COMPLEX_REWORK`, with scoped evidence. Cost,
+convenience, ordinary implementation, and ordinary checking are not exceptions.
+
+Another model must have content-hashed `PROVEN_EQUIVALENT` evidence for the exact
+selected tier and capability class. GPT 5.5 and lower are always rejected. `xhigh`
+is normal; `ultra` requires current-Run, actor-, binding-, and scope-specific Owner
+authorization. A model change creates a new binding, reciprocal change record, and
+fresh readiness/isolation/verification Receipts. Actual-model or effort drift under
+one binding is `SILENT_MODEL_SWITCH` and fails closed. Identical models across roles
+remain legal only with distinct conversation, context, workspace, runtime namespace,
+binding, and evidence identities.
 
 GO, CELL, Round, plan step, and the Chinese term `子任务` are subtasks. A visible
 same-project task with stable thread ID is a peer conversation, not a subagent.

@@ -137,14 +137,8 @@ def _metadata_error(metadata: dict[str, Any], seed: int) -> str | None:
     role = metadata.get("candidate_role")
     model = metadata.get("model")
     reasoning = metadata.get("reasoning")
-    if role in {"supervisor", "checker"}:
-        if (model, reasoning) != ("gpt-5.6-sol", "xhigh"):
-            return "invalid_role_model"
-    elif role == "worker":
-        if (model, reasoning) not in {
-            ("gpt-5.5", "high"),
-            ("gpt-5.6-sol", "high"),
-        }:
+    if role in {"supervisor", "checker", "worker"}:
+        if (model, reasoning) != ("gpt-5.6-terra", "xhigh"):
             return "invalid_role_model"
     else:
         return "invalid_candidate_role"

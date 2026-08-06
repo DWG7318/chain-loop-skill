@@ -1,5 +1,5 @@
 {
-  "version": "2.5.0",
+  "version": "2.6.0",
   "questions": [
     {
       "id": "Q01",
@@ -43,7 +43,7 @@
     },
     {
       "id": "Q11",
-      "prompt": "不同对话是否足以隔离Checker和Verification？"
+      "prompt": "不同对话是否足以隔离Checker和Verification？CLK 2.6.0如何选择、证明和切换模型绑定？"
     },
     {
       "id": "Q12",
@@ -71,7 +71,7 @@
     },
     {
       "id": "Q18",
-      "prompt": "CLK 2.5.0的D0、D1、D2、LEVEL和D3分别证明什么？交付、候选与正式进度怎样区分？"
+      "prompt": "CLK 2.6.0的D0、D1、D2、LEVEL和D3分别证明什么？交付、候选与正式进度怎样区分？"
     },
     {
       "id": "Q19",

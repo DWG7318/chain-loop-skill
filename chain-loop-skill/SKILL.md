@@ -17,7 +17,7 @@ not canonical identities for new runs.
 - GitHub repository ID: `1298120736`.
 - Default branch: `main`.
 - Version source: repository `VERSION` file and matching `v*` tag.
-- Current specification version: `2.5.0`.
+- Current specification version: `2.6.0`.
 
 Before publishing, verify owner/name, repository ID, default branch, remote HEAD,
 tested installation, version file, and release tag. Never publish CLK content to
@@ -209,14 +209,13 @@ Every role is a visible conversation under the same Codex project.
 - Archive persistent roles while they have no authorized work; unarchive the same
   role for the next Level rather than creating duplicates.
 - No archived conversation performs hidden or background work.
-- Each Run has exactly one visible `RUN_PATROL_CONVERSATION` and one heartbeat, bound to `gpt-5.6-luna+xhigh` at a frozen 10/15/30-minute interval.
+- Each Run has exactly one visible `RUN_PATROL_CONVERSATION` and one heartbeat, normally bound to `gpt-5.6-terra+xhigh` at a frozen 10/15/30-minute interval.
 - No method role, including patrol, may Pin a task; only explicit Owner provenance
   is valid, and lifecycle remains independent from Pin state.
 ## Role and Environment Isolation
 
-Read
-[`references/role-isolation-and-verification.md`](references/role-isolation-and-verification.md)
-before role launch.
+Read [`references/role-isolation-and-verification.md`](references/role-isolation-and-verification.md) and
+[`references/model-selection-and-binding.md`](references/model-selection-and-binding.md) before role launch.
 
 Every role records:
 
@@ -236,9 +235,10 @@ shared.
 
 Verification must not inherit Worker/Checker conversations, prior Verification
 context, subjective Checker conclusions, hidden reasoning, or mutable Checker state.
-Same-model use is permitted only with different bindings, contexts, workspaces,
-permissions, and independently generated evidence. Model diversity is an extra
-defense, not a substitute.
+`MODEL_BINDING_LEDGER` binds capability equivalence/class, actual model, effort, selection reason/tier, and fresh gates. Technical roles and patrol default to `gpt-5.6-terra+xhigh`.
+Only fine-grained, LOW-risk, capacity-PASS Worker CELLs may use `gpt-5.6-luna+xhigh`; only high-complexity correction, root-cause diagnosis, or complex rework may use `gpt-5.6-sol+xhigh`.
+GPT 5.5 and lower fail closed; substitutes require content-hashed `PROVEN_EQUIVALENT` evidence, while `ultra` requires item-specific Owner authorization.
+Model changes create new bindings and gates; observed drift is forbidden, and same-model roles retain distinct binding, context, workspace, permission, and evidence identities.
 
 If required isolation is unavailable, record `ROLE_ISOLATION_BLOCKED` and fail
 closed.
@@ -985,16 +985,16 @@ fresh isolated Verification, neutral direct package, and no downstream Level wor
 from provisional output.
 ## Migration
 
-Active 1.8.3 MSLK and pre-2.5.0 CLK runs remain bound to their historical
+Active 1.8.3 MSLK and pre-2.6.0 CLK runs remain bound to their historical
 specifications. Preserve old receipts and read the matching migration guide:
 [`../MIGRATION-MSLK-TO-CLK.md`](../MIGRATION-MSLK-TO-CLK.md),
 [`../MIGRATION-2.0-TO-2.3.1.md`](../MIGRATION-2.0-TO-2.3.1.md), or
 [`../MIGRATION-2.3.1-TO-2.4.0.md`](../MIGRATION-2.3.1-TO-2.4.0.md). For 2.4.0,
-read [`../MIGRATION-2.4.0-TO-2.5.0.md`](../MIGRATION-2.4.0-TO-2.5.0.md).
+read [`../MIGRATION-2.4.0-TO-2.5.0.md`](../MIGRATION-2.4.0-TO-2.5.0.md); for 2.5.0,
+read [`../MIGRATION-2.5.0-TO-2.6.0.md`](../MIGRATION-2.5.0-TO-2.6.0.md).
 If unfinished work cannot retain fixed Chains, ordered Levels, and full barriers,
 record `METHOD_BOUNDARY_EXCEEDED` and use a separate GLK run.
 ## Version Note
 
-CLK 2.5.0 preserves 2.4.0 fault semantics while adding Worker-only bounded wake,
-one Run patrol, receipt-derived progress, cumulative device-aware CELL capacity,
-precise task/subagent identity, and Owner-only Pin authority. Dynamic graphs stay GLK-only.
+CLK 2.6.0 preserves 2.5.0 topology/runtime semantics while adding evidence-bound,
+controllable model selection and verified switching. Dynamic graphs stay GLK-only.

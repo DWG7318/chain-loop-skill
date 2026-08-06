@@ -62,7 +62,8 @@ bounded ACK windows above.
 Each Run has exactly one visible `RUN_PATROL_CONVERSATION` and one heartbeat:
 
 ```text
-model: gpt-5.6-luna
+model_binding_id: BINDING::<PATROL>::<VERSION>
+model: gpt-5.6-terra
 reasoning_effort: xhigh
 interval_minutes: 10 | 15 | 30
 ```
