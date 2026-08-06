@@ -51,6 +51,7 @@
     "alternative_requires": "PROVEN_EQUIVALENT",
     "gpt_5_5_and_lower": "REJECT",
     "known_gpt_family_laundering": "REJECT",
+    "known_gpt_snapshot_separators": ["-", ".", "_"],
     "binding_change_requires_any_of": [
       "ACTUAL_MODEL_CHANGED",
       "REASONING_EFFORT_CHANGED"

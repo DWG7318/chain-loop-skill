@@ -44,8 +44,8 @@ claimed equivalence.
 
 GPT IDs are canonical lowercase and contain no leading or trailing whitespace.
 Exact `gpt-5.6-terra`, `gpt-5.6-luna`, and `gpt-5.6-sol` names map directly to
-their reference tiers. A hyphen-suffixed snapshot such as
-`gpt-5.6-luna-preview` is recognized as the same family but still requires
+their reference tiers. A snapshot separated by `-`, `.`, or `_`, such as
+`gpt-5.6-luna-preview`, `gpt-5.6-luna.preview`, or `gpt-5.6-luna_snapshot`, is recognized as the same family but still requires
 `PROVEN_EQUIVALENT` evidence for that family's own tier and capability class; it
 cannot cross classes. A different token such as `lunar` is not the `luna` family.
 

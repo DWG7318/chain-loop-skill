@@ -401,11 +401,17 @@ def test_owner_authorized_reasoning_only_rebinding_is_valid(tmp_path: Path) -> N
     assert_valid(tmp_path, ledger)
 
 
-def test_same_family_luna_snapshot_requires_and_accepts_luna_equivalence(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    "snapshot_model",
+    ["gpt-5.6-luna-preview", "gpt-5.6-luna.preview", "gpt-5.6-luna_snapshot"],
+)
+def test_same_family_luna_snapshot_requires_and_accepts_luna_equivalence(
+    tmp_path: Path, snapshot_model: str
+) -> None:
     ledger = base_ledger()
     select_luna(ledger)
     item = find_binding(ledger, "WORKER-A")
-    item["actual_model"] = "gpt-5.6-luna-preview"
+    item["actual_model"] = snapshot_model
     item["capability_equivalence_id"] = "EQUIV-LUNA-PREVIEW"
     find_observation(ledger, "WORKER-A")["actual_model"] = item["actual_model"]
     ledger["capability_equivalences"].append(
@@ -435,6 +441,8 @@ def test_lunar_name_is_not_misclassified_as_luna_family(tmp_path: Path) -> None:
         ("gpt-5.6-luna ", "leading or trailing whitespace"),
         ("gpt-5.6-luna-preview", "Luna is Worker-only"),
         ("gpt-5.6-sol-20260806", "Sol requires exceptional"),
+        ("gpt-5.6-luna.preview", "Luna is Worker-only"),
+        ("gpt-5.6-sol_snapshot", "Sol requires exceptional"),
     ],
 )
 def test_known_gpt_family_identity_laundering_is_rejected(
@@ -453,6 +461,8 @@ def test_known_gpt_family_identity_laundering_is_rejected(
         ("gpt-5.6-luna ", "leading or trailing whitespace"),
         ("gpt-5.6-luna-preview", "Luna is Worker-only"),
         ("gpt-5.6-sol-20260806", "Sol requires exceptional"),
+        ("gpt-5.6-luna.preview", "Luna is Worker-only"),
+        ("gpt-5.6-sol_snapshot", "Sol requires exceptional"),
     ],
 )
 def test_known_gpt_family_laundering_fails_under_python_optimized(

@@ -32,7 +32,7 @@ REFERENCE_FAMILIES = {
 SOL_REASONS = {"HIGH_COMPLEXITY_CORRECTION", "ROOT_CAUSE_DIAGNOSIS", "COMPLEX_REWORK"}
 GPT_VERSION = re.compile(r"^gpt-(\d+)\.(\d+)(?:-|$)")
 GPT_FAMILY = re.compile(
-    r"^gpt-(\d+)\.(\d+)-(terra|luna|sol)(?:$|-[a-z0-9][a-z0-9._-]*$)"
+    r"^gpt-(\d+)\.(\d+)-(terra|luna|sol)(?:$|[-._][a-z0-9][a-z0-9._-]*$)"
 )
 
 

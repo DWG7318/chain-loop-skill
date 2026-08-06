@@ -49,7 +49,7 @@
     "model_id": {
       "type": "string",
       "minLength": 1,
-      "description": "GPT IDs are canonical lowercase with no outer whitespace; semantic validation maps exact terra/luna/sol families and hyphen snapshots to their tier."
+      "description": "GPT IDs are canonical lowercase with no outer whitespace; semantic validation maps exact terra/luna/sol families and snapshots separated by hyphen, dot, or underscore to their tier."
     },
     "nullable_id": {"type": ["string", "null"]},
     "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},

@@ -16,14 +16,14 @@ PASS. Fresh local output on the candidate:
 
 ```text
 python -m pytest -q
-247 passed, 185 subtests passed
+253 passed, 185 subtests passed
 
 python -O -m pytest -q \
   tests/test_model_policy.py::test_known_gpt_family_laundering_fails_under_python_optimized \
   tests/test_model_policy.py::test_critical_invalid_policy_fails_closed_under_python_optimized \
   tests/test_run_control.py::test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes \
   tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions
-40 passed; one expected pytest optimized-mode warning
+42 passed; one expected pytest optimized-mode warning
 
 python scripts/validate_repository.py
 PASS: CLK repository 2.6.0
@@ -73,7 +73,7 @@ The candidate proves:
 - another model passes only through content-hashed `PROVEN_EQUIVALENT` evidence
   that exactly matches its actual model, selected tier, and capability class;
 - GPT IDs require canonical lowercase and no outer whitespace; boundary-safe
-  Terra/Luna/Sol family parsing recognizes hyphen snapshots without confusing
+  Terra/Luna/Sol family parsing recognizes `-`, `.`, and `_` snapshots without confusing
   `lunar` with `luna`, and a known family can never cross tiers through equivalence;
 - GPT 5.5 and lower, unapproved `ultra`, cost/convenience downgrade, Luna outside
   an eligible Worker CELL, ordinary Sol, unproven/unknown equivalence, named

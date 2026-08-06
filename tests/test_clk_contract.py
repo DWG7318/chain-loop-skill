@@ -172,7 +172,7 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
         "luna": "LUNA_FINE_GRAINED",
         "sol": "SOL_EXCEPTIONAL",
     }
-    assert model_policy["known_gpt_snapshot_separator"] == "-"
+    assert model_policy["known_gpt_snapshot_separators"] == ["-", ".", "_"]
     assert model_policy["known_gpt_snapshot_cross_family_equivalence_allowed"] is False
     assert model_policy["binding_change_requires_any_of"] == [
         "ACTUAL_MODEL_CHANGED",
@@ -187,6 +187,7 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
 
     manifest = json.loads((ROOT / "MANIFEST.json").read_text(encoding="utf-8"))
     assert manifest["model_selection"]["known_gpt_family_laundering"] == "REJECT"
+    assert manifest["model_selection"]["known_gpt_snapshot_separators"] == ["-", ".", "_"]
     assert manifest["model_selection"]["binding_change_requires_any_of"] == [
         "ACTUAL_MODEL_CHANGED",
         "REASONING_EFFORT_CHANGED",

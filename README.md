@@ -131,8 +131,8 @@ high-complexity correction, root-cause diagnosis, or complex rework may use
 `gpt-5.6-sol+xhigh`. Other providers/models require content-hashed
 `PROVEN_EQUIVALENT` evidence for the selected capability tier.
 
-GPT IDs must be lowercase with no outer whitespace. Hyphen-suffixed Terra/Luna/Sol
-snapshots remain in their parsed family and cannot use equivalence to cross tiers.
+GPT IDs must be lowercase with no outer whitespace. Terra/Luna/Sol snapshots
+separated by `-`, `.`, or `_` remain in their family and cannot cross tiers.
 
 `MODEL_BINDING_LEDGER` binds the actual model, capability class, selection tier
 and reason, reasoning effort, scope, isolation identity, and fresh readiness and

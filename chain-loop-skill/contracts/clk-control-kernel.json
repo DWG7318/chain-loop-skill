@@ -206,7 +206,7 @@
       "luna": "LUNA_FINE_GRAINED",
       "sol": "SOL_EXCEPTIONAL"
     },
-    "known_gpt_snapshot_separator": "-",
+    "known_gpt_snapshot_separators": ["-", ".", "_"],
     "known_gpt_snapshot_cross_family_equivalence_allowed": false,
     "silent_model_switch_allowed": false,
     "switch_requires_new_binding_and_fresh_readiness_isolation_verification": true,
