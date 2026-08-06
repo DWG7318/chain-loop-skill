@@ -42,6 +42,13 @@ evidence.path + evidence.sha256
 or a free-text claim fails closed. GPT 5.5 and lower are prohibited regardless of
 claimed equivalence.
 
+GPT IDs are canonical lowercase and contain no leading or trailing whitespace.
+Exact `gpt-5.6-terra`, `gpt-5.6-luna`, and `gpt-5.6-sol` names map directly to
+their reference tiers. A hyphen-suffixed snapshot such as
+`gpt-5.6-luna-preview` is recognized as the same family but still requires
+`PROVEN_EQUIVALENT` evidence for that family's own tier and capability class; it
+cannot cross classes. A different token such as `lunar` is not the `luna` family.
+
 ## Reasoning effort
 
 `xhigh` is the normal binding. `ultra` requires one Owner authorization that binds
@@ -63,13 +70,15 @@ Same-model use is legal only with distinct conversation, context, workspace,
 runtime namespace, binding, and evidence identities. Readiness, isolation, and
 binding verification must all be fresh `PASS` Receipts.
 
-## Model changes
+## Model or reasoning changes
 
-Never edit the actual model inside an active binding. A legitimate change creates a
-new binding and `MODEL_BINDING_CHANGE`, reciprocally links `supersedes` and
+Never edit the actual model or reasoning effort inside an active binding. A
+legitimate change alters at least one of those fields, creates a new binding and
+`MODEL_BINDING_CHANGE`, reciprocally links `supersedes` and
 `superseded_by`, closes the old binding, and supplies new reason, selection evidence,
 readiness, isolation, and verification Receipts. Observed model or reasoning drift
-under the old binding is `SILENT_MODEL_SWITCH` and fails closed.
+under the old binding is `SILENT_MODEL_SWITCH` and fails closed. A fully evidenced,
+Owner-authorized Terra `xhigh`→Terra `ultra` rebind is valid; a no-op change is not.
 
 Round advancement, rework, wake escalation, progress updates, or patrol activity do
 not themselves authorize a model change.

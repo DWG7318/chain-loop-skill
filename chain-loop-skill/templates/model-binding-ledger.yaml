@@ -1,4 +1,7 @@
 version: 2.6.0
+# GPT model IDs are lowercase with no outer whitespace. A terra/luna/sol snapshot
+# uses a hyphen suffix and needs PROVEN_EQUIVALENT evidence for that same family tier.
+# A binding change alters actual_model or reasoning_effort and always refreshes gates.
 artifact_type: MODEL_BINDING_LEDGER
 ledger_id: MODEL-LEDGER-RUN-001-v1
 run_id: RUN-001

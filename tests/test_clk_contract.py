@@ -165,12 +165,32 @@ def test_worker_wake_patrol_task_identity_and_layered_progress_are_bounded() -> 
     assert model_policy["capability_equivalence_required_for_alternatives"] is True
     assert model_policy["switch_requires_new_binding_and_fresh_readiness_isolation_verification"] is True
     assert model_policy["same_model_role_isolation_required"] is True
+    assert model_policy["gpt_id_canonical_lowercase"] is True
+    assert model_policy["gpt_id_outer_whitespace_allowed"] is False
+    assert model_policy["known_gpt_family_tiers"] == {
+        "terra": "TERRA_DEFAULT",
+        "luna": "LUNA_FINE_GRAINED",
+        "sol": "SOL_EXCEPTIONAL",
+    }
+    assert model_policy["known_gpt_snapshot_separator"] == "-"
+    assert model_policy["known_gpt_snapshot_cross_family_equivalence_allowed"] is False
+    assert model_policy["binding_change_requires_any_of"] == [
+        "ACTUAL_MODEL_CHANGED",
+        "REASONING_EFFORT_CHANGED",
+    ]
 
     run_control = yaml.safe_load((SKILL / "templates" / "run-control-trace.yaml").read_text(encoding="utf-8"))
     model_ledger = yaml.safe_load((SKILL / "templates" / "model-binding-ledger.yaml").read_text(encoding="utf-8"))
     patrol_binding = next(item for item in model_ledger["bindings"] if item["role_kind"] == "PATROL")
     assert run_control["patrols"][0]["model_binding_id"] == patrol_binding["binding_id"]
     assert run_control["patrols"][0]["model"] == patrol_binding["actual_model"]
+
+    manifest = json.loads((ROOT / "MANIFEST.json").read_text(encoding="utf-8"))
+    assert manifest["model_selection"]["known_gpt_family_laundering"] == "REJECT"
+    assert manifest["model_selection"]["binding_change_requires_any_of"] == [
+        "ACTUAL_MODEL_CHANGED",
+        "REASONING_EFFORT_CHANGED",
+    ]
 
     identity = c["task_identity"]
     assert identity["subtask_examples"] == ["GO", "CELL", "ROUND", "PLAN_STEP"]
@@ -329,6 +349,8 @@ def test_readiness_count() -> None:
         "gpt-5.6-sol+xhigh",
         "PROVEN_EQUIVALENT",
         "SILENT_MODEL_SWITCH",
+        "lowercase且无首尾空白",
+        "actual model或reasoning effort至少一项变化",
         "wait_threads",
         "spawn_agent、delegate_task、隐藏Agent、后台Agent",
         "第五项硬规则",

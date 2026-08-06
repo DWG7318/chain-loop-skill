@@ -237,8 +237,8 @@ Verification must not inherit Worker/Checker conversations, prior Verification
 context, subjective Checker conclusions, hidden reasoning, or mutable Checker state.
 `MODEL_BINDING_LEDGER` binds capability equivalence/class, actual model, effort, selection reason/tier, and fresh gates. Technical roles and patrol default to `gpt-5.6-terra+xhigh`.
 Only fine-grained, LOW-risk, capacity-PASS Worker CELLs may use `gpt-5.6-luna+xhigh`; only high-complexity correction, root-cause diagnosis, or complex rework may use `gpt-5.6-sol+xhigh`.
-GPT 5.5 and lower fail closed; substitutes require content-hashed `PROVEN_EQUIVALENT` evidence, while `ultra` requires item-specific Owner authorization.
-Model changes create new bindings and gates; observed drift is forbidden, and same-model roles retain distinct binding, context, workspace, permission, and evidence identities.
+GPT IDs are lowercase without outer whitespace; terra/luna/sol snapshots remain in-family, and all substitutes require content-hashed `PROVEN_EQUIVALENT` evidence. GPT 5.5 and lower fail closed; `ultra` requires item-specific Owner authorization.
+Actual-model or reasoning-effort changes create new bindings and gates; no-op changes and observed drift are forbidden, and same-model roles retain distinct binding, context, workspace, permission, and evidence identities.
 
 If required isolation is unavailable, record `ROLE_ISOLATION_BLOCKED` and fail
 closed.
@@ -968,7 +968,7 @@ Before project launch, Supervisor confirms:
 - no conditional branch, partial unlock, cycle, dynamic Chain, or GLK capability;
 - current `25/25` readiness and project `SIMULATION_PASS`;
 - visible persistent roles with isolated identities/environments;
-- exactly one Luna+xhigh Run patrol/heartbeat and no method-role Pin capability;
+- exactly one Terra+xhigh-default or proven Terra-equivalent Run patrol/heartbeat and no method-role Pin capability;
 - `PROJECT_AUTONOMY_ENVELOPE` covers routine work without Owner authorization;
 - versioned device/load facts and PASS capacity gates for dispatchable CELLs;
 - every GO has Calabash trace, Verification Contract/binding, CELL plan, and tiered

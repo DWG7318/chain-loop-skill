@@ -162,6 +162,7 @@ def validate_active_model_guidance(root: Path) -> None:
         root / "README.md",
         root / "SPEC.md",
     ]
+    governed.extend(sorted((root / "chain-loop-skill" / "references").glob("*.md")))
     combined = "\n".join(path.read_text(encoding="utf-8") for path in governed)
     forbidden_positive_phrases = (
         "`gpt-5.5` with `high` reasoning as the minimum",
@@ -172,6 +173,14 @@ def validate_active_model_guidance(root: Path) -> None:
     require(
         not any(phrase in combined for phrase in forbidden_positive_phrases),
         "retired GPT 5.5-or-lower positive guidance remains active",
+    )
+    legacy_patrol_phrases = (
+        "exactly one luna+xhigh run patrol",
+        "exactly one visible luna+xhigh patrol",
+    )
+    require(
+        not any(phrase in combined.casefold() for phrase in legacy_patrol_phrases),
+        "legacy Patrol Luna positive guidance remains active",
     )
     require("gpt-5.6-terra+xhigh" in combined, "Terra xhigh default guidance is missing")
     require("MODEL_BINDING_LEDGER" in combined, "model binding ledger guidance is missing")

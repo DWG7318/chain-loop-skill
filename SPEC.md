@@ -231,9 +231,12 @@ convenience, ordinary implementation, and ordinary checking are not exceptions.
 Another model must have content-hashed `PROVEN_EQUIVALENT` evidence for the exact
 selected tier and capability class. GPT 5.5 and lower are always rejected. `xhigh`
 is normal; `ultra` requires current-Run, actor-, binding-, and scope-specific Owner
-authorization. A model change creates a new binding, reciprocal change record, and
+authorization. GPT IDs are lowercase without outer whitespace; hyphen-suffixed
+Terra/Luna/Sol snapshots remain in their parsed family and cannot cross tiers by
+equivalence. An actual-model or reasoning-effort change creates a new binding,
+reciprocal change record, and
 fresh readiness/isolation/verification Receipts. Actual-model or effort drift under
-one binding is `SILENT_MODEL_SWITCH` and fails closed. Identical models across roles
+one binding is `SILENT_MODEL_SWITCH`, while a no-op change is invalid. Identical models across roles
 remain legal only with distinct conversation, context, workspace, runtime namespace,
 binding, and evidence identities.
 

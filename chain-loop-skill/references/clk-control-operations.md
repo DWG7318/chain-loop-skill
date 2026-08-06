@@ -54,7 +54,7 @@ Worker alone may use the four-level bounded ladder to wake its frozen Checker.
 Every active dispatch binds one same-scope lifecycle; only an explicit initial
 undispatched trace can contain no wake or Worker signal.
 Supervisor finishes its control turn and never waits through `wait_threads`. Each
-Run has exactly one visible Luna+xhigh patrol and one heartbeat; patrol reports
+Run has exactly one visible Terra+xhigh-default or proven Terra-equivalent patrol and one heartbeat; patrol reports
 mechanical faults through fixed check/status/finding and observation/evidence
 identity. Project workload maps LOW→10, MEDIUM→15, HIGH→30 minutes. Patrol never accepts, repairs, dispatches, takes
 over, Pins, or reports engineering progress. See

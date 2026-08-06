@@ -46,6 +46,11 @@
   },
   "$defs": {
     "id": {"type": "string", "minLength": 1},
+    "model_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "GPT IDs are canonical lowercase with no outer whitespace; semantic validation maps exact terra/luna/sol families and hyphen snapshots to their tier."
+    },
     "nullable_id": {"type": ["string", "null"]},
     "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "evidence": {
@@ -111,7 +116,7 @@
       ],
       "properties": {
         "equivalence_id": {"$ref": "#/$defs/id"},
-        "actual_model": {"$ref": "#/$defs/id"},
+        "actual_model": {"$ref": "#/$defs/model_id"},
         "target_selection_tier": {"enum": ["TERRA_DEFAULT", "LUNA_FINE_GRAINED", "SOL_EXCEPTIONAL"]},
         "capability_class": {"enum": [
           "TECHNICAL_GENERAL", "FINE_GRAINED_EXECUTION", "ADVANCED_DIAGNOSTIC",
@@ -152,7 +157,7 @@
         "actor_id": {"$ref": "#/$defs/id"},
         "role_kind": {"$ref": "#/$defs/id"},
         "scope": {"$ref": "#/$defs/scope"},
-        "actual_model": {"$ref": "#/$defs/id"},
+        "actual_model": {"$ref": "#/$defs/model_id"},
         "model_provider": {"$ref": "#/$defs/id"},
         "capability_profile_id": {"$ref": "#/$defs/id"},
         "capability_class": {"enum": [
@@ -192,7 +197,10 @@
         "scope": {"$ref": "#/$defs/scope"},
         "previous_binding_id": {"$ref": "#/$defs/id"},
         "new_binding_id": {"$ref": "#/$defs/id"},
-        "change_reason": {"$ref": "#/$defs/id"},
+        "change_reason": {
+          "allOf": [{"$ref": "#/$defs/id"}],
+          "description": "A reciprocal change must alter actual_model or reasoning_effort; a no-op is invalid."
+        },
         "evidence": {"$ref": "#/$defs/evidence"}
       }
     },
@@ -207,7 +215,7 @@
         "binding_id": {"$ref": "#/$defs/id"},
         "actor_id": {"$ref": "#/$defs/id"},
         "scope": {"$ref": "#/$defs/scope"},
-        "actual_model": {"$ref": "#/$defs/id"},
+        "actual_model": {"$ref": "#/$defs/model_id"},
         "reasoning_effort": {"enum": ["xhigh", "ultra"]},
         "evidence": {"$ref": "#/$defs/evidence"}
       }

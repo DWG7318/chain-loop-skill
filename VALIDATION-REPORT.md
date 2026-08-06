@@ -16,13 +16,14 @@ PASS. Fresh local output on the candidate:
 
 ```text
 python -m pytest -q
-227 passed, 185 subtests passed
+247 passed, 185 subtests passed
 
 python -O -m pytest -q \
+  tests/test_model_policy.py::test_known_gpt_family_laundering_fails_under_python_optimized \
   tests/test_model_policy.py::test_critical_invalid_policy_fails_closed_under_python_optimized \
   tests/test_run_control.py::test_critical_invalid_traces_fail_closed_in_normal_and_optimized_modes \
   tests/test_topology_faults.py::test_cross_field_invalid_records_fail_with_and_without_assertions
-32 passed; one expected pytest optimized-mode warning
+40 passed; one expected pytest optimized-mode warning
 
 python scripts/validate_repository.py
 PASS: CLK repository 2.6.0
@@ -71,14 +72,19 @@ The candidate proves:
   root-cause diagnosis, or complex rework;
 - another model passes only through content-hashed `PROVEN_EQUIVALENT` evidence
   that exactly matches its actual model, selected tier, and capability class;
+- GPT IDs require canonical lowercase and no outer whitespace; boundary-safe
+  Terra/Luna/Sol family parsing recognizes hyphen snapshots without confusing
+  `lunar` with `luna`, and a known family can never cross tiers through equivalence;
 - GPT 5.5 and lower, unapproved `ultra`, cost/convenience downgrade, Luna outside
   an eligible Worker CELL, ordinary Sol, unproven/unknown equivalence, named
   reference-model tier laundering, and patrol Luna bypass fail closed;
 - item-specific Owner evidence may authorize `ultra` only for the exact current
   Run, actor, binding, and scope;
-- a legitimate model change closes the prior binding, creates a reciprocal
+- a legitimate actual-model or reasoning-effort change closes the prior binding, creates a reciprocal
   `MODEL_BINDING_CHANGE`, and supplies a new isolated binding with fresh readiness,
   isolation, verification, selection, and observation evidence;
+- an exact Owner-authorized Terra `xhigh`→Terra `ultra` rebind passes, while an
+  unauthorized effort change, a full no-op change, and old-binding effort drift fail;
 - missing switch records, reused gate Receipts, actual-model/reasoning observation
   drift, duplicate active bindings, single-Chain Run fragments, role pollution,
   patrol CELL scope, and same-model capability/isolation reuse fail closed in normal

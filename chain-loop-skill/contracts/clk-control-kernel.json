@@ -199,8 +199,21 @@
     "gpt_5_5_and_lower_allowed": false,
     "ultra_requires_item_specific_owner_authorization": true,
     "capability_equivalence_required_for_alternatives": true,
+    "gpt_id_canonical_lowercase": true,
+    "gpt_id_outer_whitespace_allowed": false,
+    "known_gpt_family_tiers": {
+      "terra": "TERRA_DEFAULT",
+      "luna": "LUNA_FINE_GRAINED",
+      "sol": "SOL_EXCEPTIONAL"
+    },
+    "known_gpt_snapshot_separator": "-",
+    "known_gpt_snapshot_cross_family_equivalence_allowed": false,
     "silent_model_switch_allowed": false,
     "switch_requires_new_binding_and_fresh_readiness_isolation_verification": true,
+    "binding_change_requires_any_of": [
+      "ACTUAL_MODEL_CHANGED",
+      "REASONING_EFFORT_CHANGED"
+    ],
     "same_model_role_isolation_required": true
   },
   "task_identity": {

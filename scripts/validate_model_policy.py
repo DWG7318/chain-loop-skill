@@ -24,8 +24,16 @@ REFERENCE_MODELS = {
     "LUNA_FINE_GRAINED": "gpt-5.6-luna",
     "SOL_EXCEPTIONAL": "gpt-5.6-sol",
 }
+REFERENCE_FAMILIES = {
+    "TERRA_DEFAULT": "terra",
+    "LUNA_FINE_GRAINED": "luna",
+    "SOL_EXCEPTIONAL": "sol",
+}
 SOL_REASONS = {"HIGH_COMPLEXITY_CORRECTION", "ROOT_CAUSE_DIAGNOSIS", "COMPLEX_REWORK"}
-GPT_VERSION = re.compile(r"^gpt-(\d+)\.(\d+)(?:-|$)", re.IGNORECASE)
+GPT_VERSION = re.compile(r"^gpt-(\d+)\.(\d+)(?:-|$)")
+GPT_FAMILY = re.compile(
+    r"^gpt-(\d+)\.(\d+)-(terra|luna|sol)(?:$|-[a-z0-9][a-z0-9._-]*$)"
+)
 
 
 class ModelPolicyValidationError(ValueError):
@@ -124,11 +132,16 @@ def validate_binding_shape(
     return {row["binding_id"]: row for row in rows}, active
 
 
-def reject_retired_gpt(model: str) -> None:
+def classify_gpt_model(model: str) -> str | None:
+    if model.strip().casefold().startswith("gpt-"):
+        require(model == model.strip(), "GPT model ID must have no leading or trailing whitespace")
+        require(model == model.lower(), "GPT model ID must use canonical lowercase")
     match = GPT_VERSION.match(model)
     if match:
         major, minor = int(match.group(1)), int(match.group(2))
         require((major, minor) > (5, 5), "GPT 5.5 and lower are prohibited")
+    family = GPT_FAMILY.fullmatch(model)
+    return family.group(3) if family else None
 
 
 def validate_tier(
@@ -141,13 +154,13 @@ def validate_tier(
     tier = binding["selection_tier"]
     reason = binding["selection_reason"]
     capability_class = binding["capability_class"]
-    reject_retired_gpt(model)
+    gpt_family = classify_gpt_model(model)
 
-    if model == "gpt-5.6-sol" and reason not in SOL_REASONS:
+    if gpt_family == "sol" and reason not in SOL_REASONS:
         raise ModelPolicyValidationError("Sol requires exceptional correction, root-cause, or complex rework evidence")
-    if role == "PATROL" and model == "gpt-5.6-luna":
+    if role == "PATROL" and gpt_family == "luna":
         raise ModelPolicyValidationError("patrol must use Terra or a proven equivalent; no implicit Luna exception exists")
-    if model == "gpt-5.6-luna" and not (role == "WORKER" and reason == "FINE_GRAINED_LOW_RISK_CELL"):
+    if gpt_family == "luna" and not (role == "WORKER" and reason == "FINE_GRAINED_LOW_RISK_CELL"):
         raise ModelPolicyValidationError("Luna is Worker-only and requires fine-grained low-risk CELL evidence")
 
     if reason == "DEFAULT_PATROL":
@@ -182,8 +195,8 @@ def validate_tier(
     require((tier, capability_class) == expected, "selection tier, reason, and capability class must agree")
     reference = REFERENCE_MODELS[tier]
     require(
-        model not in set(REFERENCE_MODELS.values()) or model == reference,
-        "a named reference model cannot cross selection tiers through equivalence",
+        gpt_family is None or gpt_family == REFERENCE_FAMILIES[tier],
+        "GPT model family must match the selected tier and capability class",
     )
     equivalence_id = binding["capability_equivalence_id"]
     if model == reference:
@@ -240,7 +253,11 @@ def validate_changes(ledger: dict[str, Any], bindings: dict[str, dict[str, Any]]
         require(old["superseded_by"] == new["binding_id"] and new["supersedes"] == old["binding_id"], "model change links must be reciprocal")
         require(old["actor_id"] == new["actor_id"] == row["actor_id"], "model change actor identity mismatch")
         require(old["scope"] == new["scope"] == row["scope"], "model change scope identity mismatch")
-        require(old["actual_model"] != new["actual_model"], "model change must bind a different actual model")
+        require(
+            old["actual_model"] != new["actual_model"]
+            or old["reasoning_effort"] != new["reasoning_effort"],
+            "model binding change must change actual model or reasoning effort",
+        )
         pairs[pair] = row
     for binding in bindings.values():
         if binding["state"] == "SUPERSEDED":

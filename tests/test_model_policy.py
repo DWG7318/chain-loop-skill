@@ -256,6 +256,84 @@ def switch_worker_to_sol(ledger: dict[str, Any]) -> None:
     )
 
 
+def rebind_supervisor_reasoning(
+    ledger: dict[str, Any], *, reasoning_effort: str, authorized: bool
+) -> None:
+    old = find_binding(ledger, "SUPERVISOR-001")
+    old["state"] = "SUPERSEDED"
+    old["superseded_by"] = "BINDING::SUPERVISOR-001::002"
+    new = deepcopy(old)
+    new.update(
+        binding_id="BINDING::SUPERVISOR-001::002",
+        reasoning_effort=reasoning_effort,
+        conversation_id="CONVERSATION::SUPERVISOR-001::002",
+        context_id="CONTEXT::SUPERVISOR-001::002",
+        workspace_id="WORKSPACE::SUPERVISOR-001::002",
+        runtime_namespace="RUNTIME::SUPERVISOR-001::002",
+        capability_profile_id="CAPABILITY::SUPERVISOR-001::002",
+        evidence_path="evidence/binding-supervisor-001-002",
+        selection_evidence=evidence("selection-supervisor-001-002"),
+        readiness_receipt=receipt("readiness-002", "SUPERVISOR-001"),
+        isolation_receipt=receipt("isolation-002", "SUPERVISOR-001"),
+        verification_receipt=receipt("verification-002", "SUPERVISOR-001"),
+        state="ACTIVE",
+        supersedes=old["binding_id"],
+        superseded_by=None,
+    )
+    ledger["bindings"].append(new)
+    ledger["binding_changes"].append(
+        {
+            "change_id": "MODEL-CHANGE::SUPERVISOR-001::001",
+            "actor_id": "SUPERVISOR-001",
+            "scope": deepcopy(old["scope"]),
+            "previous_binding_id": old["binding_id"],
+            "new_binding_id": new["binding_id"],
+            "change_reason": "OWNER_AUTHORIZED_REASONING_CHANGE",
+            "evidence": evidence("model-change-supervisor-001-001"),
+        }
+    )
+    ledger["binding_observations"].append(
+        {
+            "observation_id": "OBS::SUPERVISOR-001::002",
+            "binding_id": new["binding_id"],
+            "actor_id": "SUPERVISOR-001",
+            "scope": deepcopy(new["scope"]),
+            "actual_model": new["actual_model"],
+            "reasoning_effort": new["reasoning_effort"],
+            "evidence": evidence("observation-supervisor-001-002"),
+        }
+    )
+    if authorized:
+        ledger["owner_authorizations"].append(
+            {
+                "authorization_id": "OWNER-AUTH::SUPERVISOR-001::ULTRA::002",
+                "run_id": "RUN-001",
+                "actor_id": "SUPERVISOR-001",
+                "binding_id": new["binding_id"],
+                "scope": deepcopy(new["scope"]),
+                "reasoning_effort": "ultra",
+                "evidence": evidence("owner-auth-supervisor-ultra-002"),
+            }
+        )
+
+
+def bind_terra_equivalent(ledger: dict[str, Any], model: str) -> None:
+    item = find_binding(ledger, "SUPERVISOR-001")
+    item["actual_model"] = model
+    item["capability_equivalence_id"] = "EQUIV-TERRA-LAUNDERING"
+    find_observation(ledger, "SUPERVISOR-001")["actual_model"] = model
+    ledger["capability_equivalences"].append(
+        {
+            "equivalence_id": "EQUIV-TERRA-LAUNDERING",
+            "actual_model": model,
+            "target_selection_tier": "TERRA_DEFAULT",
+            "capability_class": "TECHNICAL_GENERAL",
+            "result": "PROVEN_EQUIVALENT",
+            "evidence": evidence("equiv-terra-laundering"),
+        }
+    )
+
+
 def test_terra_xhigh_is_the_default_for_technical_roles_and_patrol(tmp_path: Path) -> None:
     assert_valid(tmp_path, base_ledger())
 
@@ -315,6 +393,74 @@ def test_model_change_creates_a_new_verified_binding(tmp_path: Path) -> None:
     ledger = base_ledger()
     switch_worker_to_sol(ledger)
     assert_valid(tmp_path, ledger)
+
+
+def test_owner_authorized_reasoning_only_rebinding_is_valid(tmp_path: Path) -> None:
+    ledger = base_ledger()
+    rebind_supervisor_reasoning(ledger, reasoning_effort="ultra", authorized=True)
+    assert_valid(tmp_path, ledger)
+
+
+def test_same_family_luna_snapshot_requires_and_accepts_luna_equivalence(tmp_path: Path) -> None:
+    ledger = base_ledger()
+    select_luna(ledger)
+    item = find_binding(ledger, "WORKER-A")
+    item["actual_model"] = "gpt-5.6-luna-preview"
+    item["capability_equivalence_id"] = "EQUIV-LUNA-PREVIEW"
+    find_observation(ledger, "WORKER-A")["actual_model"] = item["actual_model"]
+    ledger["capability_equivalences"].append(
+        {
+            "equivalence_id": "EQUIV-LUNA-PREVIEW",
+            "actual_model": item["actual_model"],
+            "target_selection_tier": "LUNA_FINE_GRAINED",
+            "capability_class": "FINE_GRAINED_EXECUTION",
+            "result": "PROVEN_EQUIVALENT",
+            "evidence": evidence("equiv-luna-preview"),
+        }
+    )
+    assert_valid(tmp_path, ledger)
+
+
+def test_lunar_name_is_not_misclassified_as_luna_family(tmp_path: Path) -> None:
+    ledger = base_ledger()
+    bind_terra_equivalent(ledger, "gpt-5.6-lunar-preview")
+    assert_valid(tmp_path, ledger)
+
+
+@pytest.mark.parametrize(
+    ("model", "message"),
+    [
+        ("GPT-5.6-LUNA", "canonical lowercase"),
+        ("gpt-5.6-Luna", "canonical lowercase"),
+        ("gpt-5.6-luna ", "leading or trailing whitespace"),
+        ("gpt-5.6-luna-preview", "Luna is Worker-only"),
+        ("gpt-5.6-sol-20260806", "Sol requires exceptional"),
+    ],
+)
+def test_known_gpt_family_identity_laundering_is_rejected(
+    tmp_path: Path, model: str, message: str
+) -> None:
+    ledger = base_ledger()
+    bind_terra_equivalent(ledger, model)
+    assert_invalid(tmp_path, ledger, message)
+
+
+@pytest.mark.parametrize(
+    ("model", "message"),
+    [
+        ("GPT-5.6-LUNA", "canonical lowercase"),
+        ("gpt-5.6-Luna", "canonical lowercase"),
+        ("gpt-5.6-luna ", "leading or trailing whitespace"),
+        ("gpt-5.6-luna-preview", "Luna is Worker-only"),
+        ("gpt-5.6-sol-20260806", "Sol requires exceptional"),
+    ],
+)
+def test_known_gpt_family_laundering_fails_under_python_optimized(
+    tmp_path: Path, model: str, message: str
+) -> None:
+    ledger = base_ledger()
+    bind_terra_equivalent(ledger, model)
+    assert_invalid(tmp_path, ledger, message, optimized=True)
 
 
 def mutate_gpt_55(ledger: dict[str, Any]) -> None:
@@ -418,6 +564,18 @@ def mutate_switch_reuses_readiness(ledger: dict[str, Any]) -> None:
     new["readiness_receipt"] = deepcopy(old["readiness_receipt"])
 
 
+def mutate_reasoning_rebinding_without_owner_authorization(ledger: dict[str, Any]) -> None:
+    rebind_supervisor_reasoning(ledger, reasoning_effort="ultra", authorized=False)
+
+
+def mutate_noop_binding_change(ledger: dict[str, Any]) -> None:
+    rebind_supervisor_reasoning(ledger, reasoning_effort="xhigh", authorized=False)
+
+
+def mutate_silent_reasoning_drift(ledger: dict[str, Any]) -> None:
+    find_observation(ledger, "SUPERVISOR-001")["reasoning_effort"] = "ultra"
+
+
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [
@@ -435,6 +593,9 @@ def mutate_switch_reuses_readiness(ledger: dict[str, Any]) -> None:
         (mutate_single_chain_roster, "at least two Checker/Worker Chains"),
         (mutate_switch_without_change_record, "explicit binding change"),
         (mutate_switch_reuses_readiness, "fresh binding receipt"),
+        (mutate_reasoning_rebinding_without_owner_authorization, "Owner authorization"),
+        (mutate_noop_binding_change, "actual model or reasoning effort"),
+        (mutate_silent_reasoning_drift, "silent model switch"),
     ],
 )
 def test_invalid_model_policy_fails_closed(
@@ -453,6 +614,9 @@ def test_invalid_model_policy_fails_closed(
         (mutate_unjustified_luna, "fine-grained low-risk"),
         (mutate_non_equivalent, "proven equivalent"),
         (mutate_silent_switch, "silent model switch"),
+        (mutate_reasoning_rebinding_without_owner_authorization, "Owner authorization"),
+        (mutate_noop_binding_change, "actual model or reasoning effort"),
+        (mutate_silent_reasoning_drift, "silent model switch"),
     ],
 )
 def test_critical_invalid_policy_fails_closed_under_python_optimized(

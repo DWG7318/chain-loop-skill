@@ -111,6 +111,26 @@ def test_retired_low_model_positive_guidance_is_rejected(tmp_path: Path) -> None
         module.validate_active_model_guidance(tmp_path)
 
 
+def test_active_patrol_guidance_rejects_legacy_luna_positive(tmp_path: Path) -> None:
+    module = load_validator()
+    (tmp_path / "agents").mkdir(parents=True)
+    (tmp_path / "chain-loop-skill" / "agents").mkdir(parents=True)
+    (tmp_path / "chain-loop-skill" / "references").mkdir(parents=True)
+    files = {
+        "SKILL.md": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "agents/openai.yaml": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "chain-loop-skill/SKILL.md": "exactly one Luna+xhigh Run patrol/heartbeat\n",
+        "chain-loop-skill/agents/openai.yaml": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "chain-loop-skill/references/clk-control-operations.md": "Run has exactly one visible Luna+xhigh patrol\n",
+        "README.md": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+        "SPEC.md": "gpt-5.6-terra+xhigh MODEL_BINDING_LEDGER\n",
+    }
+    for relative, content in files.items():
+        (tmp_path / relative).write_text(content, encoding="utf-8")
+    with pytest.raises(module.RepositoryValidationError, match="legacy Patrol Luna"):
+        module.validate_active_model_guidance(tmp_path)
+
+
 def test_required_go_amendment_and_ci_assets_are_present() -> None:
     module = load_validator()
     module.validate_required_files(ROOT)

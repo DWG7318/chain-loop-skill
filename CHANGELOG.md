@@ -2,6 +2,12 @@
 
 ## 2.6.0
 
+- Hardened known GPT identity parsing: canonical lowercase/no outer whitespace,
+  boundary-safe Terra/Luna/Sol snapshot families, and no cross-tier equivalence.
+- Allowed fresh, exactly authorized reasoning-only rebinding while rejecting
+  no-op binding changes and retaining in-binding effort-drift rejection.
+- Removed the last active Patrol Luna positives from the Launch Checklist and
+  control reference; repository validation now detects their reintroduction.
 - Replaced fixed role-wide model assumptions with a versioned, fail-closed
   `MODEL_BINDING_LEDGER` that records capability class/equivalence, actual model,
   reasoning effort, selection tier/reason, scope, isolation, and gate evidence.

@@ -131,11 +131,14 @@ high-complexity correction, root-cause diagnosis, or complex rework may use
 `gpt-5.6-sol+xhigh`. Other providers/models require content-hashed
 `PROVEN_EQUIVALENT` evidence for the selected capability tier.
 
+GPT IDs must be lowercase with no outer whitespace. Hyphen-suffixed Terra/Luna/Sol
+snapshots remain in their parsed family and cannot use equivalence to cross tiers.
+
 `MODEL_BINDING_LEDGER` binds the actual model, capability class, selection tier
 and reason, reasoning effort, scope, isolation identity, and fresh readiness and
 verification receipts. GPT 5.5 and lower fail closed. `ultra` requires an exact
-current-Run Owner authorization. Model changes create a new binding and repeat the
-gates; in-place or observed silent switching is invalid.
+current-Run Owner authorization. Actual-model or reasoning-effort changes create a
+new binding and repeat the gates; a no-op change and in-place drift are invalid.
 
 ## Owner acceptance and outer boundary
 
