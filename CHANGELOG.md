@@ -2,6 +2,11 @@
 
 ## 2.6.0
 
+- Reduced the canonical installed `SKILL.md` from 1000 to 407 physical lines by
+  retaining the executable method kernel and routing detailed procedures to the
+  existing canonical references; no role, contract, validator, schema, template,
+  or runtime behavior changed.
+
 - Hardened known GPT identity parsing: canonical lowercase/no outer whitespace,
   boundary-safe Terra/Luna/Sol snapshot families, and no cross-tier equivalence.
 - Allowed fresh, exactly authorized reasoning-only rebinding while rejecting

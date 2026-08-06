@@ -4,9 +4,9 @@
 
 - Product: Chain Loop Skill (CLK)
 - Version: 2.6.0
-- Branch: `feature/clk-2.6.0-controllable-model-policy`
+- Branch: `integration/clk-2.6.0-structure-audit`
 - Repository database ID: `1298120736`
-- Local validation date: 2026-08-06
+- Local validation date: 2026-08-07
 - Local platform: Windows, Python 3.14
 - CI target: Ubuntu, Python 3.11
 
@@ -16,7 +16,7 @@ PASS. Fresh local output on the candidate:
 
 ```text
 python -m pytest -q
-253 passed, 185 subtests passed
+254 passed, 187 subtests passed
 
 python -O -m pytest -q \
   tests/test_model_policy.py::test_known_gpt_family_laundering_fails_under_python_optimized \
@@ -54,6 +54,23 @@ PASS: CLK Receipt chain
 git diff --check
 PASS
 ```
+
+## Structural-slimming acceptance evidence
+
+- the canonical installed `chain-loop-skill/SKILL.md` is 407 physical lines,
+  reduced from the previous 1000-line ceiling;
+- the Skill keeps identity, selection, all 24 hard-rule meanings, authority,
+  execution, runtime safeguards, evidence/recovery, LCCoding, acceptance, launch,
+  and publication boundaries in one ordered kernel;
+- the kernel directly routes to all ten existing canonical references for detailed
+  Calabash, isolation, model, wake/Patrol/progress/capacity/Pin, topology-fault,
+  detection, lifecycle, receipt/state, control-operation, and LCCoding procedures;
+- a new test fails if the kernel exceeds 650 lines, loses a required section, or
+  stops linking one of those references;
+- production Python remains 2,581 physical lines and no validator, schema, template,
+  contract, readiness asset, or detailed reference changed behavior;
+- focused contract/repository verification passed with 43 tests and 166 subtests;
+  the full suite passed with 254 tests and 187 subtests.
 
 ## Model-policy acceptance evidence
 
@@ -113,5 +130,5 @@ contains no GPT 5.5-or-lower positive authorization; remaining 5.5 occurrences a
 rejection examples or negative tests. No secret, foreign-role, or cross-method
 implementation surface was added. Local evidence makes no remote-state claim.
 
-Per Owner instruction, push, merge, PR, tag, Release, and publication were not
-performed for this candidate.
+This local candidate report does not claim remote main, tag, Release, or publication
+evidence; those are verified separately during authorized integration.
