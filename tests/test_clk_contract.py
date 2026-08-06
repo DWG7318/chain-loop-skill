@@ -336,6 +336,35 @@ def test_line_budgets() -> None:
         assert len(path.read_text(encoding="utf-8").splitlines()) <= 1000, path
 
 
+def test_canonical_skill_is_a_compact_routed_kernel() -> None:
+    text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+    assert len(text.splitlines()) <= 650
+    for heading in (
+        "## Canonical Identity",
+        "## Method Selection Gate",
+        "## Hard Rules",
+        "## Authority",
+        "## Execution",
+        "## Runtime Safeguards",
+        "## Evidence and Recovery",
+        "## Launch Checklist",
+    ):
+        assert heading in text
+    for reference in (
+        "calabash-and-chain-loop.md",
+        "checker-detection-catalog.md",
+        "clk-control-operations.md",
+        "lccoding-interface.md",
+        "model-selection-and-binding.md",
+        "receipt-and-state-contracts.md",
+        "role-isolation-and-verification.md",
+        "run-lifecycle-and-verification.md",
+        "topology-fault-localization.md",
+        "worker-wake-patrol-and-progress.md",
+    ):
+        assert f"references/{reference}" in text
+
+
 def test_readiness_count() -> None:
     q = json.loads((SKILL / "evals" / "clk-readiness-questions.json").read_text(encoding="utf-8"))
     a = json.loads((SKILL / "evals" / "clk-readiness-answer-key.json").read_text(encoding="utf-8"))
