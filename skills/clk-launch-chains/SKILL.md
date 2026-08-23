@@ -34,7 +34,7 @@ description: Use when an active Chain Loop Skill (CLK) Run has an accepted plan 
 
 ## 同步开工
 
-全部 Chain成员、施工空间、合同和通讯准备完成后，Supervisor发出同一施工周期的启动信号。各Checker随即按SLK派发自己的首个CELL，使全部前置Chain同时启动并独立推进。
+全部 Chain成员、施工空间、合同和通讯准备完成后，Supervisor发出同一施工周期的启动信号。各Checker随即按SLK派发自己的首个CELL，使每条Chain作为一个完整SLK Loop同时启动并独立推进。
 
 跨Chain事实通过冻结合同、正式记录或Supervisor协调，不建立成员横向日常通讯路线。每个角色交付后结束当前活动，不使用`wait_threads`或读取其他成员内部状态，下一条真实消息按需激活。各Checker与Worker继续SLK循环，Supervisor只处理CLK层协调、Chain D2和最终Fusion条件。
 

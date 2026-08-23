@@ -1,14 +1,14 @@
 # Chain Loop Skill (CLK)
 
-Current version: **3.0.1**
+Current version: **3.0.2**
 
-CLK organizes one medium or large engineering Run as:
+CLK is the composite Loop Engineering form for one medium or large Run, built from complete SLK Loops:
 
 ```text
-2+ concurrent SLK construction Chains -> 1 Fusion SLK Chain
+2+ concurrent SLK Loops -> 1 Fusion SLK Loop
 ```
 
-Each construction Chain has a linear GO/CELL path and its own Checker/Worker pair. All pairs share one Supervisor, start in the same construction cycle, and work in temporary physical isolation while following complete fusion interface contracts. After every required construction Chain passes D2, one Fusion Chain combines the frozen results into the final system.
+Each construction Chain is a complete SLK Loop with a linear GO/CELL path and its own Checker/Worker pair. All pairs share one Supervisor, start in the same construction cycle, and work in temporary physical isolation while following complete fusion interface contracts. After every required construction Chain passes D2, a Fusion SLK Loop combines the frozen results into the final system.
 
 ## Roles and method boundary
 
@@ -17,7 +17,7 @@ Each construction Chain has a linear GO/CELL path and its own Checker/Worker pai
 - The shared Supervisor understands CLK and SLK, coordinates the Chains, performs each Chain D2, and starts and closes Fusion.
 - Each Checker and Worker follows SLK. CLK does not add role types or replace SLK's D0/D1/D2, rework, communication, records, or model guidance.
 
-CLK is project-level orchestration; SLK remains the execution method inside every construction Chain and the Fusion Chain.
+CLK is the composite orchestration Loop; SLK remains the complete execution Loop inside every construction Chain and the Fusion Chain.
 
 ## Core flow
 
@@ -32,7 +32,7 @@ CLK is project-level orchestration; SLK remains the execution method inside ever
 
 ## Skill collection
 
-CLK 3.0.1 is distributed as 9 sibling Skill directories:
+CLK 3.0.2 is distributed as 9 sibling Skill directories:
 
 | Skill | Purpose |
 | --- | --- |

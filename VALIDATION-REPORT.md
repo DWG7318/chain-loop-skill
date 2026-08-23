@@ -1,10 +1,10 @@
-# CLK 3.0.1 Validation Report
+# CLK 3.0.2 Validation Report
 
 ## Candidate
 
 - Product: Chain Loop Skill Collection
-- Version: 3.0.1
-- Branch: `fix/clk-3.0.1-no-wait`
+- Version: 3.0.2
+- Branch: `design/clk-3.0.2-loop-engineering`
 - Local validation date: 2026-08-23
 - Local platform: Windows, Python 3.14
 
@@ -34,7 +34,7 @@ The repository validator confirmed exact Manifest path and SHA-256 coverage, exc
 
 ## Temporary installation verification
 
-- External root: `D:\LCcoding\.codex\.tmp\clk-3.0.1-no-wait-install-verification-20260823-a`
+- External root: `D:\LCcoding\.codex\.tmp\clk-3.0.2-loop-engineering-install-20260823-a`
 - Installed shape: 9 sibling Skill directories, 13 files
 - Source/copy byte mismatches: 0
 - Main-to-child route count mismatches: 0
