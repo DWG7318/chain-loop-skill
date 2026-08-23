@@ -1,107 +1,554 @@
 {
-  "name": "Chain Loop Skill",
-  "abbreviation": "CLK",
-  "version": "2.6.0",
-  "repository": "DWG7318/chain-loop-skill",
-  "repository_id": 1298120736,
-  "default_branch": "main",
-  "synchronization_unit": "LEVEL",
-  "entrypoints": [
-    "SPEC.md",
-    "chain-loop-skill/SKILL.md"
+  "name": "Chain Loop Skill Collection",
+  "version": "3.0.0",
+  "skill_count": 9,
+  "excludes": [
+    "MANIFEST.json"
   ],
-  "verification_layers": ["D0", "D1", "D2", "LEVEL", "D3"],
-  "topology_fault_classes": [
-    "CHAIN_LOCAL",
-    "CROSS_CHAIN_COMPOSITION",
-    "LEVEL_BARRIER"
-  ],
-  "topology_fault_identity": {
-    "candidate_binding": "ONE_CANONICAL_GO_PER_AFFECTED_CHAIN",
-    "issuer_authority": {
-      "CHAIN_LOCAL": {"responsibility": "CHECKER", "scope": "AFFECTED_CHAIN"},
-      "CROSS_CHAIN_COMPOSITION": {"responsibility": "SUPERVISOR", "scope": "LEVEL"},
-      "LEVEL_BARRIER": {"responsibility": "SUPERVISOR", "scope": "LEVEL"}
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "f8d9be9af5b484416e80f49adda430d8bb312266063a49e0e85291504c670300"
+    },
+    {
+      "path": ".github/workflows/validate.yml",
+      "sha256": "b63b4b778c5955642702be341ccb22143af862be785b80fcd52a0fdba80f0f84"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "e86d90bc9640f74791289e7b633d54a902f3e0d0146b6c818b563cacb9fc366b"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "d8da0e5d965de0468993ad274411b8a1d456d7cd73e5376e8f8322415668c8cd"
+    },
+    {
+      "path": "FILE_HASHES.json",
+      "sha256": "7adaed06c9f59ef9895f296da852ee8aae13b77be72e186fabcaf0d7dd30e2b2"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "9d2662ccd9472dd6aa6873fb9aa05aa375a48d26d67ab860abb77c45923e0421"
+    },
+    {
+      "path": "MIGRATION-2.0-TO-2.3.1.md",
+      "sha256": "712b17c3dd8e746e166835bf8cceb55deff38c2edacd23dea1d2c385fce06011"
+    },
+    {
+      "path": "MIGRATION-2.3.1-TO-2.4.0.md",
+      "sha256": "f4037d01c184ae577ff528a05aa1f15434d12a14630ebb3676113f1b98f82bd9"
+    },
+    {
+      "path": "MIGRATION-2.4.0-TO-2.5.0.md",
+      "sha256": "a652a120bc72397d50777420da1fcbdea0ff013bf50afb9c80d7d70fa3d27fa5"
+    },
+    {
+      "path": "MIGRATION-2.5.0-TO-2.6.0.md",
+      "sha256": "4cf94de861f9a04a49a045850697ec34b936eb0558a9d3ea34d196b232c5b422"
+    },
+    {
+      "path": "MIGRATION-MSLK-TO-CLK.md",
+      "sha256": "06f7c1b26c6076e5a85acb392990c9c1c1a9f92e215a69673a6e02558c9de90d"
+    },
+    {
+      "path": "MIGRATION.md",
+      "sha256": "cd9e5a71110fe8a2f3088579bb2912a4c8bcf24a575e859084ba83f260893265"
+    },
+    {
+      "path": "POST-MERGE-RENAME.md",
+      "sha256": "0289dec5f873ca175a2deedef3be3c2877bddc9f5a196ca189b7d8869f9659bd"
+    },
+    {
+      "path": "README.md",
+      "sha256": "81c6f2fabf86963a4c965b452a01261c7a28aa9ee5f50db6312832b1f2fcd671"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "sha256": "f175d2fe070e9f18b1bf775006492b958f7c56921caae959cb1a8f1c27680a7e"
+    },
+    {
+      "path": "SKILL.md",
+      "sha256": "42228ebb8e65ac41d85b4334922df1f985224d4c292eef2f9bc1d638ae7633ed"
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "771aa16bb41937469403493e9ef8c4340cfd0f555e6f68af7de413cfe7cd023a"
+    },
+    {
+      "path": "VALIDATION-REPORT.md",
+      "sha256": "77a5a2ad2c0c93292bbc81a84e9463e309ab9377bcb0b21652a6c4e0cc37da45"
+    },
+    {
+      "path": "VERSION",
+      "sha256": "2985be8b28d3ade858e8d8fb4bc22f565b1bf6020dff982dce141f7721b9999c"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "sha256": "b7e66fe0191d6dd5eacf653cee79f5edd7dd0aa6ef96d72e0409210ac4174865"
+    },
+    {
+      "path": "chain-loop-skill/SKILL.md",
+      "sha256": "c6ef780b8b584923ba62788c2b71e45dbcf942c6ed707f4fd182f3ff037ce7e8"
+    },
+    {
+      "path": "chain-loop-skill/agents/openai.yaml",
+      "sha256": "995b36c09741654f8f1c18aefc9167aa0dd8e313f5b392e8b1ecc066c259f812"
+    },
+    {
+      "path": "chain-loop-skill/contracts/clk-control-kernel.json",
+      "sha256": "49465829e13a22f195896b36f74f2c0d1f1aacecfab4882b3b3fb6589ecf3e6f"
+    },
+    {
+      "path": "chain-loop-skill/evals/clk-readiness-answer-key.json",
+      "sha256": "45e5c463a552bc7771eb3da1e6e89574babe939b95a873b5829505d96de8db50"
+    },
+    {
+      "path": "chain-loop-skill/evals/clk-readiness-questions.json",
+      "sha256": "2b82a93bc8a1af81a8e60b0773ae06cf1d42af8982b7a2f916b5ca32a01dd4d8"
+    },
+    {
+      "path": "chain-loop-skill/references/calabash-and-chain-loop.md",
+      "sha256": "a338181fd168b37e554f86c4f84425081f56b2a558fffe1af3a12e05613da13c"
+    },
+    {
+      "path": "chain-loop-skill/references/checker-detection-catalog.md",
+      "sha256": "9c47e3000a0375e5cd71638645fedab8c4e03645825ce0180d8d5fa9e8280d3f"
+    },
+    {
+      "path": "chain-loop-skill/references/clk-control-operations.md",
+      "sha256": "6d8fe7d84a87178808e614eb150a6eb9d8c469817914c07c8e0545cbad759b7c"
+    },
+    {
+      "path": "chain-loop-skill/references/lccoding-interface.md",
+      "sha256": "2ffd5afe2b0e8dbb8856ddfc4fd4acb5f5540d4128200b8fbaf675db28674633"
+    },
+    {
+      "path": "chain-loop-skill/references/model-selection-and-binding.md",
+      "sha256": "cc21e1d4dc0116fff02ac548dcf6406eb8289e0a6b0783d4a4867a459fc5cbeb"
+    },
+    {
+      "path": "chain-loop-skill/references/receipt-and-state-contracts.md",
+      "sha256": "8e2b7fc9ebeea051c3c6b7aed49c228fbaafdf80e4ec78d621b95ffdeb44cf28"
+    },
+    {
+      "path": "chain-loop-skill/references/role-isolation-and-verification.md",
+      "sha256": "d275f5f85385d2ce9dab22b837e1bc8f00cd59452236f2c83dfce28397e109c3"
+    },
+    {
+      "path": "chain-loop-skill/references/run-lifecycle-and-verification.md",
+      "sha256": "e5807e301c816a4f1257edea1336b2f71f30709ff1c6a58e34ef86d36ac2e04f"
+    },
+    {
+      "path": "chain-loop-skill/references/topology-fault-localization.md",
+      "sha256": "c45776a2f2ffb430b0a89aa7b1cfea1ce741d2092147a688010c371570eeef26"
+    },
+    {
+      "path": "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
+      "sha256": "ce00085f3999ad6f70c5a0aa26e6ea1beabf3f1cd8e6d69d93469cbfc946e8a0"
+    },
+    {
+      "path": "chain-loop-skill/schemas/amendment-envelope.schema.json",
+      "sha256": "7e1534c8ea56efab1dae6a3daa1c2f9d7b1096ddb7e8ccc5f08f6ccdcb0ac5dc"
+    },
+    {
+      "path": "chain-loop-skill/schemas/chain-level-plan.schema.json",
+      "sha256": "573942b2786307b653c2ead286917bfe18956a252b62512db7c811c9f248ed40"
+    },
+    {
+      "path": "chain-loop-skill/schemas/model-binding-ledger.schema.json",
+      "sha256": "cebaa8372d2682e9d1a4dcd7b643e467194ca41be3409615a4d71786b307ccc5"
+    },
+    {
+      "path": "chain-loop-skill/schemas/receipt-envelope.schema.json",
+      "sha256": "b6df2cd57cd3c8a63a4089b6192b4d1c70a389d06452990058b92f6e18fa9d53"
+    },
+    {
+      "path": "chain-loop-skill/schemas/run-control-trace.schema.json",
+      "sha256": "9864b87e931a07b42bb2638b0387930f6ff3d029875e86c5595aba6a3f9cd6c0"
+    },
+    {
+      "path": "chain-loop-skill/schemas/runtime-state-index.schema.json",
+      "sha256": "8735b4e2745347ac2c61fa67cd4785048352fe7dd67df93103dcecc570995be9"
+    },
+    {
+      "path": "chain-loop-skill/schemas/topology-fault-record.schema.json",
+      "sha256": "2ccce9bfea8f15f853077003c3338292eda553569744b82e688f8aecc95ed897"
+    },
+    {
+      "path": "chain-loop-skill/scripts/run_clk_readiness_eval.py",
+      "sha256": "949fd9a1f531eb682e679c87f4a7f4eb41476f9cb2f3d039c1919fd2d906bd93"
+    },
+    {
+      "path": "chain-loop-skill/templates/cell-contract.yaml",
+      "sha256": "6fe17ef0f30b219a57ba5ec180c61de7cc13bbd3044dcd5e1a3f515ad199c55a"
+    },
+    {
+      "path": "chain-loop-skill/templates/chain-amendment.yaml",
+      "sha256": "29ff2a3970a442a545949c2873eeed4c35060257d330f353af83d3f9a44c3c16"
+    },
+    {
+      "path": "chain-loop-skill/templates/chain-level-plan.yaml",
+      "sha256": "13342489ec31f801dd9fbaf62dcfd84dd641acbd7e01618052024097f159b10b"
+    },
+    {
+      "path": "chain-loop-skill/templates/clk-run-receipt.yaml",
+      "sha256": "9c2790cdfcceb15735ebed1dc9b113f3f35f22c28c6df03c27b2966a3590eade"
+    },
+    {
+      "path": "chain-loop-skill/templates/d0-worker-receipt.yaml",
+      "sha256": "b960a3bd3720b27aeeb4733c57b426f3376ebd39f573c55490dae9dbc72b1ea5"
+    },
+    {
+      "path": "chain-loop-skill/templates/d1-checker-receipt.yaml",
+      "sha256": "670fe6dd3aeb93f43599298c4854026694e2b6d4e677c17940df82d673544176"
+    },
+    {
+      "path": "chain-loop-skill/templates/d2-go-verification-receipt.yaml",
+      "sha256": "ea9af86619646cf06ac8b02a4498b435ca8b267783aa589218625f9d27803906"
+    },
+    {
+      "path": "chain-loop-skill/templates/d3-run-verification-receipt.yaml",
+      "sha256": "af8d12c405bfe760b85cc8d39b7c725dbd8a013ebdb227d59d32d1a3f4285af1"
+    },
+    {
+      "path": "chain-loop-skill/templates/go-amendment.yaml",
+      "sha256": "81e425684e50ceaaee9f5774e320f416f8874637a81b5b59045b5438e1927e2e"
+    },
+    {
+      "path": "chain-loop-skill/templates/go-contract.yaml",
+      "sha256": "5e33c989cb61cd917b1c81a8db23907f593eaf01178c05baef0255913cd6da56"
+    },
+    {
+      "path": "chain-loop-skill/templates/level-amendment.yaml",
+      "sha256": "cf9f6b83ac7b04ef970cc57cd871b8cbfac838cf4bfb9f8eb0987b88e50450f1"
+    },
+    {
+      "path": "chain-loop-skill/templates/level-barrier-receipt.yaml",
+      "sha256": "eb4e6f51074655b0ffca16ca4b6ad41a84f1e51a050ae7826da29413d462759e"
+    },
+    {
+      "path": "chain-loop-skill/templates/level-verification-decision.yaml",
+      "sha256": "e73fe99a9c731d43fc964b95c6366abb30d446a95b2d3872a21f6766bdc0cf7e"
+    },
+    {
+      "path": "chain-loop-skill/templates/level-verification-receipt.yaml",
+      "sha256": "a03a344a795a4409c3c87bc743537799651d7b23a455354e0fe684c6401a3953"
+    },
+    {
+      "path": "chain-loop-skill/templates/model-binding-ledger.yaml",
+      "sha256": "d528286f676f00ab5b743055ce3f68cf7504c86eea53ac97fdeab0937d07baf1"
+    },
+    {
+      "path": "chain-loop-skill/templates/owner-acceptance.yaml",
+      "sha256": "b325fc3fcc041d69bbf5bf5a1f178132e71cd415335e06b0ba22ab356958a2e1"
+    },
+    {
+      "path": "chain-loop-skill/templates/run-contract.yaml",
+      "sha256": "2e3688063c7c0da603080b164fb5ce46ad94cdb415e756ba676afb935a1e54b6"
+    },
+    {
+      "path": "chain-loop-skill/templates/run-control-trace.yaml",
+      "sha256": "e14684a82aefcb436942275b9dccecf7ff108eb881e3fca56f64ea304c807c98"
+    },
+    {
+      "path": "chain-loop-skill/templates/runtime-state-index.yaml",
+      "sha256": "1dacd7b38d16941b50af7c118a5a2105007bc06a8030bb2e9a4dc4e865b7979a"
+    },
+    {
+      "path": "chain-loop-skill/templates/topology-fault-record.yaml",
+      "sha256": "75257859a136517499a45d0f7bfcb911bb32df74f60a5104e6cf22d531efe21c"
+    },
+    {
+      "path": "chain-loop-skill/templates/verification-context.yaml",
+      "sha256": "2db47d939f718836c77d0b27df81d081b7f98b2d5c338f6a164d08bf5de36c29"
+    },
+    {
+      "path": "contracts/mslk-control-kernel.json",
+      "sha256": "507c060e9002b7047a38629430e472f26d6150997f54d2bb7354ba237ba23f52"
+    },
+    {
+      "path": "docs/specs/2026-07-17-mslk-control-kernel-hardening-design.md",
+      "sha256": "394689f3a375bfd886914b31b50a73fd444a7d188078de78cd619796d019d0b9"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-07-18-mslk-control-kernel-readiness-eval.md",
+      "sha256": "7e3cc95f926ff20d700a4ba4b6cfe15f2de24490f0d844bc858a239f118e72c8"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-07-29-clk-2.3.1.md",
+      "sha256": "2f4995b2aa32e020552fbbf4dc2aeec4ca9be7ab6a9497b846e23da62a18fd97"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-04-clk-2.5.0-worker-wake-patrol-progress.md",
+      "sha256": "eda429e97a6bdd83c72b7a183ce0773b94a54426ab26c1e1a6250d6344e24545"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-06-clk-2.6.0-controllable-model-policy.md",
+      "sha256": "cf5b786713f4b19f84c2984595680846e48d435ddb949a7a19535122dad900aa"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-07-clk-2.6.0-structural-slimming.md",
+      "sha256": "a870ca8e60c478be6183a027d48fa30f13c31ef9bbba52c3c02ce9ad490201ba"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-23-clk-3.0.0-reconstruction.md",
+      "sha256": "3c34157e80ba1d21676fae474e8f81d608d2103f1cf627ae2c2e3bab6b7fc6db"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-04-clk-2.5.0-worker-wake-patrol-progress-design.md",
+      "sha256": "9def65253b1b724afc8e9d343c7afc7fa3825c33a0564f9f9dd70ff65bf2fa73"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-06-clk-2.6.0-controllable-model-policy-design.md",
+      "sha256": "c1de0c8e34a717a578d8fff11b4114d115d989745d402f570d628ac72eb876bf"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-07-clk-2.6.0-structural-slimming-design.md",
+      "sha256": "5acf43de712f44c31d743b7e077f391f85184c772fe0be03c26fb0a1bcb47720"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-23-clk-3.0.0-reconstruction-design.md",
+      "sha256": "9f7794ab5d8f2cc4bee819be3acd842f172c0544f562987484657ccd10e271d6"
+    },
+    {
+      "path": "evals/mslk-readiness-answer-key.json",
+      "sha256": "4e7d9be8daa0acd6fdf73d83667f2f380d64ce1c28351f0c2a7bac75cd6fec35"
+    },
+    {
+      "path": "evals/mslk-readiness-questions.json",
+      "sha256": "9ff0c837429ec93deaf515b915b620ecf7e5380c179538fd6a2e9ae988dd37c9"
+    },
+    {
+      "path": "references/checker-detection-catalog.md",
+      "sha256": "3028b2b5d561d1924bc616a72fa9349c91150ea423e84de9af6b85cacf25b8f5"
+    },
+    {
+      "path": "references/mslk-control-operations.md",
+      "sha256": "1c5dcd5eeaea4a4fae6b13665a4dc3b9c7dcdca10b64ca903d3a63a217376d39"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "sha256": "4b036300c43cb4f826edf33c274c6908bd0236092d76aed148fdf360e9568bb5"
+    },
+    {
+      "path": "scripts/quick_validate.py",
+      "sha256": "7a03b0cb6ba94a47f093f18e4798b880b3b3ed90f8357bef354cd1ca79255814"
+    },
+    {
+      "path": "scripts/run_mslk_readiness_eval.py",
+      "sha256": "f420aee5a541aefe959335d5fbcc6bdf1f54229c951067604a2de9803898a78c"
+    },
+    {
+      "path": "scripts/update_file_hashes.py",
+      "sha256": "76c106a5eebea9393e9b8c33bb182de05dce5b016a6d470a77b565468bf1de55"
+    },
+    {
+      "path": "scripts/validate_chain_level_plan.py",
+      "sha256": "d8162440a13fc84e99356d84ef9d7d5f19b7917b4bf229e699d26581ea40f95d"
+    },
+    {
+      "path": "scripts/validate_model_policy.py",
+      "sha256": "05d6811e59166e0c8df923447d809af416c027da7383b36a874463ae10658744"
+    },
+    {
+      "path": "scripts/validate_receipt_chain.py",
+      "sha256": "6490c887ca09e269eb88b94038c44a1e46e8a9c5d3ec69b6f08bdc1f844ed7c2"
+    },
+    {
+      "path": "scripts/validate_repository.py",
+      "sha256": "0b28d1c4c9035f1064bf15ac98af6c9835075b719d4c0d161ef08742d4ad04d4"
+    },
+    {
+      "path": "scripts/validate_run_control.py",
+      "sha256": "e3264e5633f4dbe0de60bff09b9db44afb89731233c656c3c82929ec8470290b"
+    },
+    {
+      "path": "scripts/validate_runtime_state.py",
+      "sha256": "26e08139b6744e35e3882a4adf3847f6b51c8d85bcce865fb6633ff569cb02be"
+    },
+    {
+      "path": "scripts/validate_topology_fault.py",
+      "sha256": "2acc1ee841ad446e13dd1fea214510f460fcebdd25309aa12969eff29db4fe22"
+    },
+    {
+      "path": "skills/chain-loop-skill/SKILL.md",
+      "sha256": "5c5d5e01671a78cea2b9dfe8a154ee138e40821bbc3800d28725ce256dae9ec1"
+    },
+    {
+      "path": "skills/chain-loop-skill/agents/openai.yaml",
+      "sha256": "f97b38b1a59482fbf806c4b45106eed7a0fd26138dc932e103ec0e65abcaefba"
+    },
+    {
+      "path": "skills/chain-loop-skill/assets/CLK-RUN.template.md",
+      "sha256": "e8ff855f0e5c2e7bfe0b0f7aaf3ea5e4c060d1dece0340601e1f7ba16fa3b936"
+    },
+    {
+      "path": "skills/clk-close-run/SKILL.md",
+      "sha256": "6544a092037017ea6c31b0499357e8236a23bfd64069b5dd9c74e03cc37923f7"
+    },
+    {
+      "path": "skills/clk-complete-chain/SKILL.md",
+      "sha256": "591e9c70cf49ea6dd2b54bdb5b03bb360bfa3401ba75c4f6ce9a0aaad9264ca4"
+    },
+    {
+      "path": "skills/clk-design-fusion-contracts/SKILL.md",
+      "sha256": "4bc8c5d7aa4a016e74dd4ebe8dcb9730c2122f60a2ebe2eba35dd26021c42dc1"
+    },
+    {
+      "path": "skills/clk-design-fusion-contracts/assets/FUSION-INTERFACE-CONTRACT.template.md",
+      "sha256": "8c0ea1f431bdb6dcc0d64844b36abd60b6663ed23ac55834e72df3b6535c5fa8"
+    },
+    {
+      "path": "skills/clk-grill-supervisor/SKILL.md",
+      "sha256": "ae4b06df668dd366ddfc8141ea392c4e1b1f47af69a89e941cba194f094a3302"
+    },
+    {
+      "path": "skills/clk-launch-chains/SKILL.md",
+      "sha256": "91a832926c076cd3b5ab4a1ef6fd14931485b220fbcdf24ffe928388ca9fd97a"
+    },
+    {
+      "path": "skills/clk-plan-parallel-isolation/SKILL.md",
+      "sha256": "fa28dece983e1b5dd077a23565a9dbf27b8d4324744e0fc2786c8f9608707365"
+    },
+    {
+      "path": "skills/clk-plan-parallel-isolation/assets/PARALLEL-ISOLATION-PLAN.template.md",
+      "sha256": "064dafae897f57b413c01d9a4d65a84162ecde1dbe3d64dff8b307997e2fe7f6"
+    },
+    {
+      "path": "skills/clk-plan-run/SKILL.md",
+      "sha256": "dc8836bc369f4430507bb5119fff4a5abf9d9c98cf1b12a7975426d72999f3de"
+    },
+    {
+      "path": "skills/clk-start-fusion/SKILL.md",
+      "sha256": "208ca4115d9fae82088021b7ee7ec89dfffe41c580f12a62861d0a2044353a75"
+    },
+    {
+      "path": "tests/fixtures/plans/invalid-duplicate-go.yaml",
+      "sha256": "d26b9fb645ceb95d33440539f2f2229bb0dee0b04dabeb0fe30d75ba150e25b3"
+    },
+    {
+      "path": "tests/fixtures/plans/invalid-duplicate-level.yaml",
+      "sha256": "58ac6c9f3f1bba83ad8823e6f54ba6f803c5def8a4183f75dbc8a148712e2b60"
+    },
+    {
+      "path": "tests/fixtures/plans/invalid-reversed-order.yaml",
+      "sha256": "1cde1f6a057a8e816a7009d1790e1c3e95202da21f48fca2116f77607d06387a"
+    },
+    {
+      "path": "tests/fixtures/plans/invalid-single-chain.yaml",
+      "sha256": "77f7ea26d3405733789b218282f175ac008f08fa493621327471dabd6fa3d2c7"
+    },
+    {
+      "path": "tests/fixtures/plans/valid-minimal.yaml",
+      "sha256": "46cf845ea9a1ddda80482bb43ac7da59afc2332e28001c1b87e12f71f65cf417"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-missing-required-assignment.yaml",
+      "sha256": "2c517a5e8856c389a0561c29485c87e90640e926693e70d2e3aa601da4fb0bc6"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-optional-pending-at-barrier.yaml",
+      "sha256": "4e034039ef256276d953c78f77b22ec3be569981a521637a76d27f07acd152dc"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-required-formal-resolution.yaml",
+      "sha256": "a1650085fda43ef5b09719f78887e626085d6d2211f552df3649d352b1fd89b6"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-reused-verification-context.yaml",
+      "sha256": "dc688891c44fe64361598643fcdc4d126173af31e29904a0acd4c7710c5bc291"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-two-active-go-same-chain.yaml",
+      "sha256": "e3ae31fecd6da1a946df7a8899d4e8dc9a7e34b9f239e66e8b78368b5e769f72"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-two-active-levels.yaml",
+      "sha256": "97644b11b60f0d099f5d99e031b5e520a44457078f7f614c0130e3ff53affb1d"
+    },
+    {
+      "path": "tests/fixtures/runtime/invalid-unresolved-topology-fault-at-barrier.yaml",
+      "sha256": "4febbf88641a030ddb69b81cfa4704947a668512c439c32e6568a84b23b5f141"
+    },
+    {
+      "path": "tests/fixtures/runtime/valid-level-active.yaml",
+      "sha256": "c0323e3a3bb1f476c7839e45b15bff7c70e3021aa96a828e9a2b12f9182e35db"
+    },
+    {
+      "path": "tests/fixtures/topology-faults/invalid-nonminimal-closure.yaml",
+      "sha256": "30d87f6bb9722c5e77f066bc78f8a2b53130271418ebeb97039d39acc70626d5"
+    },
+    {
+      "path": "tests/fixtures/topology-faults/invalid-unproven-control.yaml",
+      "sha256": "0207b86e812bd0a35ef523924a14c891625605d51b6cdb8d0886e3271abc6e07"
+    },
+    {
+      "path": "tests/fixtures/topology-faults/valid-chain-local.yaml",
+      "sha256": "d6bc50408dc80e915b607e58b8e14ea85a508ea5bc9355ef33155e16215e775b"
+    },
+    {
+      "path": "tests/fixtures/topology-faults/valid-cross-chain.yaml",
+      "sha256": "15c5c78fd4d87a8bc00886d92fbcfebca936202f5d233c77ecac96183eaf1e05"
+    },
+    {
+      "path": "tests/fixtures/topology-faults/valid-level-barrier.yaml",
+      "sha256": "b37d15fa82f6eb73f1f9731f86929094f9a23379051cf59e51f4f924cf7eed2a"
+    },
+    {
+      "path": "tests/skill_testkit.py",
+      "sha256": "175f9cbf5e5d074a99eea14806c88fb50c9a0edcb7ea3dffd60d5976241a0345"
+    },
+    {
+      "path": "tests/test_artifact_contracts.py",
+      "sha256": "aaaa42ee7826ec9ced0f5b2f0b12ef9b25d8cf07ac7e03f619cbd8f2622279ef"
+    },
+    {
+      "path": "tests/test_chain_level_plan.py",
+      "sha256": "785b699cc475988228d769b98f31b19462b760d522c048a968a5b3dfae817418"
+    },
+    {
+      "path": "tests/test_clk_contract.py",
+      "sha256": "36787ae403ee602540d8244cfd5645bb36f5bcb512ae239ea2da45bdc27418db"
+    },
+    {
+      "path": "tests/test_contract.py",
+      "sha256": "37def8e0b9de8bb8e8f49c2bea3dcaebbb48691b608de620c743fb88f74ac4bc"
+    },
+    {
+      "path": "tests/test_control_kernel.py",
+      "sha256": "08872b81a7b98f32acc4dd094d6127892066333c7ec529a7cb48294facaf27c2"
+    },
+    {
+      "path": "tests/test_model_policy.py",
+      "sha256": "e895fa099f62195a0fddaff3939dda634210a45ac8c2a90b4af9f3e8b48f8636"
+    },
+    {
+      "path": "tests/test_readiness_eval.py",
+      "sha256": "51c647594b2c9e01702044bf77a8749bed7cdfdc97657f0f44c77525acc02d7f"
+    },
+    {
+      "path": "tests/test_repository_300.py",
+      "sha256": "3b3c958f53d624ae08385ba0ce2f8213de9a75a3b2e921791ba6042a4cfcbf38"
+    },
+    {
+      "path": "tests/test_repository_validation.py",
+      "sha256": "8d0afd5eaea07644b79ede23772c9c6752eb335de1aa82338c42b60f782d657e"
+    },
+    {
+      "path": "tests/test_run_control.py",
+      "sha256": "a126e2c760fb26b5b1cb31ab2ecef342d4a374354c1d533adf87c5ae4094c735"
+    },
+    {
+      "path": "tests/test_runtime_state.py",
+      "sha256": "edf557fcc8cdfff196ec4401d287a42187f34da53deb41fa89610f71273a055d"
+    },
+    {
+      "path": "tests/test_skill_collection_300.py",
+      "sha256": "1dfbe088568a16ddccd1b479b729cd393003729b5c1174ace990396eb0d8d8f5"
+    },
+    {
+      "path": "tests/test_topology_faults.py",
+      "sha256": "7f118b8436b737f3ffd29a934d1fecf6d2206738d0a6742aa017383d8c33aac8"
     }
-  },
-  "lccoding_interface": {
-    "input": "RUN_CONTRACT",
-    "output": "LOOP_OWNER_ACCEPTED",
-    "output_scope": "RUN_PRODUCT_ONLY"
-  },
-  "run_control": {
-    "worker_wake_actor": "WORKER",
-    "worker_wake_offsets_minutes": [0, 2, 4, 6],
-    "active_dispatch_requires_wake_lifecycle": true,
-    "patrol_count_per_run": 1,
-    "patrol_model": "gpt-5.6-terra+xhigh",
-    "patrol_project_workload_minutes": {"LOW": 10, "MEDIUM": 15, "HIGH": 30},
-    "canonical_technical_roles": ["SUPERVISOR", "CHECKER", "WORKER", "VERIFICATION"],
-    "supervisor_wait_threads": false,
-    "progress_source": "CURRENT_EFFECTIVE_RECEIPTS",
-    "progress_trigger_cardinality": "EXACTLY_ONE",
-    "capacity_gate": ["PASS", "SPLIT_REQUIRED", "CAPACITY_BLOCKED"],
-    "method_role_pin": false,
-    "model_binding_policy": "MODEL_BINDING_LEDGER"
-  },
-  "model_selection": {
-    "default": "gpt-5.6-terra+xhigh",
-    "fine_grained_low_risk_worker": "gpt-5.6-luna+xhigh",
-    "exceptional_correction": "gpt-5.6-sol+xhigh",
-    "alternative_requires": "PROVEN_EQUIVALENT",
-    "gpt_5_5_and_lower": "REJECT",
-    "known_gpt_family_laundering": "REJECT",
-    "known_gpt_snapshot_separators": ["-", ".", "_"],
-    "binding_change_requires_any_of": [
-      "ACTUAL_MODEL_CHANGED",
-      "REASONING_EFFORT_CHANGED"
-    ],
-    "silent_switch": "REJECT"
-  },
-  "required_files": [
-    ".gitattributes",
-    ".github/workflows/validate.yml",
-    ".gitignore",
-    "CHANGELOG.md",
-    "FILE_HASHES.json",
-    "LICENSE",
-    "MANIFEST.json",
-    "MIGRATION-2.0-TO-2.3.1.md",
-    "MIGRATION-2.3.1-TO-2.4.0.md",
-    "MIGRATION-2.4.0-TO-2.5.0.md",
-    "MIGRATION-2.5.0-TO-2.6.0.md",
-    "MIGRATION-MSLK-TO-CLK.md",
-    "README.md",
-    "SPEC.md",
-    "VALIDATION-REPORT.md",
-    "VERSION",
-    "requirements-dev.txt",
-    "scripts/update_file_hashes.py",
-    "scripts/validate_chain_level_plan.py",
-    "scripts/validate_receipt_chain.py",
-    "scripts/validate_repository.py",
-    "scripts/validate_runtime_state.py",
-    "scripts/validate_topology_fault.py",
-    "scripts/validate_run_control.py",
-    "scripts/validate_model_policy.py",
-    "chain-loop-skill/SKILL.md",
-    "chain-loop-skill/agents/openai.yaml",
-    "chain-loop-skill/contracts/clk-control-kernel.json",
-    "chain-loop-skill/schemas/amendment-envelope.schema.json",
-    "chain-loop-skill/schemas/chain-level-plan.schema.json",
-    "chain-loop-skill/schemas/receipt-envelope.schema.json",
-    "chain-loop-skill/schemas/runtime-state-index.schema.json",
-    "chain-loop-skill/schemas/topology-fault-record.schema.json",
-    "chain-loop-skill/schemas/run-control-trace.schema.json",
-    "chain-loop-skill/schemas/model-binding-ledger.schema.json",
-    "chain-loop-skill/references/topology-fault-localization.md",
-    "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
-    "chain-loop-skill/references/model-selection-and-binding.md",
-    "chain-loop-skill/templates/go-amendment.yaml",
-    "chain-loop-skill/templates/level-barrier-receipt.yaml",
-    "chain-loop-skill/templates/owner-acceptance.yaml",
-    "chain-loop-skill/templates/topology-fault-record.yaml",
-    "chain-loop-skill/templates/run-control-trace.yaml",
-    "chain-loop-skill/templates/model-binding-ledger.yaml"
   ]
 }

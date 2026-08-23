@@ -1,301 +1,219 @@
-#!/usr/bin/env python3
-"""Validate the complete CLK 2.6.0 repository contract."""
-
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
-from typing import Any
-
-import yaml
-from jsonschema import Draft202012Validator
+from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parents[1]
-IGNORED_PARTS = {".git", ".codex", ".worktrees", ".pytest_cache", "__pycache__"}
-BINARY_SUFFIXES = {
-    ".7z", ".avi", ".bin", ".bmp", ".docx", ".gif", ".gz", ".ico", ".jpeg",
-    ".jpg", ".mov", ".mp3", ".mp4", ".pdf", ".png", ".pptx", ".tar", ".webp",
-    ".xlsx", ".zip",
-}
-REQUIRED_FILES = {
-    ".gitattributes",
-    ".github/workflows/validate.yml",
-    ".gitignore",
-    "CHANGELOG.md",
-    "FILE_HASHES.json",
-    "LICENSE",
-    "MANIFEST.json",
-    "MIGRATION-2.0-TO-2.3.1.md",
-    "MIGRATION-2.3.1-TO-2.4.0.md",
-    "MIGRATION-2.4.0-TO-2.5.0.md",
-    "MIGRATION-2.5.0-TO-2.6.0.md",
-    "MIGRATION-MSLK-TO-CLK.md",
-    "README.md",
-    "SPEC.md",
-    "VALIDATION-REPORT.md",
-    "VERSION",
-    "requirements-dev.txt",
-    "scripts/update_file_hashes.py",
-    "scripts/validate_chain_level_plan.py",
-    "scripts/validate_receipt_chain.py",
-    "scripts/validate_repository.py",
-    "scripts/validate_runtime_state.py",
-    "scripts/validate_topology_fault.py",
-    "scripts/validate_run_control.py",
-    "scripts/validate_model_policy.py",
-    "chain-loop-skill/SKILL.md",
-    "chain-loop-skill/agents/openai.yaml",
-    "chain-loop-skill/contracts/clk-control-kernel.json",
-    "chain-loop-skill/schemas/amendment-envelope.schema.json",
-    "chain-loop-skill/schemas/chain-level-plan.schema.json",
-    "chain-loop-skill/schemas/receipt-envelope.schema.json",
-    "chain-loop-skill/schemas/runtime-state-index.schema.json",
-    "chain-loop-skill/schemas/topology-fault-record.schema.json",
-    "chain-loop-skill/schemas/run-control-trace.schema.json",
-    "chain-loop-skill/schemas/model-binding-ledger.schema.json",
-    "chain-loop-skill/references/topology-fault-localization.md",
-    "chain-loop-skill/references/worker-wake-patrol-and-progress.md",
-    "chain-loop-skill/references/model-selection-and-binding.md",
-    "chain-loop-skill/templates/go-amendment.yaml",
-    "chain-loop-skill/templates/level-barrier-receipt.yaml",
-    "chain-loop-skill/templates/owner-acceptance.yaml",
-    "chain-loop-skill/templates/topology-fault-record.yaml",
-    "chain-loop-skill/templates/run-control-trace.yaml",
-    "chain-loop-skill/templates/model-binding-ledger.yaml",
-}
-
-
-class RepositoryValidationError(ValueError):
-    """Raised when release artifacts are inconsistent or incomplete."""
-
-
-def require(condition: bool, message: str) -> None:
-    if not condition:
-        raise RepositoryValidationError(message)
+SKILLS_ROOT = ROOT / "skills"
+VERSION = "3.0.0"
+COLLECTION_NAME = "Chain Loop Skill Collection"
+EXPECTED_SKILLS = (
+    "chain-loop-skill",
+    "clk-plan-run",
+    "clk-design-fusion-contracts",
+    "clk-plan-parallel-isolation",
+    "clk-grill-supervisor",
+    "clk-launch-chains",
+    "clk-complete-chain",
+    "clk-start-fusion",
+    "clk-close-run",
+)
+EXCLUDED_DIRS = {".git", ".codex", "__pycache__", ".pytest_cache"}
+EXCLUDED_FILES = {"MANIFEST.json"}
 
 
 def sha256(path: Path) -> str:
-    payload = path.read_bytes()
-    if path.suffix.lower() not in BINARY_SUFFIXES and b"\x00" not in payload:
-        payload = payload.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
-    return hashlib.sha256(payload).hexdigest()
-
-
-def is_ignored(path: Path, root: Path) -> bool:
-    relative = path.relative_to(root)
-    return any(part in IGNORED_PARTS for part in relative.parts) or path.suffix in {".pyc", ".log", ".tmp"}
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def release_files(root: Path) -> list[Path]:
-    files = [
-        path
-        for path in root.rglob("*")
-        if path.is_file()
-        and not is_ignored(path, root)
-        and path.relative_to(root).as_posix() != "FILE_HASHES.json"
-    ]
-    return sorted(files, key=lambda path: path.relative_to(root).as_posix())
-
-
-def validate_required_files(root: Path) -> None:
-    missing = sorted(path for path in REQUIRED_FILES if not (root / path).is_file())
-    require(not missing, f"missing required files: {missing}")
-
-
-def validate_skill_frontmatter(path: Path) -> None:
-    text = path.read_text(encoding="utf-8")
-    lines = text.splitlines()
-    require(lines and lines[0] == "---", f"{path.name} frontmatter is missing")
-    try:
-        end = lines[1:].index("---") + 1
-    except ValueError as error:
-        raise RepositoryValidationError(f"{path.name} frontmatter is not closed") from error
-    metadata = yaml.safe_load("\n".join(lines[1:end]))
-    require(isinstance(metadata, dict), f"{path.name} frontmatter must be a mapping")
-    require(metadata.get("name") == "chain-loop-skill", "Skill frontmatter name must be chain-loop-skill")
-    require(isinstance(metadata.get("description"), str) and bool(metadata["description"].strip()),
-            "Skill frontmatter description must be non-empty")
-
-
-def validate_version_consistency(root: Path) -> None:
-    version = (root / "VERSION").read_text(encoding="utf-8").strip()
-    require(version == "2.6.0", f"VERSION must be 2.6.0, got {version}")
-    manifest = json.loads((root / "MANIFEST.json").read_text(encoding="utf-8"))
-    require(manifest.get("version") == version, "MANIFEST version differs from VERSION")
-    readme = (root / "README.md").read_text(encoding="utf-8")
-    require(f"Current version: **{version}**" in readme, "README version differs from VERSION")
-    spec = (root / "SPEC.md").read_text(encoding="utf-8")
-    require(version in spec.splitlines()[0], "SPEC version differs from VERSION")
-    changelog = (root / "CHANGELOG.md").read_text(encoding="utf-8")
-    require(f"## {version}" in changelog, "CHANGELOG version differs from VERSION")
-    skill = (root / "chain-loop-skill" / "SKILL.md").read_text(encoding="utf-8")
-    require(f"Current specification version: `{version}`." in skill,
-            "canonical Skill version differs from VERSION")
-    control = json.loads(
-        (root / "chain-loop-skill" / "contracts" / "clk-control-kernel.json").read_text(encoding="utf-8")
-    )
-    require(control.get("version") == version and control.get("schema_version") == version,
-            "control-kernel version differs from VERSION")
-    run_receipt = yaml.safe_load(
-        (root / "chain-loop-skill" / "templates" / "clk-run-receipt.yaml").read_text(encoding="utf-8")
-    )
-    require(str(run_receipt.get("version")) == version, "Run Receipt version differs from VERSION")
-    for name in ("clk-readiness-questions.json", "clk-readiness-answer-key.json"):
-        readiness = json.loads(
-            (root / "chain-loop-skill" / "evals" / name).read_text(encoding="utf-8")
-        )
-        require(readiness.get("version") == version, f"{name} version differs from VERSION")
-    model_ledger = load_yaml(root / "chain-loop-skill" / "templates" / "model-binding-ledger.yaml")
-    require(str(model_ledger.get("version")) == version, "model binding ledger version differs from VERSION")
-
-
-def validate_active_model_guidance(root: Path) -> None:
-    governed = [
-        root / "SKILL.md",
-        root / "agents" / "openai.yaml",
-        root / "chain-loop-skill" / "SKILL.md",
-        root / "chain-loop-skill" / "agents" / "openai.yaml",
-        root / "README.md",
-        root / "SPEC.md",
-    ]
-    governed.extend(sorted((root / "chain-loop-skill" / "references").glob("*.md")))
-    combined = "\n".join(path.read_text(encoding="utf-8") for path in governed)
-    forbidden_positive_phrases = (
-        "`gpt-5.5` with `high` reasoning as the minimum",
-        "Prefer `gpt-5.5 high` for routine",
-        "Workers use gpt-5.5 high through",
-        "every Worker is from `gpt-5.5 high`",
-    )
-    require(
-        not any(phrase in combined for phrase in forbidden_positive_phrases),
-        "retired GPT 5.5-or-lower positive guidance remains active",
-    )
-    legacy_patrol_phrases = (
-        "exactly one luna+xhigh run patrol",
-        "exactly one visible luna+xhigh patrol",
-    )
-    require(
-        not any(phrase in combined.casefold() for phrase in legacy_patrol_phrases),
-        "legacy Patrol Luna positive guidance remains active",
-    )
-    require("gpt-5.6-terra+xhigh" in combined, "Terra xhigh default guidance is missing")
-    require("MODEL_BINDING_LEDGER" in combined, "model binding ledger guidance is missing")
-
-
-def parse_structured_files(root: Path) -> None:
-    for path in release_files(root):
-        try:
-            if path.suffix == ".json":
-                json.loads(path.read_text(encoding="utf-8"))
-            elif path.suffix in {".yaml", ".yml"}:
-                yaml.safe_load(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError) as error:
-            raise RepositoryValidationError(
-                f"structured file {path.relative_to(root).as_posix()} is invalid: {error}"
-            ) from error
-
-
-def validate_hash_manifest(root: Path, *, require_complete: bool = True) -> None:
-    hash_path = root / "FILE_HASHES.json"
-    hashes = json.loads(hash_path.read_text(encoding="utf-8"))
-    require(isinstance(hashes, dict), "FILE_HASHES.json must be an object")
-    for relative, expected in hashes.items():
-        path = root / relative
-        require(path.is_file(), f"hash manifest references missing file: {relative}")
-        actual = sha256(path)
-        require(actual == expected, f"hash mismatch: {relative}")
-    if require_complete:
-        expected_paths = {path.relative_to(root).as_posix() for path in release_files(root)}
-        require(set(hashes) == expected_paths,
-                f"hash manifest coverage mismatch: {sorted(set(hashes) ^ expected_paths)}")
-
-
-def validate_markdown_budgets(root: Path) -> None:
-    for path in release_files(root):
-        if path.suffix.lower() != ".md":
+    values: list[Path] = []
+    for path in root.rglob("*"):
+        if not path.is_file():
             continue
-        count = len(path.read_text(encoding="utf-8").splitlines())
-        require(count <= 1000, f"Markdown line budget exceeded: {path.relative_to(root)} ({count})")
-        if path.name.lower() == "work-continuation-index.md":
-            require(count < 200, f"WORK_CONTINUATION_INDEX exceeds 200 lines: {path.relative_to(root)}")
+        relative = path.relative_to(root)
+        if any(part in EXCLUDED_DIRS for part in relative.parts):
+            continue
+        if relative.as_posix() in EXCLUDED_FILES or path.suffix == ".pyc":
+            continue
+        values.append(relative)
+    return sorted(values, key=lambda item: item.as_posix())
 
 
-def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+def manifest_payload(root: Path) -> dict:
+    return {
+        "name": COLLECTION_NAME,
+        "version": VERSION,
+        "skill_count": len(EXPECTED_SKILLS),
+        "excludes": sorted(EXCLUDED_FILES),
+        "files": [
+            {"path": relative.as_posix(), "sha256": sha256(root / relative)}
+            for relative in release_files(root)
+        ],
+    }
 
 
-def load_yaml(path: Path) -> dict[str, Any]:
-    value = yaml.safe_load(path.read_text(encoding="utf-8"))
-    require(isinstance(value, dict), f"{path.name} must contain a mapping")
-    return value
+def write_manifest(root: Path) -> None:
+    text = json.dumps(manifest_payload(root), ensure_ascii=False, indent=2) + "\n"
+    (root / "MANIFEST.json").write_bytes(text.encode("utf-8"))
 
 
-def validate_templates(root: Path) -> None:
-    schemas = root / "chain-loop-skill" / "schemas"
-    templates = root / "chain-loop-skill" / "templates"
-    pairs = [
-        ("chain-level-plan.schema.json", "chain-level-plan.yaml"),
-        ("runtime-state-index.schema.json", "runtime-state-index.yaml"),
-        ("topology-fault-record.schema.json", "topology-fault-record.yaml"),
-        ("run-control-trace.schema.json", "run-control-trace.yaml"),
-        ("model-binding-ledger.schema.json", "model-binding-ledger.yaml"),
-    ]
-    receipt_names = [
-        "d0-worker-receipt.yaml",
-        "d1-checker-receipt.yaml",
-        "d2-go-verification-receipt.yaml",
-        "level-verification-receipt.yaml",
-        "d3-run-verification-receipt.yaml",
-    ]
-    amendment_names = ["chain-amendment.yaml", "level-amendment.yaml", "go-amendment.yaml"]
-    pairs.extend(("receipt-envelope.schema.json", name) for name in receipt_names)
-    pairs.extend(("amendment-envelope.schema.json", name) for name in amendment_names)
-    for schema_name, template_name in pairs:
-        errors = sorted(
-            Draft202012Validator(load_json(schemas / schema_name)).iter_errors(load_yaml(templates / template_name)),
-            key=lambda error: list(error.path),
-        )
-        require(not errors, f"template {template_name} violates {schema_name}: {errors[0].message if errors else ''}")
+def check(condition: bool, code: str, detail: str, errors: list[str]) -> None:
+    if not condition:
+        errors.append(f"{code}: {detail}")
 
 
-def validate_manifest(root: Path) -> None:
-    manifest = load_json(root / "MANIFEST.json")
-    require(manifest.get("name") == "Chain Loop Skill", "MANIFEST canonical name is invalid")
-    require(manifest.get("abbreviation") == "CLK", "MANIFEST abbreviation is invalid")
-    require(manifest.get("synchronization_unit") == "LEVEL", "MANIFEST must keep Level canonical")
-    require(manifest.get("repository_id") == 1298120736, "MANIFEST repository ID is invalid")
-    declared = set(manifest.get("required_files", []))
-    require(REQUIRED_FILES <= declared, "MANIFEST required_files is incomplete")
-
-
-def validate_repository(root: Path) -> None:
-    validate_required_files(root)
-    validate_skill_frontmatter(root / "chain-loop-skill" / "SKILL.md")
-    validate_version_consistency(root)
-    validate_active_model_guidance(root)
-    parse_structured_files(root)
-    validate_manifest(root)
-    validate_templates(root)
-    validate_markdown_budgets(root)
-    validate_hash_manifest(root)
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", type=Path, default=ROOT)
-    args = parser.parse_args(argv)
+def utf8_lf_text(path: Path, errors: list[str]) -> str:
     try:
-        validate_repository(args.root.resolve())
-    except (OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError, RepositoryValidationError) as error:
-        print(f"FAIL: {error}", file=sys.stderr)
+        data = path.read_bytes()
+        if b"\r\n" in data:
+            errors.append(f"CLK_REPO_LF: {path.relative_to(ROOT).as_posix()}")
+        return data.decode("utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"CLK_REPO_UTF8: {path}: {exc}")
+        return ""
+
+
+def frontmatter_name(text: str) -> str | None:
+    if not text.startswith("---\n"):
+        return None
+    match = re.search(r"^name:\s*([a-z0-9-]+)\s*$", text, re.MULTILINE)
+    return match.group(1) if match else None
+
+
+def validate(root: Path) -> list[str]:
+    errors: list[str] = []
+    required = (
+        "VERSION",
+        "README.md",
+        "README.zh-CN.md",
+        "MIGRATION.md",
+        "CHANGELOG.md",
+        "LICENSE",
+        "MANIFEST.json",
+        "VALIDATION-REPORT.md",
+        ".github/workflows/validate.yml",
+        "skills/chain-loop-skill/assets/CLK-RUN.template.md",
+        "skills/clk-design-fusion-contracts/assets/FUSION-INTERFACE-CONTRACT.template.md",
+        "skills/clk-plan-parallel-isolation/assets/PARALLEL-ISOLATION-PLAN.template.md",
+    )
+    for relative in required:
+        check((root / relative).is_file(), "CLK_REPO_REQUIRED_FILE", relative, errors)
+    if errors:
+        return errors
+
+    version = utf8_lf_text(root / "VERSION", errors).strip()
+    check(version == VERSION, "CLK_REPO_VERSION", repr(version), errors)
+
+    actual_skills = tuple(
+        sorted(path.name for path in SKILLS_ROOT.iterdir() if path.is_dir())
+    )
+    check(
+        actual_skills == tuple(sorted(EXPECTED_SKILLS)),
+        "CLK_REPO_SKILL_SET",
+        repr(actual_skills),
+        errors,
+    )
+    for name in EXPECTED_SKILLS:
+        path = SKILLS_ROOT / name / "SKILL.md"
+        check(path.is_file(), "CLK_REPO_SKILL_FILE", name, errors)
+        if path.is_file():
+            text = utf8_lf_text(path, errors)
+            check(frontmatter_name(text) == name, "CLK_REPO_SKILL_NAME", name, errors)
+            check(
+                "description: Use when " in text,
+                "CLK_REPO_SKILL_DESCRIPTION",
+                name,
+                errors,
+            )
+
+    main = utf8_lf_text(SKILLS_ROOT / "chain-loop-skill" / "SKILL.md", errors)
+    for name in EXPECTED_SKILLS[1:]:
+        check(main.count(f"`${name}`") == 1, "CLK_REPO_ROUTE", name, errors)
+    check("`$small-loop-skill`" in main, "CLK_REPO_SLK_ROUTE", "main", errors)
+    check("`$slk-" not in main, "CLK_REPO_SLK_CHILD_ROUTE", "main", errors)
+
+    for relative in ("README.md", "README.zh-CN.md", "MIGRATION.md", "CHANGELOG.md"):
+        utf8_lf_text(root / relative, errors)
+
+    try:
+        manifest = json.loads(utf8_lf_text(root / "MANIFEST.json", errors))
+    except json.JSONDecodeError as exc:
+        errors.append(f"CLK_REPO_MANIFEST_JSON: {exc}")
+        return errors
+
+    check(
+        manifest.get("name") == COLLECTION_NAME,
+        "CLK_REPO_MANIFEST_NAME",
+        repr(manifest.get("name")),
+        errors,
+    )
+    check(
+        manifest.get("version") == VERSION,
+        "CLK_REPO_MANIFEST_VERSION",
+        repr(manifest.get("version")),
+        errors,
+    )
+    check(
+        manifest.get("skill_count") == len(EXPECTED_SKILLS),
+        "CLK_REPO_MANIFEST_SKILLS",
+        repr(manifest.get("skill_count")),
+        errors,
+    )
+    check(
+        manifest.get("excludes") == sorted(EXCLUDED_FILES),
+        "CLK_REPO_MANIFEST_EXCLUDES",
+        repr(manifest.get("excludes")),
+        errors,
+    )
+    listed = {
+        item.get("path"): item.get("sha256")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    actual = {path.as_posix() for path in release_files(root)}
+    check(
+        set(listed) == actual,
+        "CLK_REPO_MANIFEST_SET",
+        f"missing={sorted(actual-set(listed))}; extra={sorted(set(listed)-actual)}",
+        errors,
+    )
+    for relative, expected in listed.items():
+        path = root / relative
+        if path.is_file():
+            check(sha256(path) == expected, "CLK_REPO_MANIFEST_HASH", relative, errors)
+    return errors
+
+
+def main(argv: Iterable[str]) -> int:
+    args = list(argv)
+    if args == ["--write-manifest"]:
+        write_manifest(ROOT)
+        print("WROTE: MANIFEST.json")
+        return 0
+    if args:
+        print(
+            "FAIL CLK_REPO_USAGE: optional argument is --write-manifest",
+            file=sys.stderr,
+        )
         return 2
-    print("PASS: CLK repository 2.6.0")
+    errors = validate(ROOT)
+    if errors:
+        for error in errors:
+            print(f"FAIL {error}", file=sys.stderr)
+        return 1
+    print("PASS: CLK 3.0 skill collection structure, identity, and Manifest are valid.")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))

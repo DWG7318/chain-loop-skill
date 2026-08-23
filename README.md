@@ -1,178 +1,67 @@
 # Chain Loop Skill (CLK)
 
-CLK executes one bounded engineering Run as fixed persistent Chains advancing
-through ordered, fully synchronized Levels with independently bound evidence.
+Current version: **3.0.0**
 
-Canonical product name: `Chain Loop Skill`
-
-Canonical repository: `DWG7318/chain-loop-skill`
-
-GitHub repository ID: `1298120736`
-
-Current version: **2.6.0**
-
-## Definition and input
-
-Every Run starts from a frozen `RUN_CONTRACT` and Full or Minimum Calabash:
+CLK organizes one medium or large engineering Run as:
 
 ```text
-Grandpa → Product Architecture → Ontology
+2+ concurrent SLK construction Chains -> 1 Fusion SLK Chain
 ```
 
-Every GO has a current `GO_CALABASH_TRACE`, one primary engineering claim, a
-frozen Verification Contract, and an immutable candidate-binding policy.
+Each construction Chain has a linear GO/CELL path and its own Checker/Worker pair. All pairs share one Supervisor, start in the same construction cycle, and work in temporary physical isolation while following complete fusion interface contracts. After every required construction Chain passes D2, one Fusion Chain combines the frozen results into the final system.
 
-## Chain and Level topology
+## Roles and method boundary
 
-```text
-              CHAIN-A      CHAIN-B      CHAIN-C
-LEVEL-01      GO-01-A      GO-01-B      GO-01-C
-                 ↓            ↓            ↓
-                 D2           D2           D2
-                 └──────── full Level barrier ────────┘
-                                      ↓
-LEVEL-02      GO-02-A      GO-02-B      GO-02-C
-```
+- The Owner confirms every new CLK Run before its Supervisor is created.
+- The originating conversation plans the Run, hands it to a new Supervisor, and then exits engineering work.
+- The shared Supervisor understands CLK and SLK, coordinates the Chains, performs each Chain D2, and starts and closes Fusion.
+- Each Checker and Worker follows SLK. CLK does not add role types or replace SLK's D0/D1/D2, rework, communication, records, or model guidance.
 
-The numeric GO component identifies the Level; the suffix identifies the Chain.
-All members of an opened Level are launch-ready together. Multiple GOs may be
-ACTIVE across different Chains, but each Chain has at most one ACTIVE GO. The next
-Level stays closed until the complete current-Level Barrier passes.
+CLK is project-level orchestration; SLK remains the execution method inside every construction Chain and the Fusion Chain.
 
-The roster uses the `最大有效 Chain 数量`: after Run and GO granularity is frozen,
-select the largest valid Chain partition that preserves ownership, cohesion,
-same-Level launch and acceptance independence, write isolation, local order, and
-full-Run Level barriers. Runtime resources may reduce ACTIVE concurrency, but do
-not change that frozen roster.
+## Core flow
 
-Use SLK for one strict execution line. Use GLK for conditional branches, partial
-unlock, cycles, dynamic Chains, or arbitrary GO-to-GO routing.
+1. Finalize the current Run, 2+ independent Chains, their linear GO/CELL plans, complete fusion interface contracts, and temporary isolation.
+2. Obtain Owner confirmation and create a new shared Supervisor.
+3. The Supervisor demonstrates SLK understanding, then CLK-specific understanding.
+4. Create every visible Checker/Worker pair and test Supervisor ↔ Checker, Checker ↔ Worker, and the emergency Supervisor ↔ Worker route.
+5. Start all construction Chains together.
+6. Perform an isolated D2 for each Chain. A failed Chain returns only to its own Checker/Worker loop; other independent Chains continue.
+7. Freeze every passed handoff, then plan and start one Fusion SLK Chain with one or more linear GOs.
+8. Use the Fusion D2 as the final CLK Run D2, archive the completed member conversations, and send the Owner one concise conclusion.
 
-## Evidence layers
+## Skill collection
 
-- D0: Worker implementation evidence.
-- D1: Checker verdict on one immutable CELL candidate.
-- D2: fresh Verification verdict that accepted CELLs compose one GO claim.
-- LEVEL: fresh composition Verification only when D2 receipts do not prove a new
-  cross-Chain Level claim.
-- D3: fresh Verification that all verified Levels compose the frozen Run Feature.
+CLK 3.0.0 is distributed as 9 sibling Skill directories:
 
-Higher layers consume signed lower receipts. They do not blindly repeat lower
-checks. Candidate, contract, baseline, environment, evidence, or risk changes can
-require a new attempt.
+| Skill | Purpose |
+| --- | --- |
+| `skills/chain-loop-skill/SKILL.md` | Main router and method identity |
+| `skills/clk-plan-run/SKILL.md` | Run, Chain, GO/CELL, Owner confirmation, and handoff planning |
+| `skills/clk-design-fusion-contracts/SKILL.md` | Complete fusion interface contracts and executable checks |
+| `skills/clk-plan-parallel-isolation/SKILL.md` | Temporary physical isolation without contract drift |
+| `skills/clk-grill-supervisor/SKILL.md` | SLK-first, CLK-second Supervisor understanding |
+| `skills/clk-launch-chains/SKILL.md` | Visible members, communication tests, and synchronous launch |
+| `skills/clk-complete-chain/SKILL.md` | Isolated Chain D2, frozen handoff, and member archive |
+| `skills/clk-start-fusion/SKILL.md` | Fusion planning, new worktree, and Fusion pair startup |
+| `skills/clk-close-run/SKILL.md` | Final Fusion D2, record, archive, and Owner conclusion |
 
-## Barrier safety
+Install or copy the 9 directories together so the main Skill can route to its children. SLK is a separate dependency and is entered through `$small-loop-skill`.
 
-A Required GO that remains in the frozen Baseline must have D2 PASS. A governance
-resolution cannot substitute for that technical verdict; an amendment must first
-remove, cancel, or supersede the GO.
+## Records
 
-An Optional GO may finish without D2 PASS only by reaching a declared non-active
-terminal state such as `CANCELLED`, `DEFERRED_BY_AMENDMENT`, or `SUPERSEDED`.
-ACTIVE, pending, or unresolved Optional work blocks the Barrier.
+- CLK summary: `CLK-RUN-<RUN-ID>-RECORD.md`
+- Construction Chain: `SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md`
+- Fusion Chain: `SLK-RUN-<RUN-ID>-FUSION.md`
 
-## Isolation and authority
+Each role records its own work facts. The CLK root record summarizes identities, states, evidence paths, errors, rework, exemptions, frozen handoffs, archive state, and the final conclusion without copying full member logs.
 
-- Supervisor controls Calabash, planning, provisioning, Barriers, amendments, and
-  Owner-exclusive escalation; it signs no product technical verdict.
-- Worker owns product implementation and rework.
-- Checker accepts CELLs and routes its persistent Chain.
-- Fresh Verification attempts sign D2, conditional LEVEL, and D3 receipts.
+## Validation
 
-D2, LEVEL, and D3 require distinct attempt, context, workspace, candidate binding,
-and evidence identities even when one independent Verification identity performs
-all three layers.
-
-## Topology fault localization
-
-Before rework, CLK classifies one evidence-bound `TOPOLOGY_FAULT_RECORD` as
-`CHAIN_LOCAL`, `CROSS_CHAIN_COMPOSITION`, or `LEVEL_BARRIER`. One fault series has
-one active hypothesis; a falsified hypothesis is sealed and superseded. Comparable
-same-Level healthy Chains may provide differential evidence, but never acceptance
-substitution or peer dependency, and their preserved D2 ID/hash/scope must match.
-The nonempty Receipt catalog partitions exactly into invalidated and preserved
-sets; hashed hypothesis evidence, source attempt scope, record state, and native
-route must agree. Receipt-consumption edges determine the exact reverification
-closure; Barrier-only correction preserves all technical Receipts. An unresolved
-fault for the current Level blocks Barrier PASS.
-
-## Run control, progress, and capacity
-
-Worker completion uses a scoped four-level wake ladder for its frozen Checker only:
-direct delivery, same-task recovery, deterministic temporary heartbeat, then
-`PENDING_WAKE`. Each level is bounded to two injected-clock minutes. Supervisor
-does not stay online with `wait_threads`; one non-authoritative patrol per Run,
-normally `gpt-5.6-terra+xhigh`, reports only mechanical control faults.
-Every active dispatch must close one same-scope wake lifecycle; only an explicitly
-initial, undispatched trace may contain neither. Patrol workload intervals are
-LOW→10, MEDIUM→15, HIGH→30 minutes and reports use fixed checks/findings with
-observation and evidence identity.
-
-Worker reports delivered CELL position, Checker derives accepted CELL progress
-from current D1 receipts, and Supervisor reports only D2/Level/Run milestones.
-Each unique D1 decision and each material Supervisor trigger has exactly one bound
-progress update; missing, duplicate, reordered, or reused trigger identity fails.
-Versioned Required sets provide denominators. Delivery and candidate readiness are
-never counted as D1 acceptance or D2 verification.
-
-Before dispatch, versioned device facts and cumulative engineering load feed
-`CELL_CAPACITY_GATE`. Only `PASS` dispatches; `SPLIT_REQUIRED` is resolved before
-dispatch and `CAPACITY_BLOCKED` fails closed. Worker cannot split its own CELL.
-Visible same-project role tasks are not subagents; spawned, delegated, hidden, or
-background Agents are forbidden. Every method role is also denied task-Pin
-capability: only explicit Owner provenance legitimizes a Pin.
-
-## Controllable model binding
-
-Every technical role and the separate patrol defaults to
-`gpt-5.6-terra+xhigh`. Only a Worker executing a current CELL explicitly marked
-fine-grained, LOW-risk, and capacity-PASS may use `gpt-5.6-luna+xhigh`. Only
-high-complexity correction, root-cause diagnosis, or complex rework may use
-`gpt-5.6-sol+xhigh`. Other providers/models require content-hashed
-`PROVEN_EQUIVALENT` evidence for the selected capability tier.
-
-GPT IDs must be lowercase with no outer whitespace. Terra/Luna/Sol snapshots
-separated by `-`, `.`, or `_` remain in their family and cannot cross tiers.
-
-`MODEL_BINDING_LEDGER` binds the actual model, capability class, selection tier
-and reason, reasoning effort, scope, isolation identity, and fresh readiness and
-verification receipts. GPT 5.5 and lower fail closed. `ultra` requires an exact
-current-Run Owner authorization. Actual-model or reasoning-effort changes create a
-new binding and repeat the gates; a no-op change and in-place drift are invalid.
-
-## Owner acceptance and outer boundary
-
-After D3 PASS, CLK immediately facilitates the current Run's small Owner
-Acceptance. `LOOP_OWNER_ACCEPTED` means `RUN_PRODUCT_ONLY`; it does not mean that
-project security is closed or Delivery is authorized.
-
-LCCoding remains responsible for centralized project vulnerability audit,
-Post-Security Owner Acceptance, and Delivery after all required Runs are accepted.
-
-## Repository gates
-
-```text
+```powershell
 python scripts/validate_repository.py
-python scripts/validate_chain_level_plan.py tests/fixtures/plans/valid-minimal.yaml
-python scripts/validate_runtime_state.py tests/fixtures/runtime/valid-level-active.yaml
-python scripts/validate_topology_fault.py tests/fixtures/topology-faults/valid-chain-local.yaml
-python scripts/validate_run_control.py chain-loop-skill/templates/run-control-trace.yaml
-python scripts/validate_model_policy.py chain-loop-skill/templates/model-binding-ledger.yaml
-python scripts/validate_receipt_chain.py chain-loop-skill/templates/d0-worker-receipt.yaml chain-loop-skill/templates/d1-checker-receipt.yaml chain-loop-skill/templates/d2-go-verification-receipt.yaml
+python scripts/quick_validate.py skills
 python -m pytest -q
 ```
 
-## Install
-
-Install `chain-loop-skill/` and invoke:
-
-```text
-$chain-loop-skill
-```
-
-Historical MSLK artifacts at repository root remain migration evidence only. New
-runs use `CLK`, `Chain Loop Skill`, `$chain-loop-skill`, and Level terminology.
-
-## License
-
-MIT.
+See [README.zh-CN.md](README.zh-CN.md), [MIGRATION.md](MIGRATION.md), and [VALIDATION-REPORT.md](VALIDATION-REPORT.md).

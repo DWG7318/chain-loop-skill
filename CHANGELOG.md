@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.0
+
+- Reconstructed CLK as project-level orchestration over concurrent SLK construction Chains followed by one Fusion SLK Chain.
+- Replaced the 2.x control kernel with one main Skill and eight compact, situation-routed child Skills.
+- Kept one shared Supervisor and independent Checker/Worker pairs; Checker and Worker continue to use SLK without new CLK role types.
+- Added complete fusion interface contracts, executable contract checks, temporary physical isolation, same-cycle Chain launch, isolated Chain D2 handoffs, and final Fusion closure.
+- Added concise root and per-Chain records, bilingual documentation, a single migration entrypoint, exact Manifest validation, and Windows/Ubuntu CI.
+
 ## 2.6.0
 
 - Reduced the canonical installed `SKILL.md` from 1000 to 407 physical lines by
