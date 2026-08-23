@@ -21,7 +21,7 @@ Supervisor 先读取 CLK；CLK 再进入 `$small-loop-skill`，让 Supervisor �
 
 每个新 CLK Run 使用新的 Supervisor。未来 Run 可以预规划，但会在上一 Run 交付后依据真实基线正式定稿，并再次取得 Owner 确认。
 
-Supervisor 在项目根目录维护 `CLK-RUN-<RUN-ID>-RECORD.md`。每条前置 Chain 使用 `SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md`，Fusion 使用 `SLK-RUN-<RUN-ID>-FUSION.md`；CLK 根记录只汇总状态和链接，不复制成员详细记录。
+Supervisor 在项目根目录创建和修改结构权威 `CLK-CHAIN-MAP.md`，所有成员可以读取；`CLK-RUN-<RUN-ID>-RECORD.md`只保存Run历史、证据链接、决定和结论。每条前置 Chain 使用 `SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md`，Fusion 使用 `SLK-RUN-<RUN-ID>-FUSION.md`，不复制成员详细记录。
 
 ## 按当前情境选择指导
 

@@ -22,7 +22,7 @@ description: Use when an active Chain Loop Skill (CLK) Run needs its concurrent 
 6. 调用`$clk-design-fusion-contracts`，形成每条Chain遵守的完整合同和可执行检查。
 7. 调用`$clk-plan-parallel-isolation`，为所有Chain规划临时worktree、运行空间和并行资源。
 8. 写出Fusion Chain的目标、正式输入、预期完整系统和初步GO轮廓。具体GO、初始 CELL及模型在真实Chain成果通过D2后定稿。
-9. 汇总Chain、GO、初始CELL、合同、隔离、检验和Fusion轮廓，交给Owner确认本次CLK Run及开工。
+9. 汇总Chain、GO、初始CELL、合同、隔离、检验和Fusion轮廓，交给Owner确认本次CLK Run及开工；确认后的结构内容交由Supervisor创建和修改`CLK-CHAIN-MAP.md`。
 10. Owner确认后，由原对话创建新的 Supervisor，完成原对话 ↔ Supervisor双向通讯测试并交付方案。原对话随后退出工程工作，仅保留Owner联系与Supervisor异常恢复入口。
 
 ## 完成后

@@ -14,7 +14,7 @@ description: Use when an active Chain Loop Skill (CLK) Run has an accepted plan 
 
 ## 准备记录与空间
 
-1. Supervisor创建或核对根记录`CLK-RUN-<RUN-ID>-RECORD.md`，登记已确认的Run、Chain、合同、隔离方案和计划总量。
+1. Supervisor创建或核对根记录`CLK-RUN-<RUN-ID>-RECORD.md`，并从已确认方案创建结构权威`CLK-CHAIN-MAP.md`；只有Supervisor修改结构，所有成员可以读取，再登记Run、合同、隔离方案和计划总量。
 2. 为每条Chain建立`SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md`，让后续成员各自记录事实、错误、返工、豁免和交付。
 3. 按隔离方案准备每条Chain的施工空间，并核对正式合同身份与临时配置注入位置。
 
