@@ -253,3 +253,54 @@ def test_parallel_isolation_is_temporary_and_does_not_change_the_contract() -> N
         "Fusion 交接",
     ):
         assert marker in asset_text
+
+
+def test_supervisor_proves_slk_then_clk_understanding_before_launch() -> None:
+    text = read_skill("clk-grill-supervisor")
+    for marker in (
+        "一次只问一个问题",
+        "动态决定",
+        "不设置固定题数",
+        "$chain-loop-skill",
+        "$small-loop-skill",
+        "SLK Supervisor Grill",
+        "返回 CLK",
+        "Chain 独立性",
+        "融合接口合同",
+        "临时隔离",
+        "Chain D2",
+        "Fusion Chain",
+        "合同冲突",
+        "纠正",
+        "解释",
+    ):
+        assert marker in text
+    assert text.index("$chain-loop-skill") < text.index("$small-loop-skill")
+    assert text.index("SLK Supervisor Grill") < text.index("返回 CLK")
+    assert "在线等待" not in text
+
+
+def test_launch_waits_for_every_visible_pair_then_starts_all_chains_together() -> None:
+    text = read_skill("clk-launch-chains")
+    for marker in (
+        "CLK-RUN-<RUN-ID>-RECORD.md",
+        "SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md",
+        "施工空间",
+        "Supervisor 创建",
+        "Supervisor ↔ Checker",
+        "Checker 理解",
+        "Checker 创建 Worker",
+        "Checker ↔ Worker",
+        "Supervisor ↔ Worker",
+        "应急",
+        "全部 Chain",
+        "准备完成",
+        "同一施工周期",
+        "同时启动",
+    ):
+        assert marker in text
+    assert text.index("全部 Chain") < text.index("同时启动")
+    assert "Checker ↔ Checker" not in text
+    assert "Worker ↔ Worker" not in text
+    assert "Patrol" not in text
+    assert "在线等待" not in text
