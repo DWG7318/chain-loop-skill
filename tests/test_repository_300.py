@@ -130,6 +130,7 @@ def test_ci_runs_repository_collection_and_pytest_on_windows_and_ubuntu() -> Non
 def test_required_assets_license_and_lf_policy_are_present() -> None:
     required = (
         "skills/chain-loop-skill/assets/CLK-RUN.template.md",
+        "skills/chain-loop-skill/assets/CLK-CHAIN-MAP.template.md",
         "skills/clk-design-fusion-contracts/assets/FUSION-INTERFACE-CONTRACT.template.md",
         "skills/clk-plan-parallel-isolation/assets/PARALLEL-ISOLATION-PLAN.template.md",
     )

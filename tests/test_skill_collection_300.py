@@ -459,6 +459,63 @@ def test_root_record_template_keeps_summary_links_without_copying_member_logs() 
     assert "成员详细记录只保存在对应SLK记录" in record
 
 
+def test_chain_map_is_the_single_supervisor_owned_structure_authority() -> None:
+    main = read_skill("chain-loop-skill")
+    plan = read_skill("clk-plan-run")
+    launch = read_skill("clk-launch-chains")
+    chain_map = (
+        SKILLS / "chain-loop-skill" / "assets" / "CLK-CHAIN-MAP.template.md"
+    )
+    assert "CLK-CHAIN-MAP.md" in main
+    assert "Supervisor创建和修改" in plan
+    assert "所有成员可以读取" in launch
+    assert chain_map.is_file()
+    text = chain_map.read_text(encoding="utf-8")
+    for marker in (
+        "Fixed latest SLK version",
+        "Construction Chains",
+        "Responsibility",
+        "SLK GO/CELL plan",
+        "Fusion contract",
+        "Worktree",
+        "Candidate state",
+        "Fusion dependency",
+        "Fusion Chain",
+    ):
+        assert marker in text
+    assert "Supervisor创建和修改" in text
+    assert "所有成员可以读取" in text
+
+
+def test_clk_uses_slk_as_the_only_model_authority_and_fusion_owns_integration() -> None:
+    plan = read_skill("clk-plan-run")
+    isolation = read_skill("clk-plan-parallel-isolation")
+    fusion = read_skill("clk-start-fusion")
+    contract = read_skill("clk-design-fusion-contracts")
+    active = "\n".join(read_skill(name) for name in EXPECTED_SKILLS)
+    assert "$slk-select-models" in plan
+    assert "$slk-select-models" in fusion
+    assert active.count("$slk-select-models") == 2
+    assert not (SKILLS / "clk-select-models").exists()
+    for marker in (
+        "每条施工Chain只产生自己的D2通过候选",
+        "不合并其他Chain",
+        "不作为默认集成主线",
+    ):
+        assert marker in isolation
+    for marker in (
+        "从本Run基线开始",
+        "新的独立worktree",
+        "代码重叠",
+        "实现冲突",
+        "接口适配",
+        "不把某条Chain当默认主线",
+        "不把机械Git merge当作融合完成",
+    ):
+        assert marker in fusion
+    assert "功能意图" in contract and "冲突敏感范围" in contract
+
+
 def test_active_skills_do_not_reintroduce_ambiguous_authority_or_fixed_runtime() -> None:
     forbidden = (
         "Chain Supervisor",
@@ -467,7 +524,6 @@ def test_active_skills_do_not_reintroduce_ambiguous_authority_or_fixed_runtime()
         "Fusion Checker定稿",
         "Checker ↔ Checker",
         "Worker ↔ Worker",
-        "`$slk-",
         "Supervisor派发CELL",
         "Supervisor执行D1",
         "gpt-",
@@ -480,6 +536,8 @@ def test_active_skills_do_not_reintroduce_ambiguous_authority_or_fixed_runtime()
         text = read_skill(name)
         for marker in forbidden:
             assert marker not in text, f"{name}: {marker}"
+        remaining = text.replace("$slk-select-models", "")
+        assert "`$slk-" not in remaining, name
 
 
 def test_clk_roles_end_their_turn_instead_of_waiting_on_or_watching_chains() -> None:
