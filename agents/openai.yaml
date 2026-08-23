@@ -1,4 +1,0 @@
-interface:
-  display_name: "Multi Small Loop (MSLK)"
-  short_description: "Dependency-ready parallel loops with oversight"
-  default_prompt: "MSLK is a migration-only historical identity; formal new Runs must use $chain-loop-skill (CLK). Never load, borrow, combine, or switch to SLK. Preserve visible peer roles, never subagents or a combined role. Compatibility evaluation uses gpt-5.6-terra+xhigh and rejects GPT 5.5 or lower; formal Luna/Sol exceptions require the canonical CLK MODEL_BINDING_LEDGER. Preserve the frozen roster evidence and migration records without starting new MSLK work."

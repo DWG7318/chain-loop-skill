@@ -118,3 +118,48 @@ def test_required_assets_license_and_lf_policy_are_present() -> None:
     for path in (ROOT / "skills").rglob("*"):
         if path.is_file():
             assert b"\r\n" not in path.read_bytes(), path
+
+
+def test_clk_2x_active_kernel_is_retired_after_300_replacement() -> None:
+    retired_paths = (
+        "SKILL.md",
+        "SPEC.md",
+        "FILE_HASHES.json",
+        "requirements-dev.txt",
+        "POST-MERGE-RENAME.md",
+        "chain-loop-skill",
+        "agents",
+        "contracts",
+        "evals",
+        "references",
+        "docs/specs",
+        "MIGRATION-2.0-TO-2.3.1.md",
+        "MIGRATION-2.3.1-TO-2.4.0.md",
+        "MIGRATION-2.4.0-TO-2.5.0.md",
+        "MIGRATION-2.5.0-TO-2.6.0.md",
+        "MIGRATION-MSLK-TO-CLK.md",
+    )
+    for relative in retired_paths:
+        target = ROOT / relative
+        if target.is_dir():
+            active = [
+                path
+                for path in target.rglob("*")
+                if path.is_file()
+                and "__pycache__" not in path.parts
+                and path.suffix != ".pyc"
+            ]
+            assert active == [], relative
+        else:
+            assert not target.exists(), relative
+
+    assert {path.name for path in (ROOT / "scripts").iterdir() if path.is_file()} == {
+        "quick_validate.py",
+        "validate_repository.py",
+    }
+    assert {path.name for path in (ROOT / "tests").iterdir() if path.is_file()} == {
+        "skill_testkit.py",
+        "test_repository_300.py",
+        "test_skill_collection_300.py",
+    }
+    assert {path.name for path in ROOT.glob("MIGRATION*.md")} == {"MIGRATION.md"}
