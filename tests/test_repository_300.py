@@ -142,6 +142,17 @@ def test_required_assets_license_and_lf_policy_are_present() -> None:
             assert b"\r\n" not in path.read_bytes(), path
 
 
+def test_release_text_inventory_is_utf8_and_lf_only() -> None:
+    text_suffixes = {".json", ".md", ".py", ".yaml", ".yml"}
+    for relative in release_paths():
+        path = ROOT / relative
+        if path.suffix.lower() not in text_suffixes:
+            continue
+        data = path.read_bytes()
+        data.decode("utf-8")
+        assert b"\r\n" not in data, relative
+
+
 def test_clk_2x_active_kernel_is_retired_after_300_replacement() -> None:
     retired_paths = (
         "SKILL.md",

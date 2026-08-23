@@ -40,7 +40,7 @@
     },
     {
       "path": "VALIDATION-REPORT.md",
-      "sha256": "80668bb1f1cd7e010f7f999dd3e1be744f15dc98e55e1c1b32d1e66c07ef763a"
+      "sha256": "1de4a45a0ac73df2555256c93b0952d7891cc537b496d44a05b4a216f4e28d40"
     },
     {
       "path": "VERSION",
@@ -48,7 +48,7 @@
     },
     {
       "path": "docs/superpowers/plans/2026-07-18-mslk-control-kernel-readiness-eval.md",
-      "sha256": "ed55767f3a9d0eebaf816dff0e055ebf036d558522761549205baddc9bd67d85"
+      "sha256": "7e3cc95f926ff20d700a4ba4b6cfe15f2de24490f0d844bc858a239f118e72c8"
     },
     {
       "path": "docs/superpowers/plans/2026-07-29-clk-2.3.1.md",
@@ -152,7 +152,7 @@
     },
     {
       "path": "tests/test_repository_300.py",
-      "sha256": "997fb188c41db8f447087db4ac32321abfb7eb6db05c6cf00debcd6a2770785a"
+      "sha256": "1d13a00e0ae255c707ba68cddcc4adab8f55277ec33c7a9bbbe8625790cd9e54"
     },
     {
       "path": "tests/test_skill_collection_300.py",
