@@ -7,11 +7,11 @@ description: Use when a medium or large engineering Run has two or more independ
 
 ## 方法身份
 
-CLK 面向中型或大型工程。一个 CLK 对应一个 Run：项目层使用 CLK，Chain 施工使用 SLK。
+CLK 是建立在 SLK Loop 之上的 Loop Engineering 的复合形态，面向中型或大型工程。一个 CLK 对应一个 Run：项目层使用 CLK，Chain 施工使用 SLK。
 
-CLK 把工作分成两条或以上前置 Chain。每条 Chain 有线性 GO 与 CELL、独立 Checker 和独立 Worker；所有前置 Chain 在同一施工周期同时推进，并共享一个 Supervisor。每条 Chain 按 SLK 完成 Worker D0、Checker D1 和共享 Supervisor D2。
+CLK 把工作分成两条或以上前置 Chain，每条前置 Chain 都是一个完整的 SLK Loop，有线性 GO 与 CELL、独立 Checker 和独立 Worker；所有前置 Chain 在同一施工周期同时推进，并共享一个 Supervisor，各自完成 Worker D0、Checker D1 和共享 Supervisor D2。
 
-全部必要 Chain 通过 D2 后，建立一条 Fusion Chain。Fusion Chain 仍按 SLK 工作，可以包含一个或多个 GO；它的 D2 是整个 CLK Run 的最终 D2。
+全部必要 Chain 通过 D2 后建立一条 Fusion Chain；Fusion Chain 也是一个完整的 SLK Loop，可以包含一个或多个 GO 并线性推进，它的 D2 是整个 CLK Run 的最终 D2。
 
 ## 使用关系
 
@@ -34,4 +34,4 @@ Supervisor 在项目根目录维护 `CLK-RUN-<RUN-ID>-RECORD.md`。每条前置 
 - 根据已冻结的真实输入启动 Fusion Chain：`$clk-start-fusion`
 - 完成最终 D2、记录、归档和 Owner 结论：`$clk-close-run`
 
-日常 CELL 施工、D0、D1、返工、通讯恢复、模型选择和成员恢复继续由 SLK 对应情境指导；任何角色在派发、交付或边界处理后结束当前活动，不使用`wait_threads`或读取其他成员施工状态，下一条真实消息重新激活。CLK 不重复定义。
+日常 CELL 施工、D0、D1、返工、通讯恢复、模型选择和成员恢复继续由 SLK 对应情境指导；消息只传输 Loop 工作和结果，成员完成当前 Loop 节点和必要交接后结束当前活动，接收回执不代表节点完成。成员不使用`wait_threads`或读取其他成员施工状态，下一条真实消息重新激活；CLK 不重复定义。

@@ -12,7 +12,7 @@ from skill_testkit import (
 
 
 def test_version_is_300() -> None:
-    assert (ROOT / "VERSION").read_text(encoding="utf-8").strip() == "3.0.1"
+    assert (ROOT / "VERSION").read_text(encoding="utf-8").strip() == "3.0.2"
 
 
 def test_collection_has_one_main_and_eight_children() -> None:
@@ -111,7 +111,7 @@ def test_active_collection_does_not_restore_the_legacy_clk_kernel() -> None:
 def test_collection_has_one_shared_supervisor_and_no_clk_role_expansion() -> None:
     text = read_skill("chain-loop-skill")
     assert "共享一个 Supervisor" in text
-    assert "每条 Chain" in text
+    assert "每条前置 Chain" in text
     assert "独立 Checker" in text
     assert "独立 Worker" in text
     assert "Chain Supervisor" not in text
@@ -487,6 +487,7 @@ def test_clk_roles_end_their_turn_instead_of_waiting_on_or_watching_chains() -> 
     grill = read_skill("clk-grill-supervisor")
     launch = read_skill("clk-launch-chains")
     complete = read_skill("clk-complete-chain")
+    fusion = read_skill("clk-start-fusion")
     active = "\n".join(read_skill(name) for name in EXPECTED_SKILLS)
 
     for stale in ("等待下一条真实事件", "在线等待", "持续观察"):
@@ -498,6 +499,12 @@ def test_clk_roles_end_their_turn_instead_of_waiting_on_or_watching_chains() -> 
     assert "下一条真实消息按需激活" in launch
     assert "不读取其他Chain施工状态" in complete
     assert "观察其他成员施工过程" in grill
+    assert "Loop Engineering 的复合形态" in main
+    assert "每条前置 Chain 都是一个完整的 SLK Loop" in main
+    assert "Fusion Chain 也是一个完整的 SLK Loop" in main
+    assert "消息只传输 Loop 工作和结果" in main
+    assert "每条Chain作为一个完整SLK Loop" in launch
+    assert "Fusion Chain 本身是一个完整的 SLK Loop" in fusion
 
 
 def test_clk_wait_clarification_does_not_add_skill_lines() -> None:

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.2
+
+- Defined CLK as the composite Loop Engineering form built from complete foreground SLK Loops and one complete Fusion SLK Loop.
+- Clarified that messages transport Loop work but do not define progress, without adding roles, controls, or Skill lines.
+
 ## 3.0.1
 
 - Clarified that every CLK and inherited SLK role ends its current activity after dispatch, delivery, or boundary work and resumes only through a real message.

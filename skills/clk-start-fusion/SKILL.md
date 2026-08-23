@@ -16,7 +16,7 @@ description: Use when all required construction Chains in an active Chain Loop S
 
 1. Supervisor核对每条必需Chain在CLK根记录中的冻结交接：commit或artifact、合同版本、端到端入口、数据身份、可执行检查及限制。
 2. 仅从这些真实输入定稿Fusion GO列表和初始CELL；一条Fusion Chain可以包含一个或多个线性GO。
-3. 进入`$small-loop-skill`，按SLK完成Fusion的CELL容量校准、模型选择、D0/D1/D2安排和成员交付准备。
+3. 进入`$small-loop-skill`；Fusion Chain 本身是一个完整的 SLK Loop，按SLK完成CELL容量校准、模型选择、D0/D1/D2安排和成员交付准备。
 4. 把定稿结果写入`SLK-RUN-<RUN-ID>-FUSION.md`，并在CLK根记录登记其输入集合和完成条件。
 
 ## 建立独立施工空间

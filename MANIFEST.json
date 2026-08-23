@@ -1,6 +1,6 @@
 {
   "name": "Chain Loop Skill Collection",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "skill_count": 9,
   "excludes": [
     "MANIFEST.json"
@@ -20,7 +20,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "bf707cf0293f4d70b2ad14340983783d94a58b2fae553aee2d4fb2fed83e6ae4"
+      "sha256": "5ec670d747040ebf123cf75f6c9ddc6847c11ac8d4167e86feae364604d27062"
     },
     {
       "path": "LICENSE",
@@ -32,19 +32,19 @@
     },
     {
       "path": "README.md",
-      "sha256": "b2c574145bb6251ae52ab3f652d56114b7d8c02a1ef48e5e2baf25f6591abaab"
+      "sha256": "7e7ffd645115bea72f318c36c064f4ea85e46d910d2838a8a966494009e81b1c"
     },
     {
       "path": "README.zh-CN.md",
-      "sha256": "5a98eb5ffd7a36d6a5e29f3b250ab27f0522df26a9c6e27ed233d6b7ee6010ad"
+      "sha256": "b299637267f42e97a07022ec94f7bd725af893418ee2643a33f8fbc3cf6b2f27"
     },
     {
       "path": "VALIDATION-REPORT.md",
-      "sha256": "b4c02e473753c0e559a85c7e7b3d0c63e17139acf529b364e83a5874016550a0"
+      "sha256": "dd6e3aaffb46871cdc2357a33acb507189ba366cb7767a05c9d6852d16d9025a"
     },
     {
       "path": "VERSION",
-      "sha256": "06e3fe4a7a1884d20d81cc7065ca8cfd4c394ec602c4d180ddc39bbd4f7da521"
+      "sha256": "3fc0bf8d7ddbfe77eb4074c0b03d6567d7874a25ea4144aadea6686fcd5f6feb"
     },
     {
       "path": "docs/superpowers/plans/2026-07-18-mslk-control-kernel-readiness-eval.md",
@@ -71,6 +71,10 @@
       "sha256": "3c34157e80ba1d21676fae474e8f81d608d2103f1cf627ae2c2e3bab6b7fc6db"
     },
     {
+      "path": "docs/superpowers/plans/2026-08-23-clk-loop-engineering-identity-plan.md",
+      "sha256": "a2bf1fe0410ca6b036c102726a8cfc1f1a0633ad0fff7323a6c82ec7542a6638"
+    },
+    {
       "path": "docs/superpowers/specs/2026-08-04-clk-2.5.0-worker-wake-patrol-progress-design.md",
       "sha256": "9def65253b1b724afc8e9d343c7afc7fa3825c33a0564f9f9dd70ff65bf2fa73"
     },
@@ -87,16 +91,20 @@
       "sha256": "9f7794ab5d8f2cc4bee819be3acd842f172c0544f562987484657ccd10e271d6"
     },
     {
+      "path": "docs/superpowers/specs/2026-08-23-clk-loop-engineering-identity-design.md",
+      "sha256": "850751d674616aac834ab3fda16248ab1197e490f6d42bda70b5742e9a208c58"
+    },
+    {
       "path": "scripts/quick_validate.py",
       "sha256": "7a03b0cb6ba94a47f093f18e4798b880b3b3ed90f8357bef354cd1ca79255814"
     },
     {
       "path": "scripts/validate_repository.py",
-      "sha256": "68a799081a451d82f15d074d28986560fe2e2f11daa617e9de81d76780bd8fe2"
+      "sha256": "b37995c838c80b726e5f7d95194ac70eecda6b87649cc7b5ac554c4393b2cd76"
     },
     {
       "path": "skills/chain-loop-skill/SKILL.md",
-      "sha256": "2b0c31bcc750f2269743f4004dfc2b569a57f4dcc3e3041f2eef390f3d882ac6"
+      "sha256": "e1aee850b7539e80b3570e3e4c02c3c524e9300a10cd1edf8beaf4f2c85850d1"
     },
     {
       "path": "skills/chain-loop-skill/agents/openai.yaml",
@@ -128,7 +136,7 @@
     },
     {
       "path": "skills/clk-launch-chains/SKILL.md",
-      "sha256": "397389995f2e13d83a2ef2fd59ef5456035ac86733ef2795ad4c0930391474f8"
+      "sha256": "1f612ab1084354f4eb0c21f208759f2807e808dd807edb7b2ccc8819cfa839a5"
     },
     {
       "path": "skills/clk-plan-parallel-isolation/SKILL.md",
@@ -144,7 +152,7 @@
     },
     {
       "path": "skills/clk-start-fusion/SKILL.md",
-      "sha256": "208ca4115d9fae82088021b7ee7ec89dfffe41c580f12a62861d0a2044353a75"
+      "sha256": "842ed6d07c02de94b20674e190a0900add6a4bb1b1991a4cf4ab3f34c8ddbf3e"
     },
     {
       "path": "tests/skill_testkit.py",
@@ -152,11 +160,11 @@
     },
     {
       "path": "tests/test_repository_300.py",
-      "sha256": "209b847e4ce102d29c25723570de3f5b0e34be8c26c7268a5b7740d13eab0a6d"
+      "sha256": "90abb55031ed8a481a60768f41f792f1bbe598b8360c9197a4247fc89989aaa9"
     },
     {
       "path": "tests/test_skill_collection_300.py",
-      "sha256": "04a38446d67dcc09d19e75b0391fd8d32084641a45bbdf88946f64b4dedfb736"
+      "sha256": "1b8017c60d5727c36c1a85ee21a7eef81a017d7394558e1cfaa4846285a544e7"
     }
   ]
 }
