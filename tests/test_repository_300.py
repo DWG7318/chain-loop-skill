@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -8,7 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_DIRS = {".git", ".codex", "__pycache__", ".pytest_cache"}
+EXCLUDED_DIRS = {".git", ".codex", ".worktrees", "__pycache__", ".pytest_cache"}
 
 
 def read(relative: str) -> str:
@@ -31,6 +32,27 @@ def release_paths() -> set[str]:
             continue
         values.add(relative.as_posix())
     return values
+
+
+def load_repository_validator():
+    path = ROOT / "scripts" / "validate_repository.py"
+    spec = importlib.util.spec_from_file_location("clk_validate_repository", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_release_inventory_ignores_environment_owned_worktrees(tmp_path: Path) -> None:
+    (tmp_path / "README.md").write_text("release\n", encoding="utf-8")
+    nested = tmp_path / ".worktrees" / "old-candidate" / "README.md"
+    nested.parent.mkdir(parents=True)
+    nested.write_text("external\n", encoding="utf-8")
+
+    module = load_repository_validator()
+    assert [path.as_posix() for path in module.release_files(tmp_path)] == [
+        "README.md"
+    ]
 
 
 def test_repository_validator_passes_for_the_300_collection() -> None:

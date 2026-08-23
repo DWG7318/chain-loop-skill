@@ -18,10 +18,10 @@ python scripts/quick_validate.py skills
 PASS: 9 Skill directories are valid.
 
 python -m pytest -q
-29 passed
+30 passed
 
 python -O -m pytest -q
-29 passed, 1 expected pytest assertion-optimization warning
+30 passed, 1 expected pytest assertion-optimization warning
 
 official Skill validator over every sibling directory
 9/9 valid Skill packages

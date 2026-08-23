@@ -23,7 +23,13 @@ EXPECTED_SKILLS = (
     "clk-start-fusion",
     "clk-close-run",
 )
-EXCLUDED_DIRS = {".git", ".codex", "__pycache__", ".pytest_cache"}
+EXCLUDED_DIRS = {
+    ".git",
+    ".codex",
+    ".worktrees",
+    "__pycache__",
+    ".pytest_cache",
+}
 EXCLUDED_FILES = {"MANIFEST.json"}
 
 
