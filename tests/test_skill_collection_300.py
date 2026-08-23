@@ -405,3 +405,78 @@ def test_final_fusion_d2_is_the_single_clk_run_closure() -> None:
     ):
         assert marker in text
     assert "更高检验层" not in text
+
+
+def test_cross_skill_order_matches_the_approved_clk_graph() -> None:
+    plan = read_skill("clk-plan-run")
+    grill = read_skill("clk-grill-supervisor")
+    launch = read_skill("clk-launch-chains")
+    complete = read_skill("clk-complete-chain")
+    fusion = read_skill("clk-start-fusion")
+    close = read_skill("clk-close-run")
+
+    assert plan.index("原对话 ↔ Supervisor") < plan.index("退出工程工作")
+    assert grill.index("$chain-loop-skill") < grill.index("$small-loop-skill")
+    assert grill.index("SLK Supervisor Grill") < grill.index("返回 CLK")
+
+    ready = launch.index("全部 Chain成员、施工空间、合同和通讯准备完成后")
+    for route in ("Supervisor ↔ Checker", "Checker ↔ Worker", "Supervisor ↔ Worker"):
+        assert launch.index(route) < ready
+    assert launch.index("准备完成后") < launch.index("同时启动")
+
+    assert "SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md" in launch
+    assert "SLK-RUN-<RUN-ID>-FUSION.md" in fusion
+    assert "不向Owner报告中间完工" in complete
+    assert fusion.index("定稿Fusion GO") < fusion.index("Supervisor 创建Fusion Checker")
+    assert close.index("Owner") < close.index("不自动建立或启动下一个CLK Run")
+
+
+def test_root_record_template_keeps_summary_links_without_copying_member_logs() -> None:
+    main = read_skill("chain-loop-skill")
+    record = (
+        SKILLS / "chain-loop-skill" / "assets" / "CLK-RUN.template.md"
+    ).read_text(encoding="utf-8")
+    for marker in (
+        "CLK-RUN-<RUN-ID>-RECORD.md",
+        "SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md",
+        "SLK-RUN-<RUN-ID>-FUSION.md",
+    ):
+        assert marker in main
+        assert marker in record
+    for marker in (
+        "Owner确认",
+        "共享Supervisor",
+        "同一施工周期",
+        "合同版本",
+        "临时隔离",
+        "Chain D2",
+        "冻结交接",
+        "错误、返工与豁免",
+        "归档状态",
+        "Owner结论",
+    ):
+        assert marker in record
+    assert "成员详细记录只保存在对应SLK记录" in record
+
+
+def test_active_skills_do_not_reintroduce_ambiguous_authority_or_fixed_runtime() -> None:
+    forbidden = (
+        "Chain Supervisor",
+        "Checker读取CLK",
+        "Worker读取CLK",
+        "Fusion Checker定稿",
+        "Checker ↔ Checker",
+        "Worker ↔ Worker",
+        "`$slk-",
+        "Supervisor派发CELL",
+        "Supervisor执行D1",
+        "gpt-",
+        "claude-",
+        "gemini-",
+        "Pin",
+        "runtime kernel",
+    )
+    for name in EXPECTED_SKILLS:
+        text = read_skill(name)
+        for marker in forbidden:
+            assert marker not in text, f"{name}: {marker}"
