@@ -71,6 +71,10 @@
       "sha256": "3c34157e80ba1d21676fae474e8f81d608d2103f1cf627ae2c2e3bab6b7fc6db"
     },
     {
+      "path": "docs/superpowers/plans/2026-08-23-clk-3.0.3-chain-map-fusion-alignment.md",
+      "sha256": "6cc3cfb033ec277b3dba4985ed1cf76de9d7afc1ec435e9881fd82a9411ed487"
+    },
+    {
       "path": "docs/superpowers/plans/2026-08-23-clk-loop-engineering-identity-plan.md",
       "sha256": "a2bf1fe0410ca6b036c102726a8cfc1f1a0633ad0fff7323a6c82ec7542a6638"
     },
