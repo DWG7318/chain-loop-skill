@@ -10,7 +10,7 @@ from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = ROOT / "skills"
-VERSION = "3.0.2"
+VERSION = "3.0.3"
 COLLECTION_NAME = "Chain Loop Skill Collection"
 EXPECTED_SKILLS = (
     "chain-loop-skill",
@@ -109,6 +109,7 @@ def validate(root: Path) -> list[str]:
         "VALIDATION-REPORT.md",
         ".github/workflows/validate.yml",
         "skills/chain-loop-skill/assets/CLK-RUN.template.md",
+        "skills/chain-loop-skill/assets/CLK-CHAIN-MAP.template.md",
         "skills/clk-design-fusion-contracts/assets/FUSION-INTERFACE-CONTRACT.template.md",
         "skills/clk-plan-parallel-isolation/assets/PARALLEL-ISOLATION-PLAN.template.md",
     )

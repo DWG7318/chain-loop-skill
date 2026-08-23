@@ -1,11 +1,11 @@
-# CLK 3.0.2 Validation Report
+# CLK 3.0.3 Validation Report
 
 ## Candidate
 
 - Product: Chain Loop Skill Collection
-- Version: 3.0.2
-- Branch: `design/clk-3.0.2-loop-engineering`
-- Local validation date: 2026-08-23
+- Version: 3.0.3
+- Branch: `feature/clk-3.0.3-chain-map-fusion`
+- Local validation date: 2026-08-24
 - Local platform: Windows, Python 3.14
 
 ## Fresh local verification
@@ -18,10 +18,10 @@ python scripts/quick_validate.py skills
 PASS: 9 Skill directories are valid.
 
 python -m pytest -q
-33 passed
+35 passed
 
 python -O -m pytest -q
-33 passed, 1 expected pytest assertion-optimization warning
+35 passed, 1 expected pytest assertion-optimization warning
 
 official Skill validator over every sibling directory
 9/9 valid Skill packages
@@ -32,14 +32,9 @@ PASS
 
 The repository validator confirmed exact Manifest path and SHA-256 coverage, excluding only `MANIFEST.json`. The workflow definition runs repository validation, collection validation, and pytest on both `ubuntu-latest` and `windows-latest`; no remote CI run is claimed by this candidate report.
 
-## Temporary installation verification
+## Installation boundary
 
-- External root: `D:\LCcoding\.codex\.tmp\clk-3.0.2-loop-engineering-install-20260823-a`
-- Installed shape: 9 sibling Skill directories, 13 files
-- Source/copy byte mismatches: 0
-- Main-to-child route count mismatches: 0
-- Copied collection quick validation: PASS, 9/9
-- Global installed CLK modified: no
+The 3.0.3 candidate keeps the nine-Skill collection and adds one Chain-map asset. Global installation and remote publication are not part of local candidate verification.
 
 ## Skill line and byte review
 
@@ -64,6 +59,8 @@ The main Skill is below its 70-line target. Every child is below the 90-line dia
 - one shared Supervisor and independent Checker/Worker pairs;
 - SLK-only execution inside every Chain;
 - complete fusion contracts, temporary physical isolation, same-cycle launch, isolated Chain D2, frozen handoffs, and final Fusion closure;
+- one Supervisor-owned `CLK-CHAIN-MAP.md`, one fixed latest-SLK baseline, and `$slk-select-models` as the only model authority;
+- independent construction candidates with final overlap/conflict/interface integration owned by Fusion's independent worktree;
 - no active 2.x control kernel, runtime state, model ledger, patrol, Stage/Level, or additional verification role.
 
 ## Publication state

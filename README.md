@@ -1,6 +1,6 @@
 # Chain Loop Skill (CLK)
 
-Current version: **3.0.2**
+Current version: **3.0.3**
 
 CLK is the composite Loop Engineering form for one medium or large Run, built from complete SLK Loops:
 
@@ -16,6 +16,7 @@ Each construction Chain is a complete SLK Loop with a linear GO/CELL path and it
 - The originating conversation plans the Run, hands it to a new Supervisor, and then exits engineering work.
 - The shared Supervisor understands CLK and SLK, coordinates the Chains, performs each Chain D2, and starts and closes Fusion.
 - Each Checker and Worker follows SLK. CLK does not add role types or replace SLK's D0/D1/D2, rework, communication, records, or model guidance.
+- One fixed latest-SLK baseline applies to the whole Run; `$slk-select-models` is the only role-model selection authority.
 
 CLK is the composite orchestration Loop; SLK remains the complete execution Loop inside every construction Chain and the Fusion Chain.
 
@@ -27,12 +28,12 @@ CLK is the composite orchestration Loop; SLK remains the complete execution Loop
 4. Create every visible Checker/Worker pair and test Supervisor ↔ Checker, Checker ↔ Worker, and the emergency Supervisor ↔ Worker route.
 5. Start all construction Chains together.
 6. Perform an isolated D2 for each Chain. A failed Chain returns only to its own Checker/Worker loop; other independent Chains continue.
-7. Freeze every passed handoff, then plan and start one Fusion SLK Chain with one or more linear GOs.
+7. Freeze every passed handoff, then plan and start one Fusion SLK Chain in an independent integration worktree; Fusion owns code overlap, conflicts, and interface adaptation.
 8. Use the Fusion D2 as the final CLK Run D2, archive the completed member conversations, and send the Owner one concise conclusion.
 
 ## Skill collection
 
-CLK 3.0.2 is distributed as 9 sibling Skill directories:
+CLK 3.0.3 is distributed as 9 sibling Skill directories:
 
 | Skill | Purpose |
 | --- | --- |
@@ -50,6 +51,7 @@ Install or copy the 9 directories together so the main Skill can route to its ch
 
 ## Records
 
+- Structure authority: `CLK-CHAIN-MAP.md`
 - CLK summary: `CLK-RUN-<RUN-ID>-RECORD.md`
 - Construction Chain: `SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md`
 - Fusion Chain: `SLK-RUN-<RUN-ID>-FUSION.md`

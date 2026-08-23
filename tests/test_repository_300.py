@@ -73,7 +73,7 @@ def test_manifest_exactly_covers_repository_bytes_except_itself() -> None:
     listed = {item["path"]: item["sha256"] for item in manifest["files"]}
     assert manifest == {
         "name": "Chain Loop Skill Collection",
-        "version": "3.0.2",
+        "version": "3.0.3",
         "skill_count": 9,
         "excludes": ["MANIFEST.json"],
         "files": manifest["files"],
@@ -87,7 +87,7 @@ def test_readmes_explain_the_clk_topology_and_collection_shape() -> None:
     english = read("README.md")
     chinese = read("README.zh-CN.md")
     for text in (english, chinese):
-        assert "3.0.2" in text
+        assert "3.0.3" in text
         assert "9" in text
         assert "skills/chain-loop-skill/SKILL.md" in text
         assert "Supervisor" in text
@@ -96,12 +96,16 @@ def test_readmes_explain_the_clk_topology_and_collection_shape() -> None:
         assert "Fusion" in text
         assert "Owner" in text
         assert "SLK" in text
+        assert "CLK-CHAIN-MAP.md" in text
+        assert "$slk-select-models" in text
     assert "2+ concurrent SLK Loops" in english
     assert "complete fusion interface contracts" in english
     assert "temporary physical isolation" in english
+    assert "independent integration worktree" in english
     assert "两条或以上并行的 SLK Loop" in chinese
     assert "完整融合接口合同" in chinese
     assert "临时物理隔离" in chinese
+    assert "独立集成worktree" in chinese
 
 
 def test_migration_changelog_and_validation_report_state_verified_boundaries() -> None:
@@ -110,7 +114,7 @@ def test_migration_changelog_and_validation_report_state_verified_boundaries() -
     report = read("VALIDATION-REPORT.md")
     assert "2.6.0" in migration and "3.0.0" in migration
     assert "不保留第二套活跃内核" in migration
-    assert "## 3.0.2" in changelog and "## 3.0.1" in changelog and "## 3.0.0" in changelog
+    assert "## 3.0.3" in changelog and "## 3.0.2" in changelog and "## 3.0.1" in changelog and "## 3.0.0" in changelog
     assert "remote release" in report.lower()
     assert "pending" in report.lower()
     assert "global installation" in report.lower()

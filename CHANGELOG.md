@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.3
+
+- Added `CLK-CHAIN-MAP.md` as the sole Supervisor-owned Chain/Fusion structure authority.
+- Bound CLK role choices to `$slk-select-models` and one fixed latest-SLK baseline per Run.
+- Clarified that isolated construction Chains deliver candidates while Fusion owns final code overlap, conflict, and interface integration in its own worktree.
+
 ## 3.0.2
 
 - Defined CLK as the composite Loop Engineering form built from complete foreground SLK Loops and one complete Fusion SLK Loop.

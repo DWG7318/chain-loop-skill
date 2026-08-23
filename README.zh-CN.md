@@ -1,6 +1,6 @@
 # Chain Loop Skill（CLK）
 
-当前版本：**3.0.2**
+当前版本：**3.0.3**
 
 CLK 是建立在完整 SLK Loop 之上的 Loop Engineering 复合形态，面向中型或大型工程，把一个Run组织为：
 
@@ -16,6 +16,7 @@ CLK 是建立在完整 SLK Loop 之上的 Loop Engineering 复合形态，面向
 - 原对话负责策划Run、创建新Supervisor并完成交接，随后退出具体工程工作。
 - 共享Supervisor理解CLK与SLK，协调各Chain，完成各Chain D2，并负责启动和收口Fusion。
 - Checker与Worker只按SLK施工。CLK不增加新角色，也不重复定义SLK的D0/D1/D2、返工、通讯、记录和模型指导。
+- 整个Run固定使用同一个最新SLK基线；`$slk-select-models`是唯一的角色模型选择权威。
 
 CLK负责复合Loop编排；每条施工Chain和Fusion Chain本身都是完整的SLK Loop。
 
@@ -27,12 +28,12 @@ CLK负责复合Loop编排；每条施工Chain和Fusion Chain本身都是完整�
 4. 创建全部可见Checker/Worker成员组，测试Supervisor ↔ Checker、Checker ↔ Worker和应急Supervisor ↔ Worker路线。
 5. 所有施工Chain在同一施工周期一起开工。
 6. 每条Chain单独接受隔离D2。失败只回到所属Checker/Worker返工，其他独立Chain继续。
-7. 冻结全部通过的交接，再规划并启动一条可以包含多个线性GO的Fusion SLK Chain。
+7. 冻结全部通过的交接，再在独立集成worktree中启动一条可以包含多个线性GO的Fusion SLK Chain，由Fusion负责代码重叠、冲突和接口适配。
 8. Fusion D2直接作为CLK Run最终D2；归档成员对话，并向Owner发送一个简洁结论。
 
 ## Skill集合
 
-CLK 3.0.2由9个并列Skill目录组成：
+CLK 3.0.3由9个并列Skill目录组成：
 
 | Skill | 用途 |
 | --- | --- |
@@ -50,6 +51,7 @@ CLK 3.0.2由9个并列Skill目录组成：
 
 ## 记录
 
+- 结构权威：`CLK-CHAIN-MAP.md`
 - CLK汇总：`CLK-RUN-<RUN-ID>-RECORD.md`
 - 施工Chain：`SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md`
 - Fusion Chain：`SLK-RUN-<RUN-ID>-FUSION.md`

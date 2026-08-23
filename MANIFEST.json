@@ -1,6 +1,6 @@
 {
   "name": "Chain Loop Skill Collection",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "skill_count": 9,
   "excludes": [
     "MANIFEST.json"
@@ -20,7 +20,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "5ec670d747040ebf123cf75f6c9ddc6847c11ac8d4167e86feae364604d27062"
+      "sha256": "a0d859a362b4e86eaac0a9a7c1fce104092c5f072f4dbe2ffc0c2bdb4d1d4ede"
     },
     {
       "path": "LICENSE",
@@ -28,23 +28,23 @@
     },
     {
       "path": "MIGRATION.md",
-      "sha256": "cd9e5a71110fe8a2f3088579bb2912a4c8bcf24a575e859084ba83f260893265"
+      "sha256": "13fe77e066a8aad9a86a021ef8ccb25995765237dc6cf1c9c06d65f088bd8633"
     },
     {
       "path": "README.md",
-      "sha256": "7e7ffd645115bea72f318c36c064f4ea85e46d910d2838a8a966494009e81b1c"
+      "sha256": "c6c0de2ffb8ed96ba614b1d75c454a06adc19aa709fdc4e092b2fc16269328fe"
     },
     {
       "path": "README.zh-CN.md",
-      "sha256": "b299637267f42e97a07022ec94f7bd725af893418ee2643a33f8fbc3cf6b2f27"
+      "sha256": "533ff072f45e12830dfc67ae33b0744f8c668dd770f7b679c6c3260b2b25e295"
     },
     {
       "path": "VALIDATION-REPORT.md",
-      "sha256": "dd6e3aaffb46871cdc2357a33acb507189ba366cb7767a05c9d6852d16d9025a"
+      "sha256": "ec8dd0d34e263f6e47d5f60bf8129859a6d8337f267afaa801f9900cb75a0783"
     },
     {
       "path": "VERSION",
-      "sha256": "3fc0bf8d7ddbfe77eb4074c0b03d6567d7874a25ea4144aadea6686fcd5f6feb"
+      "sha256": "db65b7b653f7c33a2c1f9fd381f5fbe089a389f063567831785baf4b2e1497e9"
     },
     {
       "path": "docs/superpowers/plans/2026-07-18-mslk-control-kernel-readiness-eval.md",
@@ -104,19 +104,23 @@
     },
     {
       "path": "scripts/validate_repository.py",
-      "sha256": "b37995c838c80b726e5f7d95194ac70eecda6b87649cc7b5ac554c4393b2cd76"
+      "sha256": "4efcd332d944e3d628764272610621d0fddedb7bb84e01565fce1f18bcdc0f17"
     },
     {
       "path": "skills/chain-loop-skill/SKILL.md",
-      "sha256": "e1aee850b7539e80b3570e3e4c02c3c524e9300a10cd1edf8beaf4f2c85850d1"
+      "sha256": "64db96d7f11674b03d6575c850131314f328d5335b26d40b257379d4b85dcce6"
     },
     {
       "path": "skills/chain-loop-skill/agents/openai.yaml",
       "sha256": "f97b38b1a59482fbf806c4b45106eed7a0fd26138dc932e103ec0e65abcaefba"
     },
     {
+      "path": "skills/chain-loop-skill/assets/CLK-CHAIN-MAP.template.md",
+      "sha256": "ea6df3e36915f12329256a73719fb9e44503d545a27dedc1977163def707d403"
+    },
+    {
       "path": "skills/chain-loop-skill/assets/CLK-RUN.template.md",
-      "sha256": "e8ff855f0e5c2e7bfe0b0f7aaf3ea5e4c060d1dece0340601e1f7ba16fa3b936"
+      "sha256": "a6d6cd2f1f46dfec9741cc818a93243a23fc44da1705493d7a0c4ac9795bad4b"
     },
     {
       "path": "skills/clk-close-run/SKILL.md",
@@ -128,11 +132,11 @@
     },
     {
       "path": "skills/clk-design-fusion-contracts/SKILL.md",
-      "sha256": "4bc8c5d7aa4a016e74dd4ebe8dcb9730c2122f60a2ebe2eba35dd26021c42dc1"
+      "sha256": "09712fea3c9cfe1802254a2df1b8a1ca923baf991ccf8b7f029f6c971fdd70ed"
     },
     {
       "path": "skills/clk-design-fusion-contracts/assets/FUSION-INTERFACE-CONTRACT.template.md",
-      "sha256": "8c0ea1f431bdb6dcc0d64844b36abd60b6663ed23ac55834e72df3b6535c5fa8"
+      "sha256": "cc784336831cb3d26b91a371d5661a0b9015590a8f2938bfdfb5f1cab65b3353"
     },
     {
       "path": "skills/clk-grill-supervisor/SKILL.md",
@@ -140,11 +144,11 @@
     },
     {
       "path": "skills/clk-launch-chains/SKILL.md",
-      "sha256": "1f612ab1084354f4eb0c21f208759f2807e808dd807edb7b2ccc8819cfa839a5"
+      "sha256": "99dd124bdce7e4006c5431d7b7b8e4f5b131e02ceeda1fbce5046bcfd1eca06a"
     },
     {
       "path": "skills/clk-plan-parallel-isolation/SKILL.md",
-      "sha256": "fa28dece983e1b5dd077a23565a9dbf27b8d4324744e0fc2786c8f9608707365"
+      "sha256": "b7aa8cf46af100c4cfb469312bab50be5f78085ab7617c8372bae9c7f7b49c12"
     },
     {
       "path": "skills/clk-plan-parallel-isolation/assets/PARALLEL-ISOLATION-PLAN.template.md",
@@ -152,11 +156,11 @@
     },
     {
       "path": "skills/clk-plan-run/SKILL.md",
-      "sha256": "dc8836bc369f4430507bb5119fff4a5abf9d9c98cf1b12a7975426d72999f3de"
+      "sha256": "7690c4211c367c46054d11779d3c5071540bce3c5ee74e9933947b39bbcd972f"
     },
     {
       "path": "skills/clk-start-fusion/SKILL.md",
-      "sha256": "842ed6d07c02de94b20674e190a0900add6a4bb1b1991a4cf4ab3f34c8ddbf3e"
+      "sha256": "7e46b67770fc38e5c6dded3cca473c57b3860840978256999678d0cd1f2f8fc0"
     },
     {
       "path": "tests/skill_testkit.py",
@@ -164,11 +168,11 @@
     },
     {
       "path": "tests/test_repository_300.py",
-      "sha256": "90abb55031ed8a481a60768f41f792f1bbe598b8360c9197a4247fc89989aaa9"
+      "sha256": "ebe3045f0c4df4276157feff6ab6daf37c27525542d7044c3243e48dfddb4f12"
     },
     {
       "path": "tests/test_skill_collection_300.py",
-      "sha256": "1b8017c60d5727c36c1a85ee21a7eef81a017d7394558e1cfaa4846285a544e7"
+      "sha256": "6f18591537d5495c2b4f6689f6b38934ab1ae5e0e4053a5ecc6ff583f04519d4"
     }
   ]
 }

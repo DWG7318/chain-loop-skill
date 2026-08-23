@@ -1,5 +1,9 @@
 # CLK 2.6.0 to 3.0.0
 
+## 3.0.3 clarification
+
+New Runs create `CLK-CHAIN-MAP.md` as the sole Supervisor-owned Chain/Fusion structure authority, bind one latest-SLK baseline, use `$slk-select-models` for every role choice, and leave cross-Chain code integration to Fusion's independent worktree. Existing 3.0.0-3.0.2 records remain history and are not rewritten.
+
 CLK 3.0.0 is a method reconstruction, not an incremental expansion of the 2.6.0 control kernel.
 
 ## Architecture boundary
