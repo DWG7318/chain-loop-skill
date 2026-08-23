@@ -304,3 +304,50 @@ def test_launch_waits_for_every_visible_pair_then_starts_all_chains_together() -
     assert "Worker ↔ Worker" not in text
     assert "Patrol" not in text
     assert "在线等待" not in text
+
+
+def test_complete_chain_preserves_isolated_slk_d2_input_order() -> None:
+    text = read_skill("clk-complete-chain")
+    for marker in (
+        "$small-loop-skill",
+        "干净的初始 D2 包",
+        "Chain目标",
+        "GO结果",
+        "冻结候选身份",
+        "端到端入口",
+        "融合接口合同",
+        "可执行合同检查",
+        "客观环境事实",
+        "独立 D2 判断",
+        "D0",
+        "D1",
+        "返工",
+        "豁免",
+    ):
+        assert marker in text
+    assert text.index("独立 D2 判断") < text.index("D0")
+    assert text.index("独立 D2 判断") < text.index("D1")
+    assert text.index("独立 D2 判断") < text.index("返工")
+
+
+def test_complete_chain_routes_failure_locally_and_freezes_a_passed_handoff() -> None:
+    text = read_skill("clk-complete-chain")
+    for marker in (
+        "GO组合",
+        "合同符合性",
+        "可移植性",
+        "Checker → Worker → Checker",
+        "其他独立Chain继续",
+        "D2 PASS",
+        "commit",
+        "artifact",
+        "合同版本",
+        "冻结",
+        "先归档Worker",
+        "再归档Checker",
+        "保留共享Supervisor",
+        "CLK-RUN-<RUN-ID>-RECORD.md",
+        "Fusion输入",
+        "不向Owner报告中间完工",
+    ):
+        assert marker in text
