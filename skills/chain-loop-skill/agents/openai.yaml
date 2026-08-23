@@ -1,0 +1,4 @@
+interface:
+  display_name: "Chain Loop Skill (CLK)"
+  short_description: "Concurrent SLK Chains followed by one Fusion SLK Chain"
+  default_prompt: "Use $chain-loop-skill to plan and orchestrate one CLK Run through concurrent SLK construction Chains and one final Fusion Chain."

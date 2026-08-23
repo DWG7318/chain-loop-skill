@@ -110,7 +110,7 @@ def test_active_collection_does_not_restore_the_legacy_clk_kernel() -> None:
 
 def test_collection_has_one_shared_supervisor_and_no_clk_role_expansion() -> None:
     text = read_skill("chain-loop-skill")
-    assert "一个共享 Supervisor" in text
+    assert "共享一个 Supervisor" in text
     assert "每条 Chain" in text
     assert "独立 Checker" in text
     assert "独立 Worker" in text
