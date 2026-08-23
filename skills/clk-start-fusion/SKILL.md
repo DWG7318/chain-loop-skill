@@ -16,12 +16,12 @@ description: Use when all required construction Chains in an active Chain Loop S
 
 1. Supervisor核对每条必需Chain在CLK根记录中的冻结交接：commit或artifact、合同版本、端到端入口、数据身份、可执行检查及限制。
 2. 仅从这些真实输入定稿Fusion GO列表和初始CELL；一条Fusion Chain可以包含一个或多个线性GO。
-3. 进入`$small-loop-skill`；Fusion Chain 本身是一个完整的 SLK Loop，按SLK完成CELL容量校准、模型选择、D0/D1/D2安排和成员交付准备。
+3. 进入`$small-loop-skill`并调用`$slk-select-models`；Fusion Chain 本身是一个完整的 SLK Loop，使用本Run固定的最新SLK版本完成CELL校准、模型选择、D0/D1/D2安排和成员交付准备，Owner指定仍有效。
 4. 把定稿结果写入`SLK-RUN-<RUN-ID>-FUSION.md`，并在CLK根记录登记其输入集合和完成条件。
 
 ## 建立独立施工空间
 
-为Fusion创建新的集成worktree和新分支。把前置Chain的冻结成果、正式合同及必要数据装入该空间，再为完整系统确定实际运行配置；前置Chain的临时端口、缓存、进程和可变施工残留不作为输入。
+Fusion在新的集成worktree和新分支中从本Run基线开始；这是新的独立worktree，装入每条施工Chain的D2通过候选、正式合同及必要数据。Fusion对代码重叠、实现冲突和接口适配承担最终集成责任，理解各候选的功能意图并构造完整系统；不把某条Chain当默认主线，也不把机械Git merge当作融合完成。前置Chain的临时端口、缓存、进程和可变施工残留不作为输入。
 
 ## 建立成员并测试通讯
 

@@ -22,7 +22,7 @@ description: Use when an active Chain Loop Skill (CLK) Run needs complete integr
 - 错误、异常、失败返回和恢复语义；
 - 权限、安全、敏感数据、持久化、共享与一致性边界；
 - 版本与兼容策略，以及性能、资源和并发预期；
-- Fusion Chain如何接入，最终交付物和Chain D2验收结果；
+- Fusion Chain如何接入候选身份、输出接口、功能意图与冲突敏感范围，以及最终交付物和Chain D2验收结果；
 - schema、夹具、模拟调用端、预期结果等可执行合同检查。
 
 可以从`assets/FUSION-INTERFACE-CONTRACT.template.md`建立项目合同。合同描述正式产品身份，不写入临时端口、路径、数据库名或测试凭据。
