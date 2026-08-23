@@ -129,3 +129,127 @@ def test_topology_is_concurrent_construction_then_one_fusion_chain() -> None:
     assert "一个或多个 GO" in text
     assert "Stage" not in text
     assert "Level" not in text
+
+
+def test_plan_run_builds_the_owner_confirmed_concurrent_run_before_handoff() -> None:
+    text = read_skill("clk-plan-run")
+    for marker in (
+        "更新",
+        "CLK",
+        "SLK",
+        "Run",
+        "两条或以上",
+        "Chain",
+        "同一施工周期",
+        "GO",
+        "初始 CELL",
+        "模型",
+        "电脑",
+        "共享负载",
+        "余量",
+        "$small-loop-skill",
+        "$clk-design-fusion-contracts",
+        "$clk-plan-parallel-isolation",
+        "Fusion Chain",
+        "Owner",
+        "新的 Supervisor",
+        "原对话 ↔ Supervisor",
+        "退出工程工作",
+    ):
+        assert marker in text
+    assert text.index("Owner") < text.index("新的 Supervisor")
+
+
+def test_fusion_contract_skill_and_asset_are_complete_and_executable() -> None:
+    text = read_skill("clk-design-fusion-contracts")
+    for marker in (
+        "能力",
+        "API",
+        "函数",
+        "MCP",
+        "事件",
+        "数据结构",
+        "样例",
+        "状态",
+        "生命周期",
+        "错误",
+        "权限",
+        "安全",
+        "持久化",
+        "一致性",
+        "版本",
+        "兼容",
+        "性能",
+        "并发",
+        "Fusion Chain",
+        "可执行",
+        "D2",
+        "Supervisor",
+        "Owner",
+        "修订",
+    ):
+        assert marker in text
+    asset = (
+        SKILLS
+        / "clk-design-fusion-contracts"
+        / "assets"
+        / "FUSION-INTERFACE-CONTRACT.template.md"
+    )
+    assert asset.is_file()
+    asset_text = asset.read_text(encoding="utf-8")
+    for heading in (
+        "# Fusion Interface Contract",
+        "## 身份与版本",
+        "## 能力与调用",
+        "## 数据、状态与错误",
+        "## 权限、安全与持久化",
+        "## 版本、性能与并发",
+        "## 可执行合同检查",
+        "## Fusion 接入与 Chain D2",
+        "## 修订历史",
+    ):
+        assert heading in asset_text
+
+
+def test_parallel_isolation_is_temporary_and_does_not_change_the_contract() -> None:
+    text = read_skill("clk-plan-parallel-isolation")
+    for marker in (
+        "逻辑合同保持稳定，物理施工隔离临时注入",
+        "worktree",
+        "分支",
+        "构建",
+        "数据库",
+        "schema",
+        "端口",
+        "服务",
+        "进程",
+        "缓存",
+        "日志",
+        "浏览器",
+        "环境变量",
+        "凭据",
+        "资源",
+        "配置",
+        "D2",
+        "Fusion Chain",
+        "临时",
+    ):
+        assert marker in text
+    asset = (
+        SKILLS
+        / "clk-plan-parallel-isolation"
+        / "assets"
+        / "PARALLEL-ISOLATION-PLAN.template.md"
+    )
+    assert asset.is_file()
+    asset_text = asset.read_text(encoding="utf-8")
+    for marker in (
+        "Chain ID",
+        "正式身份",
+        "临时绑定",
+        "注入位置",
+        "只读共享",
+        "清理",
+        "Fusion 交接",
+    ):
+        assert marker in asset_text
