@@ -12,7 +12,7 @@ from skill_testkit import (
 
 
 def test_version_is_300() -> None:
-    assert (ROOT / "VERSION").read_text(encoding="utf-8").strip() == "3.0.0"
+    assert (ROOT / "VERSION").read_text(encoding="utf-8").strip() == "3.0.1"
 
 
 def test_collection_has_one_main_and_eight_children() -> None:
@@ -480,3 +480,37 @@ def test_active_skills_do_not_reintroduce_ambiguous_authority_or_fixed_runtime()
         text = read_skill(name)
         for marker in forbidden:
             assert marker not in text, f"{name}: {marker}"
+
+
+def test_clk_roles_end_their_turn_instead_of_waiting_on_or_watching_chains() -> None:
+    main = read_skill("chain-loop-skill")
+    grill = read_skill("clk-grill-supervisor")
+    launch = read_skill("clk-launch-chains")
+    complete = read_skill("clk-complete-chain")
+    active = "\n".join(read_skill(name) for name in EXPECTED_SKILLS)
+
+    for stale in ("等待下一条真实事件", "在线等待", "持续观察"):
+        assert stale not in active
+    for text in (main, launch, complete):
+        assert "结束当前活动" in text
+        assert "不使用`wait_threads`" in text
+    assert "真实消息重新激活" in main
+    assert "下一条真实消息按需激活" in launch
+    assert "不读取其他Chain施工状态" in complete
+    assert "观察其他成员施工过程" in grill
+
+
+def test_clk_wait_clarification_does_not_add_skill_lines() -> None:
+    expected = {
+        "chain-loop-skill": 37,
+        "clk-close-run": 41,
+        "clk-complete-chain": 49,
+        "clk-design-fusion-contracts": 40,
+        "clk-grill-supervisor": 37,
+        "clk-launch-chains": 43,
+        "clk-plan-parallel-isolation": 36,
+        "clk-plan-run": 30,
+        "clk-start-fusion": 42,
+    }
+    actual = {name: len(read_skill(name).splitlines()) for name in EXPECTED_SKILLS}
+    assert actual == expected

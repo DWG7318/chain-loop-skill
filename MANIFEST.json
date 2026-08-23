@@ -1,6 +1,6 @@
 {
   "name": "Chain Loop Skill Collection",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "skill_count": 9,
   "excludes": [
     "MANIFEST.json"
@@ -20,7 +20,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "d8da0e5d965de0468993ad274411b8a1d456d7cd73e5376e8f8322415668c8cd"
+      "sha256": "bf707cf0293f4d70b2ad14340983783d94a58b2fae553aee2d4fb2fed83e6ae4"
     },
     {
       "path": "LICENSE",
@@ -32,19 +32,19 @@
     },
     {
       "path": "README.md",
-      "sha256": "81c6f2fabf86963a4c965b452a01261c7a28aa9ee5f50db6312832b1f2fcd671"
+      "sha256": "b2c574145bb6251ae52ab3f652d56114b7d8c02a1ef48e5e2baf25f6591abaab"
     },
     {
       "path": "README.zh-CN.md",
-      "sha256": "f175d2fe070e9f18b1bf775006492b958f7c56921caae959cb1a8f1c27680a7e"
+      "sha256": "5a98eb5ffd7a36d6a5e29f3b250ab27f0522df26a9c6e27ed233d6b7ee6010ad"
     },
     {
       "path": "VALIDATION-REPORT.md",
-      "sha256": "1de4a45a0ac73df2555256c93b0952d7891cc537b496d44a05b4a216f4e28d40"
+      "sha256": "b4c02e473753c0e559a85c7e7b3d0c63e17139acf529b364e83a5874016550a0"
     },
     {
       "path": "VERSION",
-      "sha256": "2985be8b28d3ade858e8d8fb4bc22f565b1bf6020dff982dce141f7721b9999c"
+      "sha256": "06e3fe4a7a1884d20d81cc7065ca8cfd4c394ec602c4d180ddc39bbd4f7da521"
     },
     {
       "path": "docs/superpowers/plans/2026-07-18-mslk-control-kernel-readiness-eval.md",
@@ -92,11 +92,11 @@
     },
     {
       "path": "scripts/validate_repository.py",
-      "sha256": "422d82b5afad7622be1d6754837a236eb8bc110f940cedaaa1e7575c663bbd6d"
+      "sha256": "68a799081a451d82f15d074d28986560fe2e2f11daa617e9de81d76780bd8fe2"
     },
     {
       "path": "skills/chain-loop-skill/SKILL.md",
-      "sha256": "5c5d5e01671a78cea2b9dfe8a154ee138e40821bbc3800d28725ce256dae9ec1"
+      "sha256": "2b0c31bcc750f2269743f4004dfc2b569a57f4dcc3e3041f2eef390f3d882ac6"
     },
     {
       "path": "skills/chain-loop-skill/agents/openai.yaml",
@@ -112,7 +112,7 @@
     },
     {
       "path": "skills/clk-complete-chain/SKILL.md",
-      "sha256": "591e9c70cf49ea6dd2b54bdb5b03bb360bfa3401ba75c4f6ce9a0aaad9264ca4"
+      "sha256": "6c35a0bbdc9550dca2914a629366ebb87929aa531c440f28009164bfba8f0fb7"
     },
     {
       "path": "skills/clk-design-fusion-contracts/SKILL.md",
@@ -124,11 +124,11 @@
     },
     {
       "path": "skills/clk-grill-supervisor/SKILL.md",
-      "sha256": "ae4b06df668dd366ddfc8141ea392c4e1b1f47af69a89e941cba194f094a3302"
+      "sha256": "82cafc56c871f312812ad0d688c3d70ad0ce31cbc2b490a82f04e076cfdc578f"
     },
     {
       "path": "skills/clk-launch-chains/SKILL.md",
-      "sha256": "91a832926c076cd3b5ab4a1ef6fd14931485b220fbcdf24ffe928388ca9fd97a"
+      "sha256": "397389995f2e13d83a2ef2fd59ef5456035ac86733ef2795ad4c0930391474f8"
     },
     {
       "path": "skills/clk-plan-parallel-isolation/SKILL.md",
@@ -152,11 +152,11 @@
     },
     {
       "path": "tests/test_repository_300.py",
-      "sha256": "1d13a00e0ae255c707ba68cddcc4adab8f55277ec33c7a9bbbe8625790cd9e54"
+      "sha256": "209b847e4ce102d29c25723570de3f5b0e34be8c26c7268a5b7740d13eab0a6d"
     },
     {
       "path": "tests/test_skill_collection_300.py",
-      "sha256": "1dfbe088568a16ddccd1b479b729cd393003729b5c1174ace990396eb0d8d8f5"
+      "sha256": "04a38446d67dcc09d19e75b0391fd8d32084641a45bbdf88946f64b4dedfb736"
     }
   ]
 }

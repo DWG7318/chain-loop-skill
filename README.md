@@ -1,6 +1,6 @@
 # Chain Loop Skill (CLK)
 
-Current version: **3.0.0**
+Current version: **3.0.1**
 
 CLK organizes one medium or large engineering Run as:
 
@@ -32,7 +32,7 @@ CLK is project-level orchestration; SLK remains the execution method inside ever
 
 ## Skill collection
 
-CLK 3.0.0 is distributed as 9 sibling Skill directories:
+CLK 3.0.1 is distributed as 9 sibling Skill directories:
 
 | Skill | Purpose |
 | --- | --- |

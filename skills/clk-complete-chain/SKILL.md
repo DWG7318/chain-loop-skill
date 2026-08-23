@@ -46,4 +46,4 @@ description: Use when one construction Chain in an active Chain Loop Skill (CLK)
 
 ## 完成后
 
-当所有必需施工Chain都有D2 PASS冻结交接时，调用`$clk-start-fusion`；否则共享Supervisor退出当前检查动作，等待下一条真实事件再恢复工作。
+当所有必需施工Chain都有D2 PASS冻结交接时，调用`$clk-start-fusion`；否则共享Supervisor结束当前活动，不使用`wait_threads`也不读取其他Chain施工状态，下一条真实消息再激活。

@@ -23,7 +23,7 @@ description: Use when a newly created Supervisor for an active Chain Loop Skill 
 一次只问一个问题；根据回答质量动态决定下一题，不设置固定题数。问题从本Run事实中抽取，建议覆盖：
 
 - 各Chain的职责、Chain 独立性，以及为什么能够在同一施工周期启动；
-- 每条Chain如何执行SLK，以及共享Supervisor与各Checker、Worker怎样配合；
+- 每条Chain如何执行SLK，共享Supervisor与各Checker、Worker怎样配合，以及各角色为什么在交付后结束当前活动而不使用`wait_threads`或观察其他成员施工过程；
 - 融合接口合同怎样约束施工、修订、可执行检查和交接；
 - 临时隔离怎样保护并行施工，又怎样避免污染正式合同与Fusion输入；
 - Supervisor怎样以隔离方式完成Chain D2，以及局部失败如何回到对应Checker处理；

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.1
+
+- Clarified that every CLK and inherited SLK role ends its current activity after dispatch, delivery, or boundary work and resumes only through a real message.
+- Removed ambiguous waiting language that could encourage `wait_threads` monitoring, cross-role memory pollution, or premature inspection of another Chain's work.
+
 ## 3.0.0
 
 - Reconstructed CLK as project-level orchestration over concurrent SLK construction Chains followed by one Fusion SLK Chain.

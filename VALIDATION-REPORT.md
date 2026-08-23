@@ -1,10 +1,10 @@
-# CLK 3.0.0 Validation Report
+# CLK 3.0.1 Validation Report
 
 ## Candidate
 
 - Product: Chain Loop Skill Collection
-- Version: 3.0.0
-- Branch: `feature/clk-3.0.0-reconstruction`
+- Version: 3.0.1
+- Branch: `fix/clk-3.0.1-no-wait`
 - Local validation date: 2026-08-23
 - Local platform: Windows, Python 3.14
 
@@ -18,10 +18,10 @@ python scripts/quick_validate.py skills
 PASS: 9 Skill directories are valid.
 
 python -m pytest -q
-31 passed
+33 passed
 
 python -O -m pytest -q
-31 passed, 1 expected pytest assertion-optimization warning
+33 passed, 1 expected pytest assertion-optimization warning
 
 official Skill validator over every sibling directory
 9/9 valid Skill packages
@@ -34,7 +34,7 @@ The repository validator confirmed exact Manifest path and SHA-256 coverage, exc
 
 ## Temporary installation verification
 
-- External root: `D:\LCcoding\.codex\.tmp\clk-3.0.0-install-verification-20260823-a`
+- External root: `D:\LCcoding\.codex\.tmp\clk-3.0.1-no-wait-install-verification-20260823-a`
 - Installed shape: 9 sibling Skill directories, 13 files
 - Source/copy byte mismatches: 0
 - Main-to-child route count mismatches: 0

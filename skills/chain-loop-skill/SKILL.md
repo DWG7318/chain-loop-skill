@@ -34,4 +34,4 @@ Supervisor 在项目根目录维护 `CLK-RUN-<RUN-ID>-RECORD.md`。每条前置 
 - 根据已冻结的真实输入启动 Fusion Chain：`$clk-start-fusion`
 - 完成最终 D2、记录、归档和 Owner 结论：`$clk-close-run`
 
-日常 CELL 施工、D0、D1、返工、通讯恢复、模型选择和成员恢复继续由 SLK 对应情境指导；CLK 不重复定义。
+日常 CELL 施工、D0、D1、返工、通讯恢复、模型选择和成员恢复继续由 SLK 对应情境指导；任何角色在派发、交付或边界处理后结束当前活动，不使用`wait_threads`或读取其他成员施工状态，下一条真实消息重新激活。CLK 不重复定义。
