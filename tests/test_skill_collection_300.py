@@ -351,3 +351,57 @@ def test_complete_chain_routes_failure_locally_and_freezes_a_passed_handoff() ->
         "不向Owner报告中间完工",
     ):
         assert marker in text
+
+
+def test_fusion_starts_from_real_frozen_inputs_after_supervisor_planning() -> None:
+    text = read_skill("clk-start-fusion")
+    for marker in (
+        "所有必需施工Chain",
+        "D2 PASS",
+        "冻结交接",
+        "定稿Fusion GO",
+        "初始CELL",
+        "$small-loop-skill",
+        "模型选择",
+        "新的集成worktree",
+        "新分支",
+        "Supervisor 创建Fusion Checker",
+        "Supervisor ↔ Checker",
+        "Checker理解",
+        "Checker 创建Fusion Worker",
+        "Checker ↔ Worker",
+        "Supervisor ↔ Worker",
+        "应急",
+        "一条Fusion Chain",
+        "一个或多个线性GO",
+        "SLK-RUN-<RUN-ID>-FUSION.md",
+    ):
+        assert marker in text
+    assert text.index("定稿Fusion GO") < text.index("Supervisor 创建Fusion Checker")
+    assert text.index("Supervisor 创建Fusion Checker") < text.index("Checker 创建Fusion Worker")
+    assert "Stage" not in text
+    assert "Level" not in text
+
+
+def test_final_fusion_d2_is_the_single_clk_run_closure() -> None:
+    text = read_skill("clk-close-run")
+    for marker in (
+        "$small-loop-skill",
+        "Fusion D2",
+        "CLK Run的最终D2",
+        "D0",
+        "D1",
+        "D2",
+        "Chain数量",
+        "豁免",
+        "限制",
+        "证据路径",
+        "先归档Fusion Worker",
+        "再归档Fusion Checker",
+        "保留Supervisor",
+        "Owner",
+        "简洁结论",
+        "不自动建立或启动下一个CLK Run",
+    ):
+        assert marker in text
+    assert "更高检验层" not in text
