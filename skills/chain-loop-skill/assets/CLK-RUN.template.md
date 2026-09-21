@@ -34,7 +34,7 @@
 ## Fusion Chain
 
 - SLK记录：`SLK-RUN-<RUN-ID>-FUSION.md`
-- GO / CELL摘要：
+- SLK Run / CELL摘要：
 - 最终D2：
 
 ## 归档状态

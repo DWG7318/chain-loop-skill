@@ -16,7 +16,7 @@ description: Use when one construction Chain in an active Chain Loop Skill (CLK)
 
 所属Checker先交付干净的初始 D2 包，建议只包含：
 
-- Chain目标与各GO结果；
+- Chain目标与各 CELL 结果；
 - 冻结候选身份，包括commit或artifact、版本与可复现定位；
 - 已验证的端到端入口；
 - 当前融合接口合同、合同版本与可执行合同检查；
@@ -27,7 +27,7 @@ description: Use when one construction Chain in an active Chain Loop Skill (CLK)
 ## 隔离判断
 
 1. Supervisor先从初始包和可观察工程事实形成独立 D2 判断。
-2. 判断重点包括GO组合是否形成Chain目标、合同符合性、可执行合同检查结果，以及候选离开临时施工环境后的可移植性。
+2. 判断重点包括 CELL 组合是否形成Chain目标、合同符合性、可执行合同检查结果，以及候选离开临时施工环境后的可移植性。
 3. 初步判断形成后，再读取D0、D1、Worker推理、Checker说明、返工、豁免和完整记录，用于发现遗漏事实并核对记录一致性。
 4. 若后续材料推翻初步判断，记录改变判断的具体证据，而不是继承成员结论。
 

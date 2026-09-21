@@ -14,9 +14,9 @@ description: Use when the Fusion Chain in an active Chain Loop Skill (CLK) Run i
 
 ## 最终判断
 
-1. Fusion Checker交付干净的最终D2包：Run目标、各Chain冻结输入、Fusion GO结果、完整系统候选、端到端入口、融合合同、可执行检查及客观环境事实。
+1. Fusion Checker交付干净的最终D2包：Run目标、各Chain冻结输入、Fusion CELL结果、完整系统候选、端到端入口、融合合同、可执行检查及客观环境事实。
 2. Supervisor先从候选、合同和可观察事实形成独立判断，再读取D0、D1、返工、豁免和记录历史核对遗漏与一致性。
-3. 检查前置Chain成果是否真实接入，Fusion GO是否组合成完整系统，合同、数据、安全、运行配置和交付入口是否互相一致。
+3. 检查前置Chain成果是否真实接入，Fusion CELL是否组合成完整系统，合同、数据、安全、运行配置和交付入口是否互相一致。
 4. 若结果尚需修复，按SLK返回Fusion Checker → Fusion Worker → Fusion Checker处理；共享Supervisor在新候选形成后重新执行最终判断。
 
 ## 记录结论

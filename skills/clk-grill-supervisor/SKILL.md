@@ -15,7 +15,7 @@ description: Use when a newly created Supervisor for an active Chain Loop Skill 
 ## 建议顺序
 
 1. 先读取`$chain-loop-skill`及已确认的CLK Run方案，复述本Run目标、Chain划分和自己的边界。
-2. 按CLK入口进入`$small-loop-skill`，完成其中的SLK Supervisor Grill，理解线性GO/CELL、Checker与Worker关系、D0/D1/D2、返工、记录、通讯和归档。
+2. 按CLK入口进入`$small-loop-skill`，完成其中的SLK Supervisor Grill，理解 Run 直接包含线性 CELL、Checker与Worker关系、D0/D1/D2、返工、记录、通讯和归档。
 3. SLK理解通过后返回 CLK，再进行本Skill的问答。
 
 ## CLK问答

@@ -1,6 +1,6 @@
 # Chain Loop Skill (CLK)
 
-Current version: **3.0.3**
+Current version: **3.1.0**
 
 CLK is the composite Loop Engineering form for one medium or large Run, built from complete SLK Loops:
 
@@ -8,7 +8,7 @@ CLK is the composite Loop Engineering form for one medium or large Run, built fr
 2+ concurrent SLK Loops -> 1 Fusion SLK Loop
 ```
 
-Each construction Chain is a complete SLK Loop with a linear GO/CELL path and its own Checker/Worker pair. All pairs share one Supervisor, start in the same construction cycle, and work in temporary physical isolation while following complete fusion interface contracts. After every required construction Chain passes D2, a Fusion SLK Loop combines the frozen results into the final system.
+Each construction Chain is a complete SLK Run with a linear CELL path and its own Checker/Worker pair. All pairs share one Supervisor, start in the same construction cycle, and work in temporary physical isolation while following complete fusion interface contracts. After every required construction Chain passes D2, a Fusion SLK Run combines the frozen results into the final system.
 
 ## Roles and method boundary
 
@@ -22,7 +22,7 @@ CLK is the composite orchestration Loop; SLK remains the complete execution Loop
 
 ## Core flow
 
-1. Finalize the current Run, 2+ independent Chains, their linear GO/CELL plans, complete fusion interface contracts, and temporary isolation.
+1. Finalize the current Run, 2+ independent Chains, their linear CELL plans, complete fusion interface contracts, and temporary isolation.
 2. Obtain Owner confirmation and create a new shared Supervisor.
 3. The Supervisor demonstrates SLK understanding, then CLK-specific understanding.
 4. Create every visible Checker/Worker pair and test Supervisor ↔ Checker, Checker ↔ Worker, and the emergency Supervisor ↔ Worker route.
@@ -33,12 +33,12 @@ CLK is the composite orchestration Loop; SLK remains the complete execution Loop
 
 ## Skill collection
 
-CLK 3.0.3 is distributed as 9 sibling Skill directories:
+CLK 3.1.0 is distributed as 9 sibling Skill directories:
 
 | Skill | Purpose |
 | --- | --- |
 | `skills/chain-loop-skill/SKILL.md` | Main router and method identity |
-| `skills/clk-plan-run/SKILL.md` | Run, Chain, GO/CELL, Owner confirmation, and handoff planning |
+| `skills/clk-plan-run/SKILL.md` | Run, Chain, SLK Run/CELL, Owner confirmation, and handoff planning |
 | `skills/clk-design-fusion-contracts/SKILL.md` | Complete fusion interface contracts and executable checks |
 | `skills/clk-plan-parallel-isolation/SKILL.md` | Temporary physical isolation without contract drift |
 | `skills/clk-grill-supervisor/SKILL.md` | SLK-first, CLK-second Supervisor understanding |

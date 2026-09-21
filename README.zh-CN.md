@@ -1,14 +1,14 @@
 # Chain Loop Skill（CLK）
 
-当前版本：**3.0.3**
+当前版本：**3.1.0**
 
-CLK 是建立在完整 SLK Loop 之上的 Loop Engineering 复合形态，面向中型或大型工程，把一个Run组织为：
+CLK 是建立在完整 SLK Run 之上的 Loop Engineering 复合形态，面向中型或大型工程，把一个Run组织为：
 
 ```text
-两条或以上并行的 SLK Loop -> 一条 Fusion SLK Loop
+两条或以上并行的 SLK Run -> 一条 Fusion SLK Run
 ```
 
-每条施工Chain都是一个完整的SLK Loop，有线性的GO/CELL、独立Checker和独立Worker；所有成员组共享一个Supervisor，在同一施工周期启动。并行施工使用临时物理隔离，同时遵守完整融合接口合同。所有必需施工Chain通过D2并冻结交接后，由一个Fusion SLK Loop把真实成果接成完整系统。
+每条施工Chain都是一个完整的SLK Run，有线性CELL、独立Checker和独立Worker；所有成员组共享一个Supervisor，在同一施工周期启动。并行施工使用临时物理隔离，同时遵守完整融合接口合同。所有必需施工Chain通过D2并冻结交接后，由一个Fusion SLK Run把真实成果接成完整系统。
 
 ## 角色与方法边界
 
@@ -18,27 +18,27 @@ CLK 是建立在完整 SLK Loop 之上的 Loop Engineering 复合形态，面向
 - Checker与Worker只按SLK施工。CLK不增加新角色，也不重复定义SLK的D0/D1/D2、返工、通讯、记录和模型指导。
 - 整个Run固定使用同一个最新SLK基线；`$slk-select-models`是唯一的角色模型选择权威。
 
-CLK负责复合Loop编排；每条施工Chain和Fusion Chain本身都是完整的SLK Loop。
+CLK负责复合Loop编排；每条施工Chain和Fusion Chain本身都是完整的SLK Run。初始化这些SLK时登记CLK项目来源，LE BI只把它们作为SLK展示和归类，不显示Chain内部结构。
 
 ## 核心流程
 
-1. 定稿当前Run、两条或以上独立Chain、线性GO/CELL计划、完整融合接口合同和临时隔离。
+1. 定稿当前Run、两条或以上独立Chain、线性CELL计划、完整融合接口合同和临时隔离。
 2. 取得Owner确认并创建新的共享Supervisor。
 3. Supervisor先证明理解SLK，再证明理解本次CLK编排。
 4. 创建全部可见Checker/Worker成员组，测试Supervisor ↔ Checker、Checker ↔ Worker和应急Supervisor ↔ Worker路线。
 5. 所有施工Chain在同一施工周期一起开工。
 6. 每条Chain单独接受隔离D2。失败只回到所属Checker/Worker返工，其他独立Chain继续。
-7. 冻结全部通过的交接，再在独立集成worktree中启动一条可以包含多个线性GO的Fusion SLK Chain，由Fusion负责代码重叠、冲突和接口适配。
+7. 冻结全部通过的交接，再在独立集成worktree中启动一条线性CELL的Fusion SLK Chain，由Fusion负责代码重叠、冲突和接口适配。
 8. Fusion D2直接作为CLK Run最终D2；归档成员对话，并向Owner发送一个简洁结论。
 
 ## Skill集合
 
-CLK 3.0.3由9个并列Skill目录组成：
+CLK 3.1.0由9个并列Skill目录组成：
 
 | Skill | 用途 |
 | --- | --- |
 | `skills/chain-loop-skill/SKILL.md` | 主入口、方法身份与情境路由 |
-| `skills/clk-plan-run/SKILL.md` | Run、Chain、GO/CELL、Owner确认与交接规划 |
+| `skills/clk-plan-run/SKILL.md` | Run、Chain、SLK Run/CELL、Owner确认与交接规划 |
 | `skills/clk-design-fusion-contracts/SKILL.md` | 完整融合接口合同与可执行检查 |
 | `skills/clk-plan-parallel-isolation/SKILL.md` | 不改变合同的临时物理隔离 |
 | `skills/clk-grill-supervisor/SKILL.md` | 先SLK、后CLK的Supervisor理解确认 |

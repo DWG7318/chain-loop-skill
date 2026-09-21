@@ -22,7 +22,7 @@ description: Use when an active Chain Loop Skill (CLK) Run has an accepted plan 
 
 对每条Chain依次完成以下准备；这些准备可以并行推进，但建议在任何Chain派发首个CELL前汇总所有结果。
 
-1. Supervisor 创建该Chain的可见Checker对话，交付Chain目标、线性GO/CELL计划、融合接口合同、隔离信息和记录路径。
+1. Supervisor 创建该Chain的可见Checker对话，交付Chain目标、线性 CELL 计划、融合接口合同、隔离信息和记录路径；初始化该 SLK Run 时登记 `source_kind=clk` 与 `source_project_name=<CLK项目名>`，供 LE BI 只读归类。
 2. 完成Supervisor ↔ Checker双向通讯测试：Supervisor发送带Run ID和Chain ID的测试消息，Checker在自己的可见对话中回复同一身份与职责摘要。
 3. Checker按`$small-loop-skill`完成Checker 理解确认，并说明首个CELL的验收重点、隔离方式和记录位置。
 4. Checker 创建 Worker可见对话，交付当前Chain规则与首个CELL上下文。

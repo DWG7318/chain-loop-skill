@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.0
+
+- Aligned every construction Chain and the Fusion Chain as complete SLK Runs with direct linear CELL paths, removing the retired intermediate method concept.
+- Added LE BI source metadata guidance so every CLK-owned SLK records `source_kind=clk` and its CLK project name while BI continues to show SLKs only.
+- Preserved the shared CLK Supervisor, concurrent construction, fusion contracts, physical isolation, and final Fusion ownership.
+
 ## 3.0.3
 
 - Added `CLK-CHAIN-MAP.md` as the sole Supervisor-owned Chain/Fusion structure authority.

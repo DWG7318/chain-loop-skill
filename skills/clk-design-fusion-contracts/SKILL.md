@@ -29,7 +29,7 @@ description: Use when an active Chain Loop Skill (CLK) Run needs complete integr
 
 ## 施工与修订
 
-Checker和Worker按当前合同版本推进SLK，并在适合的D1中复用合同检查。Chain D2完整检查GO组合、合同符合性、可调用性和交付完整性。
+Checker和Worker按当前合同版本推进SLK，并在适合的D1中复用合同检查。Chain D2完整检查 CELL 组合、合同符合性、可调用性和交付完整性。
 
 施工事实表明合同存在技术问题时，Checker把证据与建议交给Supervisor。Supervisor在Owner已确认的Run结果内形成有记录的修订，通知受影响Chain，并让后续施工和D2引用新版本。
 

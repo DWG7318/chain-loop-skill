@@ -11,7 +11,7 @@
 
 ## Construction Chains
 
-| Chain ID | Responsibility | SLK GO/CELL plan | Fusion contract | Worktree | Candidate state | Fusion dependency |
+| Chain ID | Responsibility | SLK Run/CELL plan | Fusion contract | Worktree | Candidate state | Fusion dependency |
 | --- | --- | --- | --- | --- | --- | --- |
 |  |  |  |  |  |  |  |
 

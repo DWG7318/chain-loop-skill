@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from skill_testkit import (
     EXPECTED_CHILDREN,
     EXPECTED_SKILLS,
@@ -12,7 +14,7 @@ from skill_testkit import (
 
 
 def test_version_is_300() -> None:
-    assert (ROOT / "VERSION").read_text(encoding="utf-8").strip() == "3.0.3"
+    assert (ROOT / "VERSION").read_text(encoding="utf-8").strip() == "3.1.0"
 
 
 def test_collection_has_one_main_and_eight_children() -> None:
@@ -57,7 +59,7 @@ def test_main_keeps_the_owner_approved_clk_core() -> None:
         "D1",
         "D2",
         "Fusion Chain",
-        "一个或多个 GO",
+        "线性 CELL",
         "CLK-RUN-<RUN-ID>-RECORD.md",
     ):
         assert marker in text
@@ -126,9 +128,17 @@ def test_topology_is_concurrent_construction_then_one_fusion_chain() -> None:
     assert "所有前置 Chain" in text
     assert "同时" in text
     assert "一条 Fusion Chain" in text
-    assert "一个或多个 GO" in text
+    assert "线性 CELL" in text
     assert "Stage" not in text
     assert "Level" not in text
+
+
+def test_clk_uses_slk_runs_without_reintroducing_go() -> None:
+    active = "\n".join(read_skill(name) for name in EXPECTED_SKILLS)
+    assert re.search(r"\bGO\b", active) is None
+    assert "每条前置 Chain 都是一个完整的 SLK Run" in read_skill("chain-loop-skill")
+    assert "Fusion Chain 也是一个完整的 SLK Run" in read_skill("chain-loop-skill")
+    assert "source_kind=clk" in read_skill("clk-launch-chains")
 
 
 def test_plan_run_builds_the_owner_confirmed_concurrent_run_before_handoff() -> None:
@@ -141,7 +151,6 @@ def test_plan_run_builds_the_owner_confirmed_concurrent_run_before_handoff() -> 
         "两条或以上",
         "Chain",
         "同一施工周期",
-        "GO",
         "初始 CELL",
         "模型",
         "电脑",
@@ -312,7 +321,7 @@ def test_complete_chain_preserves_isolated_slk_d2_input_order() -> None:
         "$small-loop-skill",
         "干净的初始 D2 包",
         "Chain目标",
-        "GO结果",
+        "CELL 结果",
         "冻结候选身份",
         "端到端入口",
         "融合接口合同",
@@ -333,7 +342,7 @@ def test_complete_chain_preserves_isolated_slk_d2_input_order() -> None:
 def test_complete_chain_routes_failure_locally_and_freezes_a_passed_handoff() -> None:
     text = read_skill("clk-complete-chain")
     for marker in (
-        "GO组合",
+        "CELL 组合",
         "合同符合性",
         "可移植性",
         "Checker → Worker → Checker",
@@ -359,8 +368,8 @@ def test_fusion_starts_from_real_frozen_inputs_after_supervisor_planning() -> No
         "所有必需施工Chain",
         "D2 PASS",
         "冻结交接",
-        "定稿Fusion GO",
-        "初始CELL",
+        "定稿 Fusion SLK Run",
+        "初始 CELL",
         "$small-loop-skill",
         "模型选择",
         "新的集成worktree",
@@ -373,11 +382,11 @@ def test_fusion_starts_from_real_frozen_inputs_after_supervisor_planning() -> No
         "Supervisor ↔ Worker",
         "应急",
         "一条Fusion Chain",
-        "一个或多个线性GO",
+        "线性 CELL",
         "SLK-RUN-<RUN-ID>-FUSION.md",
     ):
         assert marker in text
-    assert text.index("定稿Fusion GO") < text.index("Supervisor 创建Fusion Checker")
+    assert text.index("定稿 Fusion SLK Run") < text.index("Supervisor 创建Fusion Checker")
     assert text.index("Supervisor 创建Fusion Checker") < text.index("Checker 创建Fusion Worker")
     assert "Stage" not in text
     assert "Level" not in text
@@ -427,7 +436,7 @@ def test_cross_skill_order_matches_the_approved_clk_graph() -> None:
     assert "SLK-RUN-<RUN-ID>-CHAIN-<CHAIN-ID>.md" in launch
     assert "SLK-RUN-<RUN-ID>-FUSION.md" in fusion
     assert "不向Owner报告中间完工" in complete
-    assert fusion.index("定稿Fusion GO") < fusion.index("Supervisor 创建Fusion Checker")
+    assert fusion.index("定稿 Fusion SLK Run") < fusion.index("Supervisor 创建Fusion Checker")
     assert close.index("Owner") < close.index("不自动建立或启动下一个CLK Run")
 
 
@@ -475,7 +484,7 @@ def test_chain_map_is_the_single_supervisor_owned_structure_authority() -> None:
         "Fixed latest SLK version",
         "Construction Chains",
         "Responsibility",
-        "SLK GO/CELL plan",
+        "SLK Run/CELL plan",
         "Fusion contract",
         "Worktree",
         "Candidate state",
@@ -558,8 +567,8 @@ def test_clk_roles_end_their_turn_instead_of_waiting_on_or_watching_chains() -> 
     assert "不读取其他Chain施工状态" in complete
     assert "观察其他成员施工过程" in grill
     assert "Loop Engineering 的复合形态" in main
-    assert "每条前置 Chain 都是一个完整的 SLK Loop" in main
-    assert "Fusion Chain 也是一个完整的 SLK Loop" in main
+    assert "每条前置 Chain 都是一个完整的 SLK Run" in main
+    assert "Fusion Chain 也是一个完整的 SLK Run" in main
     assert "消息只传输 Loop 工作和结果" in main
     assert "每条Chain作为一个完整SLK Loop" in launch
     assert "Fusion Chain 本身是一个完整的 SLK Loop" in fusion

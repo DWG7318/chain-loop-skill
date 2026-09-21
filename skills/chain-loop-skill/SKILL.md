@@ -9,13 +9,13 @@ description: Use when a medium or large engineering Run has two or more independ
 
 CLK 是建立在 SLK Loop 之上的 Loop Engineering 的复合形态，面向中型或大型工程。一个 CLK 对应一个 Run：项目层使用 CLK，Chain 施工使用 SLK。
 
-CLK 把工作分成两条或以上前置 Chain，每条前置 Chain 都是一个完整的 SLK Loop，有线性 GO 与 CELL、独立 Checker 和独立 Worker；所有前置 Chain 在同一施工周期同时推进，并共享一个 Supervisor，各自完成 Worker D0、Checker D1 和共享 Supervisor D2。
+CLK 把工作分成两条或以上前置 Chain，每条前置 Chain 都是一个完整的 SLK Run，有线性 CELL、独立 Checker 和独立 Worker；所有前置 Chain 在同一施工周期同时推进，并共享一个 Supervisor，各自完成 Worker D0、Checker D1 和共享 Supervisor D2。
 
-全部必要 Chain 通过 D2 后建立一条 Fusion Chain；Fusion Chain 也是一个完整的 SLK Loop，可以包含一个或多个 GO 并线性推进，它的 D2 是整个 CLK Run 的最终 D2。
+全部必要 Chain 通过 D2 后建立一条 Fusion Chain；Fusion Chain 也是一个完整的 SLK Run，沿线性 CELL 推进，它的 D2 是整个 CLK Run 的最终 D2。
 
 ## 使用关系
 
-原对话与 Owner 正式确定当前 Run 的 Chain、GO、初始 CELL、融合合同、临时并行隔离和 Fusion 轮廓。Owner 确认本 Run 后，原对话创建新的 Supervisor并完成双向通讯测试，再退出工程工作。
+原对话与 Owner 正式确定当前 Run 的 Chain、初始 CELL、融合合同、临时并行隔离和 Fusion 轮廓。Owner 确认本 Run 后，原对话创建新的 Supervisor并完成双向通讯测试，再退出工程工作。
 
 Supervisor 先读取 CLK；CLK 再进入 `$small-loop-skill`，让 Supervisor 充分理解 SLK，随后回到 CLK 理解多 Chain 编排。Checker 和 Worker 只使用 SLK，不读取 CLK。
 
